@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<div layout:fragment="page-title">게시판 수정</div>
+<div layout:fragment="content">
+   <form th:action="@{/intranet/board/modify}" method="post" id="boardModifyForm">
+      <div th:object=${board}>
+         <div class="mb-3">
+            <label for="title">게시판 이름</label>
+            <div class="input-group">
+               <input type="text" class="form-control" name="title" id="title" placeholder="수정할 게시판 이름을 입력하세요"
+                  th:value="*{title}">
+                  <input type="hidden" name="boardNo" th:value="*{boardNo}">
+
+                  <script type="text/javascript">
+
+                     $(document).ready(function(){
+                  
+                        $(".error").hide();
+
+                        $("#checkVal").click( function(event){
+
+                           var title   = $("#title").val();
+                           var title    = title.length;
+
+                           if(title < 1){
+                  
+                              $("#errMsg_01").show();
+                              $("#errMsg_01").text("비어있음");
+                              event.preventDefault();
+                           }
+                  
+                           else{
+                              $("#errMsg_01").hide();         
+                           }
+                        } );
+                  
+                     });
+                  </script>
+            </div>
+            <div class="check_font" id="title_check"></div>
+         </div>
+         <div class="row">
+            <div class="col-sm-12 col-md-6">
+               <div class="boGrade" id="boGrade">
+                  <label>게시판 접근 등급<select name="boGrade" aria-controls="boGrade"
+                        class="custom-select custom-select-sm form-control form-control-sm">
+                        <option value="1" th:selected="*{boGrade} == 1">1</option>
+                        <option value="2" th:selected="*{boGrade} == 2">2</option>
+                        <option value="3" th:selected="*{boGrade} == 3">3</option>
+                        <option value="4" th:selected="*{boGrade} == 4">4</option>
+                        <option value="5" th:selected="*{boGrade} == 5">5</option>
+                     </select></label>
+               </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+               <div class="type" id="type">
+                  <label>게시판 유형<select name="type" aria-controls="type"
+                        class="custom-select custom-select-sm form-control form-control-sm">
+                        <option value="basic" th:selected="*{type} == 'basic'">자유게시판</option>
+                        <option value="review" th:selected="*{type} == 'review'">리뷰전용 게시판</option>
+                     </select></label>
+               </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+               <div class="groupNo" id="groupNo"><label class="w-100">게시판 그룹</label>
+                     <select name="groupNo" aria-label="groupNo">
+                        <option value="1" th:selected="*{groupNo} == 1">게시판 그룹1</option>
+                        <option value="2" th:selected="*{groupNo} == 2">게시판 그룹2</option>
+                     </select>
+               </div>
+            </div>
+            <div class="col-sm-12 col-md-6"><label class="w-100">게시판 기능 옵션</label>
+               <input type="checkbox" class="btn-check" id="usePhoto" autocomplete="off" name="usePhoto" value="1"
+                  th:checked="*{usePhoto} == 1">
+               <label class="btn btn-outline-primary" for="usePhoto">사진 첨부기능</label>
+
+               <input type="checkbox" class="btn-check" id="useVideo" autocomplete="off" name="useVideo" value="1"
+                  th:checked="*{useVideo} == 1">
+               <label class="btn btn-outline-primary" for="useVideo">비디오 첨부기능</label>
+
+               <input type="checkbox" class="btn-check" id="useFile" autocomplete="off" name="useFile" value="1"
+                  th:checked="*{useFile} == 1">
+               <label class="btn btn-outline-primary" for="useFile">파일 첨부기능</label>
+
+               <input type="checkbox" class="btn-check" id="useComment" autocomplete="off" name="useComment"
+                  value="1" th:checked="*{useComment} == 1">
+               <label class="btn btn-outline-primary" for="useComment">댓글 첨부기능</label>
+            </div>
+         </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-sm" id="checkVal" 
+         th:onclick="|location.href='@{/intranet/board/modify}'|">게시판
+         수정</button>
+      <button type="buttom" class="btn btn-tertiary btn-sm">돌아가기</button>
+   </form>
+</div>

@@ -1,0 +1,80 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/user_layout}">
+<div layout:fragment="content">
+	<div id="page-title" class="row">
+		<h1 class="text-center">등업 신청</h1>
+	</div>
+	<div class="row">
+		<form th:action="@{/member/gradeup}" method="POST" id="reqGradeForm">
+			<table class="table table-bordered">
+				<thead>
+					<tr class="bg-info">
+						<th>신청자</th>
+						<th>신청등급</th>
+						<th>현재등급</th>
+						<th>방문수</th>
+						<th>총 게시글</th>
+						<th>댓글 수</th>
+						<th>가입일</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:object="${gradeUp}">
+						<!-- 세션 가져올것 -->
+						<td th:text="*{nick}"></td>
+						<td><select name="aftergrade" id="aftergrade">
+								<option value="" selected>신청가능등급</option>
+								<option value="3">3등급</option>
+								<option value="4">4등급</option>
+								<option value="5">5등급</option>
+							</select></td>
+						<td th:text="*{beforegrade}"></td>
+						<td th:text="*{visitCount}"></td>
+						<td th:text="*{boardCount}"></td>
+						<td th:text="*{commentCount}"></td>
+						<td th:text="*{joinDate}"></td>
+					</tr>
+
+					<tr style="text-align: right;">
+						<td colspan="7"><input type="button" value="등업신청" onclick="fnSubmit();"><input type="button"
+								value="목록보기" onclick="fnlist();"></td>
+
+					</tr>
+			</table>
+		</form>
+		<hr>
+		<script>
+			function fnSubmit() {
+
+				if (fnMemberValidation() == false)
+					return;
+
+				if (confirm("등업신청을 완료 하시겠습니까?")) {
+					alert("등업신청이 완료되었습니다.");
+					$("#reqGradeForm").submit();
+				} else {
+					return;
+				}
+			}
+
+			function fnMemberValidation() {
+
+				if ($('#aftergrade').val() == '') {
+					alert("등급을 선택하세요.");
+					return false;
+				}
+
+			}
+
+			function fnlist() {
+
+				if (confirm("등업신청을 취소 하시겠습니까?")) {
+					alert("등업신청이 취소되었습니다.");
+					location.href = "/member/gradeup_list"
+				} else {
+					return;
+				}
+			}
+		</script>
+	</div>
+</div>

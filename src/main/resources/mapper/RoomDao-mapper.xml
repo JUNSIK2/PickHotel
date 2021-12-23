@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="RoomDao">
+	<resultMap type="RoomVo" id="RoomVoResultMap">
+		<result property="no" javaType="int" column="roo_no" jdbcType="INTEGER" />
+		<result property="roomCode" javaType="int" column="roo_code" jdbcType="INTEGER" />
+		<result property="roomAddress" javaType="string" column="roo_address" jdbcType="VARCHAR" />
+		<result property="originalFileName" javaType="string" column="roo_sysname" jdbcType="VARCHAR" />
+		<result property="systemFileName" javaType="string" column="roo_realname" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="selectRoomList" resultMap="RoomVoResultMap">
+		SELECT roo_no, roo_code, roo_address, roo_sysname, roo_realname FROM room
+	</select>
+</mapper>

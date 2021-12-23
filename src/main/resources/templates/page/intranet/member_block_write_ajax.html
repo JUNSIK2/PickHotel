@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<div layout:fragment="content" class="container-fluid">
+    <div layout:fragment="page-title">강제 탈퇴</div>
+    <form th:action="@{/intranet/member/block}" method="post">
+
+        <input type="hidden" name="memNoList" id="memNoList">
+
+        <div class="mb-3">
+            <label for="nickNames">강제 탈퇴 회원</label>
+            <textarea class="form-control" rows="5" name="nickNames" id="nickNames" disabled></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="reason">강제 탈퇴 사유</label>
+            <input type="text" class="form-control" name="reason" id="reason">
+        </div>
+
+        <div>
+            <button type="submit">확인</button>
+        </div>
+
+    </form>
+    <script>
+        function getParameter(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+        $(document).ready(function () {
+
+
+            var memNoList = getParameter("memNoList");
+            var nickList = getParameter("nickList");
+
+            console.log("memNoList : " + memNoList);
+            console.log("nickList : " + nickList);
+
+            nickList = nickList.split(',');
+            memNoList = memNoList.split(',');
+
+
+            var htmlstr = "";
+            var htmlint = "";
+
+            for (var i = 0; i < nickList.length; i++) {
+                htmlstr += nickList[i] + "\n";
+            }
+
+            for (var i = 0; i < memNoList.length; i++) {
+                htmlint += memNoList[i];
+            }
+
+            console.log(htmlstr);
+            console.log(htmlint);
+
+            $('#memNoList').val(memNoList)
+            $('#nickNames').val(htmlstr)
+
+        });
+    </script>
+</div>

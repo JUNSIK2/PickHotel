@@ -1,0 +1,498 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/user_layout}">
+<div layout:fragment="content">
+	<div id="page-title" class="row">
+		<h1 class="text-center">게시글 보기</h1>
+	</div>
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<span class="pull-right">작성자 : <span th:text="${post.writerNick}"></span> / 작성시간 : <span
+						th:text="${post.createDate}"></span></span> 제목 : <span th:text="${post.subject}"></span>
+			</div>
+			<div class="panel-body">
+				<table border="1">
+					<!-- <c:if test="${requestScope.post.postNo == 1}">
+						<tr>
+							<td colspan="2">숙소번호</td>
+							<td colspan="2">${requestScope.post.review.roomNo}</td>
+							<td colspan="2">숙소방문일자</td>
+							<td colspan="2">${requestScope.post.review.visitDate}</td>
+
+						<tr>
+						<tr>
+							<td>위치평점</td>
+							<td>${requestScope.post.review.rate_loc}</td>
+							<td>위생평점</td>
+							<td>${requestScope.post.review.rate_clean}</td>
+							<td>의사소통평점</td>
+							<td>${requestScope.post.review.rate_comu}</td>
+							<td>가성비평점</td>
+							<td>${requestScope.post.review.rate_chip}</td>
+						<tr>
+						<tr>
+							<td colspan="2">추천 음식점, 장소</td>
+							<td colspan="2">${requestScope.post.review.recommendPlace}</td>
+							<td colspan="2">이런분들께는 비추!</td>
+							<td colspan="2">${requestScope.post.review.postNotRecommendPerson}</td>
+
+						<tr>
+					</c:if> -->
+					<tr>
+						<td colspan="2">내용</td>
+						<td colspan="6" th:text="${#strings.replace(post.content,'\n','<br>')}"></td>
+					<tr>
+					<tr>
+						<td colspan="2">태그</td>
+						<td colspan="6" th:text="${post.tag}"></td>
+					<tr>
+				</table>
+				<div class="mb-3 panel-heading">
+					<a onClick="editPost()" class="btn btn-secondary">수정</a>
+					<a onClick="removePost()" class="btn btn-danger">삭제</a>
+					<a th:href="@{/post/block/{boardNo}(boardNo=${post.boardNo})}" class="btn btn-warning">신고</a>
+					<a th:href="@{/post/list/{boardNo}(boardNo=${post.boardNo})}" class="btn btn-secondary">목록보기</a>
+				</div>
+				<!-- <c:if test="${not empty requestScope.post.attachList}">
+					<div id="attachView">
+						<c:forEach var="file" items="${requestScope.post.attachList}">
+							<c:set var="fileNm" value="${fn:toLowerCase(file.systemFileName)}" />
+							<c:forTokens var="token" items="${fileNm}" delims="." varStatus="status">
+								<c:if test="${status.last}">
+									<c:choose>
+										<c:when test="${token eq 'png' ||token eq 'jpg' ||token eq 'jpeg' }">
+											<img src="${pageContext.request.contextPath}/upload/${file.systemFileName}"
+												width=200 width=200><br>
+										</c:when>
+										<c:when
+											test="${token eq 'mp4'|| token eq 'wmv'|| token eq 'mov'|| token eq 'avi' }">
+											<video src="${pageContext.request.contextPath}/upload/${file.systemFileName}"
+												width=300 width=300 controls></video><br>
+										</c:when>
+									</c:choose>
+								</c:if>
+							</c:forTokens>
+						</c:forEach>
+					</div>
+					<table id="tbl">
+						<tr>
+							<th>파일명</th>
+							<th>파일크기</th>
+						<tr>
+							<c:forEach var="file" items="${requestScope.post.attachList}">
+								<c:url var="downloadUrl" value="/fileDownload">
+									<c:param name="originalFileName" value="${file.originalFileName}" />
+									<c:param name="systemFileName" value="${file.systemFileName}" />
+								</c:url>
+						<tr>
+							<td><a href="${downloadUrl}">${file.originalFileName}</a></td>
+							<td>${file.fileSize} bytes</td>
+						<tr>
+							</c:forEach>
+					</table>
+				</c:if> -->
+			
+				<input type="hidden" id="postNo" name="postNo" th:value="${post.postNo}">
+			</div>
+
+			<!-- 댓글시작 -->
+			<div class="panel-footer">
+				<div class="card">
+					<div class="card-header">
+						<!-- 댓글 달기 -->
+						<div id="addComment">
+							<div class="input-group" style="margin-top:10px">
+								<textarea class="form-control" id="addCmtContent" name="addCmtContent"></textarea>
+								<button class="btn btn-primary" type="button" id="addCmtBtn">댓글 달기</button>
+							</div>
+						</div>
+					</div>
+					<!-- 댓글 목록 -->
+					<ul class="list-group list-group-flush" id="ListComment">
+						<li th:each="comment : ${comments}" th:id="'comment_'+${comment.comNo}" th:class="'commont-line dept_'+${comment.comClass}">
+							<!-- 댓글 내용 -->
+							<div class="info">
+								<span class="memNick" th:text="${comment.memNick}"></span>
+								<input type="hidden" name="memNo" th:value="${comment.memNo}">
+								<span th:text="${comment.writeday}"></span>
+							</div>
+							
+							<div class="cmtContent"><a th:href="@{'/member/'+${comment.memNo}}" class="comment-mention" th:if="${comment.parentMemNick != null}" th:text="'@'+${comment.parentMemNick}"></a><span th:text="${comment.content}"></span></div>
+							
+							<!-- 댓글 설정 메뉴 -->
+							<div class="comment-menu">
+								<i class="fa fa-ellipsis-v comment-menu__btn" aria-hidden="true"></i>
+								<ul style="display:none">
+									<li th:if="${session.member != null && comment.memNo == session.member.memNo}"><a href="#" class="link-dark modifyFormBtn">수정</a></li>
+									<li th:if="${session.member != null && comment.memNo == session.member.memNo}"><a href="#" class="link-dark removeBtn">삭제</a></li>
+									<li><a href="#" class="link-dark commentBlcokBtn">신고</a></li>
+								</ul>
+							</div>
+							<!-- 답글 -->
+							<i class="fa fa-commenting" aria-hidden="true"></i><a href="#" class="btn btn-link link-dark dept2CommentOpenBtn">답글</a>
+							<div class="dept2Comment" aria-expanded="true" style="display:none">
+								<div class="input-group">
+									<textarea class="form-control" placeholder="명예회손, 무단광고, 불법정보 유포 시 삭제될 수 있습니다."></textarea>
+									<button class="btn btn-primary dept2CommentBtn">등록</button>
+								</div>
+							</div>
+							<input type="hidden" name="parents" th:value="${comment.parents}">
+						</li>
+					</ul>
+				</div>
+				<script>
+					const postNo = $("#postNo").val();
+
+					// 글 수정
+					function editPost() {
+						location.href= "/post/modify/" + postNo
+					};
+
+					// 글 삭제
+					function removePost() {
+						const con = confirm("해당 글을 삭제 하시겠습니까?\n삭제된 글은 복구할수 없습니다.");
+						if(con == true){
+							location.href= "/post/delete/" + postNo
+						}
+					};
+
+					$(document).ready(function () {
+						//댓글 작성시 로그인 여부에 따라 placeholder값 다르게 출력
+						//작성하려고 할 경우 로그인창으로 유도
+						if (typeof g_sUserMemNo === 'undefined') {
+							$("#addCmtContent").attr("placeholder","로그인 후 댓글 작성가능합니다.");
+
+							$(document).on("focus","#addCmtContent", function (e) {
+								const con = confirm("회원만 댓글 작성이 가능합니다\n로그인 창으로 이동하시겠습니까?")
+								if(con == true){
+									location.href="/member_loginform";
+								}
+								$(this).blur();
+							});
+						}else{
+							$("#addCmtContent").attr("placeholder","댓글을 입력해 주세요");
+						}
+
+						//*****댓글 목록 조회AJAX 시작*******//
+						function init(postNo) {
+							const getAjax = function (url, postNo) {
+								return new Promise((resolve, reject) => {
+									$.ajax({
+										url: url,
+										method: 'POST',
+										dataType: 'json',
+										data: {
+											postNo: postNo
+										},
+										success: function (data) {
+											resolve(data);
+										},
+										error: function (e) {
+											reject(e);
+										}
+									});
+								});
+							}
+							async function requestProcess(url, postNo) {
+								try {
+									rs = await getAjax(url, postNo);
+									$('#ListComment').html("");
+									let htmlStr = "";
+									for (let i = 0; i < rs.length; i++) {
+										htmlStr += `<li id="comment_${rs[i].comNo}" class="commont-line dept_${rs[i].comClass}">`
+										htmlStr += `<div class="info">`;
+										htmlStr += `<span class="memNick">${rs[i].memNick}</span>`;
+										htmlStr += `<input type="hidden" name="memNo" value="${rs[i].memNo}">`;
+										htmlStr += `<span>${rs[i].writeday}</span>`;
+										htmlStr += `</div>`;
+										htmlStr += `<div class="cmtContent">`;
+										if(rs[i].parentMemNick != null){
+										htmlStr += `<a href="/member/${rs[i].memNo}" class="comment-mention">@${rs[i].parentMemNick}</a>`;
+										}
+										htmlStr += `<span>${rs[i].content}</span></div>`;
+										htmlStr += `<div class="comment-menu">`;
+										htmlStr += `<i class="fa fa-ellipsis-v comment-menu__btn" aria-hidden="true"></i>`;
+										htmlStr += `<ul style="display:none">`;
+										if(g_sUserMemNo && g_sUserMemNo == rs[i].memNo){
+										htmlStr += `<li><a href="#" class="link-dark modifyFormBtn">수정</a></li>`;
+										htmlStr += `<li><a href="#" class="link-dark removeBtn">삭제</a></li>`;
+										htmlStr += `<li><a href="#" class="link-dark commentBlcokBtn">신고</a></li>`;
+										};
+										htmlStr += `</ul>`;
+										htmlStr += `</div>`;
+										htmlStr += `<i class="fa fa-commenting" aria-hidden="true"></i><a href="#" class="btn btn-link link-dark dept2CommentOpenBtn">답글</a>`;
+										htmlStr += `<div class="dept2Comment" aria-expanded="true" style="display:none">`;
+										htmlStr += `<div class="input-group">`;
+										htmlStr += `<textarea class="form-control" placeholder="명예회손, 무단광고, 불법정보 유포 시 삭제될 수 있습니다."></textarea>`;
+										htmlStr += `<button class="btn btn-primary dept2CommentBtn">등록</button>`;
+										htmlStr += `</div>`;
+										htmlStr += `</div>`;
+										htmlStr += `<input type="hidden" name="parents" value="${rs[i].parents}">`;
+										htmlStr += `</li>`;
+									}
+									$('#ListComment').html(htmlStr);
+								} catch (error) {
+									console.log("error : ", error);
+								}
+							};
+							requestProcess("/comment/list", postNo);
+						};
+						//******댓글 목록 조회AJAX 끝*******//
+						
+						//*****댓글 등록 AJAX 시작*******//
+						function addComment(postNo, cmtContent, comClass, parents, parentMemNo) {
+							const getAjax = function (url, postNo, cmtContent, comClass, parents, parentMemNo) {
+								console.log(postNo, cmtContent, comClass, parents, parentMemNo);
+								return new Promise((resolve, reject) => {
+									$.ajax({
+										url: url,
+										method: 'POST',
+										data: {
+											postNo: postNo,
+											content: cmtContent,
+											comClass: comClass,
+											parents: parents,
+											parentMemNo: parentMemNo
+										},
+										success: function (data) {
+											resolve(data);
+										},
+										error: function (e) {
+											reject(e);
+										}
+									});
+								});
+							};
+							async function requestProcess(url, postNo, cmtContent, comClass, parents, parentMemNo) {
+								try {
+										rs = await getAjax(url, postNo, cmtContent, comClass, parents, parentMemNo);
+										if (rs == "OK") {
+											init(postNo);
+										}else if(rs == "isNotMember"){
+											const con = confirm("회원만 댓글 작성이 가능합니다\n로그인 창으로 이동하시겠습니까?")
+											if(con == true){
+												location.href="/member_loginform";
+											}
+										}else{
+											alert("등록에 실패했습니다.");
+											return false;
+										}
+										//댓글 작성 칸 비우기
+										$("#addCmtContent").val("");
+								} catch (error) {
+									console.log("error : ", error);
+								}
+							};
+							if(!parentMemNo) parentMemNo = 0;
+							
+							requestProcess("/comment/create", postNo, cmtContent, comClass, parents, parentMemNo);
+						};
+						//******댓글 등록AJAX 끝*******//
+
+						//*****댓글 수정 AJAX 시작*******//
+						function updateComment(cmtContent, comNo) {
+							const getAjax = function (url, cmtContent, comNo) {
+								return new Promise((resolve, reject) => {
+									$.ajax({
+										url: url,
+										method: 'POST',
+										data: {
+											content: cmtContent,
+											comNo: comNo
+										},
+										success: function (data) {
+											resolve(data);
+										},
+										error: function (e) {
+											reject(e);
+										}
+									});
+								});
+							};
+							async function requestProcess(url, cmtContent, comNo) {
+								try {
+										rs = await getAjax(url, cmtContent, comNo);
+										if (rs == "OK") {
+											init(postNo);
+										}else if(rs == "isNotMember"){
+											const con = confirm("로그인 창으로 이동하시겠습니까?")
+											if(con == true){
+												location.href="/member_loginform";
+											}
+										}else if(rs == "denine"){
+											alert("권한이 없습니다.");
+											return false;
+										}else{
+											alert("수정에 실패했습니다.");
+											return false;
+										}
+								} catch (error) {
+									console.log("error : ", error);
+								}
+							};
+							requestProcess("/comment/update", cmtContent, comNo);
+						};
+						//******댓글 수정AJAX 끝*******//
+
+						//******댓글 선택삭제 AJAX 시작*******//
+						function delectComment(comNo) {
+							const getAjax = function (url, comNo) {
+								return new Promise((resolve, reject) => {
+									$.ajax({
+										url: url,
+										method: 'POST',
+										data: {
+											postNo: postNo,
+											comNo: comNo
+										},
+										success: function (data) {
+											resolve(data);
+										},
+										error: function (e) {
+											reject(e);
+										}
+									});
+								});
+							};
+
+							async function requestProcess(url, comNo) {
+								try {
+										rs = await getAjax(url, comNo);
+										if (rs == "OK") {
+											init(postNo);
+										}else if(rs == "isNotMember"){
+											const con = confirm("로그인 창으로 이동하시겠습니까?")
+											if(con == true){
+												location.href="/member_loginform";
+											}
+										}else if(rs == "denine"){
+											alert("권한이 없습니다.");
+											return false;
+										}else{
+											alert("삭제에 실패했습니다.");
+											return false;
+										}
+								} catch (error) {
+									console.log("error : ", error);
+								}
+							};
+							requestProcess("/comment/remove", comNo);
+						};
+						//******댓글 선택삭제 AJAX 끝*******//
+
+
+						//******댓글 설정 펼치기 시작*******//
+						$(document).on("click", '.comment-menu__btn', function (e) {
+							e.preventDefault();
+
+							$(".comment-menu ul").hide();
+							$(this).next("ul").show();
+						});
+						$(document).click(function(e){
+							if( !$('.comment-menu').has(e.target).length ) $(".comment-menu ul").hide();
+						});
+						//******댓글 설정 펼치기 끝*******//
+
+						//댓글 등록
+						$(document).on("click", '#addCmtBtn', function (e) {
+							e.preventDefault();
+
+							const cmtContent = $('#addCmtContent').val().trim().replace(/\n/g, '<br/>');
+							//addComment(게시글번호, 댓글 내용, 계층, 상위댓글);
+							addComment(postNo, cmtContent, 0, 0);
+						});
+
+						//******답글 폼 펼치기 시작*******//
+						$(document).on("click", '.dept2CommentOpenBtn', function (e) {
+							e.preventDefault();
+							const deptForm = $(this).parents("li").children('.dept2Comment');
+							//const parentMemNo = $(this).parents("li").siblings(".info").children("input[name=memNo]").val()
+							//const parentMemName = $(this).parents("li").siblings(".info").children(".memNick").text()
+							deptForm.toggle();
+						});
+						//******댓글 설정 펼치기 끝*******//
+
+						//답글 등록
+						$(document).on("click", '.dept2CommentBtn', function (e) {
+							e.preventDefault();
+
+							const cmtContent = $(this).siblings('textarea').val().trim().replace(/\n/g, '<br/>');
+							
+							const comClass = $(this).parents("li").attr('class').split("dept_")[1]*1;
+							const comNo = $(this).parents("li").attr('id').split("_")[1]*1;
+							const parent = $(this).parents(".dept2Comment").next("input[name=parents]").val();
+							
+							const parentMemNo = $(this).parents("li").children(".info").children("input[name=memNo]").val();
+							
+							//댓글의 답글인 경우
+							if(comClass == 0){
+								addComment(postNo, cmtContent, 1, parent);
+							}else if(comClass == 1){ //답글의 답글인 경우, 답글의 pk를 함께 전송한다.
+								addComment(postNo, cmtContent, 1, parent, parentMemNo);
+							}
+							
+							//addComment(게시글번호, 댓글 내용, 계층, 상위댓글);
+						});
+
+						//댓글 수정 폼 열기
+						$(document).on("click", '.modifyFormBtn', function (e) {
+							e.preventDefault();
+
+							// 댓글 pk가져오기
+							const getComNo = $(this).parents('.commont-line').attr('id');
+							const comNo = getComNo.split("_")[1];
+
+							//기존에 열려있던 수정 폼이 있다면 닫기
+							if($("#modifyComment").length > 0){
+								$("#modifyComment").remove();
+							}
+
+							//수정하려는 댓글 내용 가져와서 댓글 폼에 추가
+							const content = $(this).parent('li').parent('ul').parent('.comment-menu').siblings(".cmtContent").html().replace(/<br>/g, '\n');
+
+							let modifyHtml= "";
+							
+							modifyHtml += `<div id="modifyComment">`;
+							modifyHtml += `<div class="input-group" style="margin-top:10px">`;
+							modifyHtml += `<textarea class="form-control" type="text" id="modifyCmtContent" placeholder="댓글을 입력해 주세요" >${content}</textarea>`;
+							modifyHtml += `<button class="btn btn-outline-secondary" type="button" id="cancel">취소</button>`;
+							modifyHtml += `<button class="btn btn-outline-secondary" type="button" id="modifyBtn">수정</button>`;
+							modifyHtml += `</div>`;
+							modifyHtml += `</div>`;
+						
+							//수정 폼을 수정하려는 댓글 하단에 추가
+							$("#"+getComNo).append(modifyHtml);
+						});
+
+						//댓글 수정
+						$(document).on("click", '#modifyBtn', function (e) {
+							e.preventDefault();
+							const getComNo = $(this).parents('.commont-line').attr('id');
+							const comNo = getComNo.split("_")[1];
+							const cmtContent = $('#modifyCmtContent').val().trim().replace(/\n/g, '<br/>');
+							updateComment(cmtContent, comNo)
+						});
+
+						//댓글 수정 취소
+						$(document).on("click", '#cancel', function (e) {
+							e.preventDefault();
+							$('#modifyComment').remove();
+						});
+
+						//댓글 선택 삭제
+						$(document).on("click", '.removeBtn', function (e) {
+							e.preventDefault();
+							const con = confirm("해당 댓글을 삭제 하시겠습니까?\n삭제된 댓글은 복구할수 없습니다.");
+							if(con == true){
+								const getComNo = $(this).parents('.commont-line').attr('id');
+								const comNo = getComNo.split("_")[1];
+								delectComment(comNo)
+							};
+						});
+						//******댓글AJAX작동 컨트롤 끝*******//
+					});
+				</script>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<div layout:fragment="page-title">게시판 작성</div>
+<div layout:fragment="content">
+	<div class="card shadow mb-4">
+		<div class="card-body">
+			<form th:action="@{/intranet/board/add}" method="post" id="boardWriteForm">
+				<div th:object=${board}></div>
+				<div class="mb-3">
+					<label for="title">게시판 이름</label>
+					<div class="input-group">
+						<input type="text" class="form-control" name="title" id="title" placeholder="게시판 이름을 입력하세요">
+					</div>
+					<div class="check_font" id="title_check"></div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 col-md-6">
+						<div class="boGrade" id="boGrade"><label>게시판 접근 등급 <select name="boGrade"
+									aria-controls="boGrade"
+									class="custom-select custom-select-sm form-control form-control-sm">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+								</select></label></div>
+					</div>
+					<div class="col-sm-12 col-md-6">
+						<div class="type" id="type"><label>게시판 유형<select name="type" aria-controls="type"
+									class="custom-select custom-select-sm form-control form-control-sm">
+									<option value="basic">자유게시판</option>
+									<option value="review">리뷰전용 게시판</option>
+								</select></label></div>
+					</div>
+					<div class="col-sm-12 col-md-6">
+						<div class="groupNo" id="groupNo"><label>게시판 그룹
+								<select name="groupNo" aria-label="groupNo">
+									<option value="1">자유게시판</option>
+									<option value="2">리뷰전용 게시판</option>
+								</select>
+						</div></label>
+					</div>
+					<div class="col-sm-12 col-md-6">
+						<div class="boardOption" id="boardOption"><label>게시판 그룹 옵션
+								<select name="boardOption" aria-label="Basic checkbox toggle button group">
+									<input type="checkbox" class="btn-check" id="usePhoto" autocomplete="off"
+										name="usePhoto" value="1">
+									<label class="btn btn-outline-primary" for="usePhoto">사진 첨부기능</label>
+
+									<input type="checkbox" class="btn-check" id="useVideo" autocomplete="off"
+										name="useVideo" value="1">
+									<label class="btn btn-outline-primary" for="useVideo">비디오 첨부기능</label>
+
+									<input type="checkbox" class="btn-check" id="useFile" autocomplete="off"
+										name="useFile" value="1">
+									<label class="btn btn-outline-primary" for="useFile">파일 첨부기능</label>
+
+									<input type="checkbox" class="btn-check" id="useComment" autocomplete="off"
+										name="useComment" value="1">
+									<label class="btn btn-outline-primary" for="useComment">댓글 첨부기능</label>
+								</select>
+						</div></label>
+					</div>
+				</div>
+				<div class="mt-5 row">
+					<div class="col-sm-12 text-center">
+						<button type="submit" class="btn btn-primary">게시판 등록</button>
+						<button type="buttom" class="btn btn-secondary">돌아가기</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="AttachDao">
+	<parameterMap type="AttachVo" id="insertAttachVoParameterMap">
+  	<parameter property="postNo" javaType="int" jdbcType="INTEGER"/>
+  	<parameter property="systemFileName" javaType="string" jdbcType="VARCHAR" />
+  	<parameter property="originalFileName" javaType="string" jdbcType="VARCHAR" />
+  	<parameter property="fileSize" javaType="int" jdbcType="INTEGER" />
+  	<parameter property="fileType" javaType="int" jdbcType="INTEGER" />
+  </parameterMap>
+  
+	<insert id="insertPostAttach" parameterType="AttachVo" parameterMap="insertAttachVoParameterMap">
+		INSERT INTO attach (post_no, atta_sysname, atta_realname, atta_size, atta_type) 
+		VALUES(#{postNo}, #{originalFileName}, #{systemFileName}, #{fileSize},#{fileType})
+	</insert>
+	
+	<delete id="deletePostAttach" parameterType="int">
+		DELETE from attach WHERE atta_no = #{attaNo}
+	</delete>
+	
+	<delete id="deleteAttachbyPost" parameterType="int">
+		DELETE from attach WHERE post_no = #{poNo}
+	</delete>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+

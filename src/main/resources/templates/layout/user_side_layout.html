@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title layout:title-pattern="$LAYOUT_TITLE : $CONTENT_TITLE">PickHotel</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+
+    <!-- Content Page의 CSS fragment 삽입 -->
+    <th:block layout:fragment="css"></th:block>
+    <script th:inline="javascript" th:if="${session.member}">
+        /*<![CDATA[*/
+        var g_sUserMemNo = [[${session.member.memNo}]];
+        var g_sUserId = '[[${session.member.id}]]';
+        /*]]>*/
+    </script>
+</head>
+
+<body>
+    <th:block layout:fragment="header" th:include="@{/fragment/header}"></th:block>
+    <div class="container">
+        <div id="sideMenu">
+            <th:block layout:fragment="side" th:include="@{/fragment/side}"></th:block>
+        </div>
+        <div id="content" layout:fragment="content"></div>
+    </div>
+    <th:block layout:fragment="footer" th:include="@{/fragment/footer}"></th:block>
+
+    <script type="text/javascript" th:src="@{/js/jquery-1.11.0.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+
+    <!-- Content Page의 script fragment 삽입 -->
+    <th:block layout:fragment="script"></th:block>
+    <script th:if="${session.member}">
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+        $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+    </script>
+</body>
+
+</html>

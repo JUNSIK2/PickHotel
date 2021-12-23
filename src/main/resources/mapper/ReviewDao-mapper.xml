@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ReviewDao">
+	<parameterMap type="ReviewVo" id="ReviewParameterMap">
+		<parameter property="no" javaType="int" jdbcType="INTEGER" />
+		<parameter property="roomNo" javaType="int" jdbcType="INTEGER" />
+		<parameter property="rate_loc" javaType="int" jdbcType="INTEGER" />
+		<parameter property="rate_clean" javaType="int" jdbcType="INTEGER" />
+		<parameter property="rate_comu" javaType="int" jdbcType="INTEGER" />
+		<parameter property="rate_chip" javaType="int" jdbcType="INTEGER" />
+		<parameter property="visitDate" javaType="string" jdbcType="DATE" />
+		<parameter property="recommendPlace" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="notRecommendPerson" javaType="string" jdbcType="VARCHAR" />
+	</parameterMap>
+	<insert id="insertReview" parameterType="ReviewVo" parameterMap="ReviewParameterMap">
+		INSERT INTO review (post_no, roo_no, re_rate_loc, re_rate_clean,
+		 re_rate_comu, re_rate_chip, re_vsdate, re_push_pl, re_push_npl )
+		 VALUES (#{no}, #{roomNo}, #{rate_loc}, #{rate_clean}, #{rate_comu},
+		  #{rate_chip}, #{visitDate}, #{recommendPlace}, #{notRecommendPerson})
+	</insert>
+	
+	<update id="updateReview" parameterType="ReviewVo" parameterMap="ReviewParameterMap">
+		UPDATE review SET roo_no = #{roomNo}, re_rate_loc= #{rate_loc}, 
+		re_rate_clean= #{rate_clean}, re_rate_comu= #{rate_comu}, 
+		re_rate_chip= #{rate_chip}, re_vsdate= #{visitDate}, re_push_pl= #{recommendPlace}
+		, re_push_npl= #{notRecommendPerson} WHERE post_no = #{no}
+	</update>
+</mapper>
+
+
+
+
+
+
+
+
+

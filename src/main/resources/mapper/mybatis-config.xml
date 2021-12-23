@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<settings>
+		<setting name="callSettersOnNulls" value="true" />
+		<setting name="returnInstanceForEmptyRow" value="true" />
+	</settings>
+	<typeAliases>
+
+
+		<!-- 회원 -->
+		<typeAlias type="com.example.vo.MemberVo" alias="MemberVo" />
+		<typeAlias type="com.example.vo.MemberStateVo"
+			alias="MemberStateVo" />
+		<typeAlias type="com.example.vo.MemberAndMemberStateVo"
+			alias="MemberAndMemberStateVo" />
+
+		<!-- 회원 등업 -->
+		<typeAlias type="com.example.vo.GradeUpVo" alias="GradeUpVo" />
+		<typeAlias type="com.example.vo.MemberGradeVo"
+			alias="MemberGradeVo" />
+
+		<!-- 게시판 -->
+		<typeAlias type="com.example.vo.BoardVo" alias="BoardVo" />
+
+		<!-- 게시글 -->
+		<typeAlias type="com.example.vo.AttachVo" alias="AttachVo" />
+		<typeAlias type="com.example.vo.CommentVo" alias="CommentVo" />
+		<typeAlias type="com.example.vo.PostVo" alias="PostVo" />
+		<typeAlias type="com.example.vo.ReviewVo" alias="ReviewVo" />
+		<typeAlias type="com.example.vo.RoomVo" alias="RoomVo" />
+
+	</typeAliases>
+</configuration>

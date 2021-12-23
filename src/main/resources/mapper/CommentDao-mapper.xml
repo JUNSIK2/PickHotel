@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CommentDao">
+	<delete id="deleteComment" parameterType="int">
+		DELETE FROM comment WHERE co_no = #{comNo}
+	</delete>
+	
+	<parameterMap type="CommentVo" id="CommentParameterMap">
+		<parameter property="comNo" javaType="int" jdbcType="INTEGER" />
+		<parameter property="content" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="writeday" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="memNo" javaType="int" jdbcType="INTEGER" />
+		<parameter property="memNick" javaType="string" jdbcType="VARCHAR" />
+	</parameterMap>
+	
+	<update id="updateComment" parameterType="CommentVo" parameterMap="CommentParameterMap">
+		UPDATE comment SET co_content = #{content} WHERE co_no = #{comNo}
+	</update>
+	
+	<resultMap type="CommentVo" id="CommentResultMap">
+		<result property="comNo" javaType="int" column="co_no" jdbcType="INTEGER" />
+		<result property="postNo" javaType="int" column="post_no" jdbcType="INTEGER" />
+		<result property="memNo" javaType="int" column="co_mb_no" jdbcType="INTEGER" />
+		<result property="content" javaType="string" column="co_content" jdbcType="VARCHAR" />
+		<result property="order" javaType="int" column="co_order" jdbcType="INTEGER" />
+		<result property="parents" javaType="int" column="co_p_no" jdbcType="INTEGER" />
+		<result property="comClass" javaType="int" column="co_class" jdbcType="INTEGER" />
+		<result property="parentMemNo" javaType="int" column="co_p_mb_no" jdbcType="INTEGER" />
+		<result property="writeday" javaType="string" column="co_datetime" jdbcType="DATE" />
+		<result property="memNick" javaType="string" column="mb_nick" jdbcType="VARCHAR" />
+		
+	</resultMap>
+	<select id="selectCommentList" parameterType="int" resultMap="CommentResultMap">
+		SELECT co_no, post_no, co_mb_no, co_p_no, co_order, co_content, co_class, co_order, co_p_no, co_p_mb_no, co_isblind, 
+		DATE_FORMAT(co_datetime, '%Y/%m/%d %h:%m:%s') as co_datetime, mb_nick 
+		FROM comment LEFT JOIN member ON comment.co_mb_no = member.mb_no 
+		WHERE post_no = ${postNo}
+		ORDER BY co_p_no desc, co_order asc
+	</select>
+	<select id="selectComment" parameterType="int" resultMap="CommentResultMap">
+		SELECT co_no, post_no, co_mb_no, co_p_no, co_order, co_content, co_class, co_order, co_p_no, co_p_mb_no, co_isblind, 
+		DATE_FORMAT(co_datetime, '%Y/%m/%d %h:%m:%s') as co_datetime, mb_nick 
+		FROM comment LEFT JOIN member ON comment.co_mb_no = member.mb_no 
+		WHERE co_no = ${comNo}
+	</select>
+	<select id="selectCommentMax" resultType="int">
+		SELECT MAX(co_no) FROM comment
+	</select>
+	<select id="selectCommentOrder" parameterType="int" resultType="int">
+		SELECT MAX(co_order) FROM comment where co_p_no = #{parents}
+	</select>
+	<insert id="insertComment" parameterType="CommentVo" parameterMap="CommentParameterMap" useGeneratedKeys="true" keyProperty="comNo">
+		INSERT INTO comment (co_no, post_no, co_mb_no, co_content, co_order, co_p_no, co_class, co_p_mb_no, co_datetime) 
+		VALUES (#{comNo}, #{postNo}, #{memNo}, #{content}, #{order}, #{parents}, #{comClass}, #{parentMemNo}, now()) 
+	</insert>
+</mapper>
+
+
+
+
+
+
+

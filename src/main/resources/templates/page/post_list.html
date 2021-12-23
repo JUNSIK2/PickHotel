@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/user_layout}">
+<div layout:fragment="content">
+	<div id="page-title" class="row">
+		<h1 class="text-center">게시글 목록</h1>
+	</div>
+	<div class="todo-content">
+		<table class="table table-bordered table-striped table-condensed flip-content">
+			<thead>
+				<tr>
+					<th>번호</th>
+					<th>게시글 목록</th>
+					<th>작성날짜</th>
+					<th>작성자</th>
+				</tr>
+			</thead>
+			<tbody>
+				<span th:if="${posts==null}">
+					<tr>
+						<td colspan="4">등록된 게시글이 없습니다.</td>
+					</tr>
+				</span>
+				<span th:if="${posts!=null}">
+					<tr th:each="post : ${posts}">
+						<td th:text="${post.postNo}"></td>
+						<td><a th:href="@{/post/{postNo}(postNo=${post.postNo})}"><span th:text="${post.subject}"></span></a>
+						</td>
+						<td><span th:text="${post.createDate}"></span></td>
+						<td><span th:text="${post.writerNick}"></span></td>
+					</tr>
+				</span>
+			</tbody>
+		</table>
+		<div id="writePost" style="text-align: right;">
+			<a th:href="@{/post/write}"><button type="button" class="btn btn-primary">글작성</button></a>
+		</div>
+	</div>
+</div>

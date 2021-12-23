@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+
+<div layout:fragment="page-title">회원 조회</div>
+<div layout:fragment="content">
+    <div>
+        <div class="mb-3">
+            <label for="id">이메일</label>
+            <div>
+                0000@naver.com
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="nick">닉네임</label>
+            <div class="input-group">
+                <input type="text" class="form-control" name="nick" id="nick" placeholder="닉네임(4~12자)">
+            </div>
+            <div class="check_font" id="nick_check"></div>
+
+        </div>
+        <div class="mb-3">
+            <label for="name">이름</label> <input type="text" class="form-control" name="name" id="name">
+        </div>
+
+        <div class="mb-3">
+            <label for="pwd">비밀번호</label> <input type="password" class="form-control" name="pwd" id="pwd">
+        </div>
+
+        <div class="mb-3">
+            <label for="newpwd">새 비밀번호</label> <input type="password" class="form-control" name="newpwd" id="newpwd">
+            <div class="pw-condition">
+                <ul>
+                    <li class="pw-condition-1"><i class="fa fa-check-circle-o" aria-hidden="true"></i>숫자,영문,특수문자만 입력 가능
+                    </li>
+                    <li class="pw-condition-2"><i class="fa fa-check-circle-o" aria-hidden="true"></i>비밀번호에 6자리 ~ 20자리
+                        이내</li>
+                    <li class="pw-condition-3"><i class="fa fa-check-circle-o" aria-hidden="true"></i>영문 대문자를 1자 이상</li>
+                    <li class="pw-condition-4"><i class="fa fa-check-circle-o" aria-hidden="true"></i>특수문자를 2자 이상</li>
+                </ul>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="newpwdCheck">새 비밀번호 확인</label> <input type="password" class="form-control" name="newpwdCheck"
+                id="newpwdCheck">
+        </div>
+
+        <div class="mb-3">
+            <h4>성별</h4>
+            <div class="form-check">
+                <input id="genderM" nagendere="gender" type="radio" class="form-check-input" value="genderM"><label
+                    class="form-check-label" for="genderM">남성</label>
+            </div>
+            <div class="form-check">
+                <input id="genderF" name="gender" type="radio" class="form-check-input" value="genderF"><label
+                    class="form-check-label" for="genderF">여성</label>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="hp">휴대 전화</label> <input type="text" class="form-control" name="hp" id="hp"
+                placeholder="010-0000-0000">
+        </div>
+        <div class="mb-3">
+            <label for="birthDay">생년월일</label> <input type="date" class="form-control" name="birthDay" id="birthDay">
+        </div>
+
+        <input type="button" value="회원가입" id="submitBtn" class="btn btn_primary btn_block" />
+    </div>
+</div>
