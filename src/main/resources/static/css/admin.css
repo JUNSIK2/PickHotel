@@ -1,0 +1,20 @@
+@charset "UTF-8";
+/*
+작성자 : 김소진
+작성일 : 2022-01-05
+내용 : 관리자 CSS
+*/
+
+header {
+    z-index: 1;
+}
+
+header #login-box, header #user-box {
+    top: 50%;
+    transform: translateY(-50%);
+    right: 2.5rem;
+}
+
+header ul.notice-box {
+    margin: 0;
+}

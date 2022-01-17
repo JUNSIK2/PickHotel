@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<div layout:fragment="page-title">게시판 그룹 작성</div>
+<div layout:fragment="content">
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <form th:action="@{/intranet/board_group/add}" method="post" id="boardGroupWriteForm">
+                <div th:object=${boardgroup}></div>
+                <div class="mb-3">
+                    <label for="groupName">게시판 그룹 이름</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="groupName" id="groupName" placeholder="게시판 그룹 이름을 입력하세요">
+                    </div>
+                    <div class="check_font" id="title_check"></div>
+                </div>
+                <div class="mt-5 row">
+                <div class="mt-5 row">
+                    <div class="col-sm-12 text-center">
+                        <button type="submit" class="btn btn-primary" >게시판 그룹 등록</button>
+                        <button type="buttom" class="btn btn-secondary">돌아가기</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

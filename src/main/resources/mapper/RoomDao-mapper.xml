@@ -4,6 +4,7 @@
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="RoomDao">
+
 	<parameterMap id="insertRoomVoParameterMap" type="RoomVo">
 		<parameter property="no" javaType="int" jdbcType="INTEGER" />
 		<parameter property="roomName" javaType="string" jdbcType="VARCHAR" />
@@ -12,6 +13,7 @@
 		<parameter property="systemFileName" javaType="string" jdbcType="VARCHAR" />
 		<parameter property="originalFileName" javaType="string" jdbcType="VARCHAR" />
 	</parameterMap>
+
 	<insert id="insertRoom" parameterMap="insertRoomVoParameterMap">
 		INSERT INTO room (roo_no, roo_name, roo_dec, roo_address, roo_sysname, roo_realname)
 		VALUES (#{no}, #{roomName}, #{roomDeco}, #{roomAddress}, #{systemFileName}, #{originalFileName})
@@ -35,6 +37,7 @@
 		SELECT roo_no, roo_name, roo_dec, roo_address, roo_sysname, roo_realname
 		FROM room WHERE roo_no = #{roomNo}
 	</select>
+
 
 	<update id="updateRoom" parameterMap="insertRoomVoParameterMap">
 		UPDATE room SET roo_name=#{roomName}, roo_dec=#{roomDeco}, roo_address=[#{roomAddress}], roo_sysname, roo_realname)

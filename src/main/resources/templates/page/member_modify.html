@@ -1,105 +1,112 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/user_layout}">
+<html layout:decorate="~{layout/user_layout}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <div layout:fragment="content">
-    <div id="page-title" class="row">
+    <div class="row" id="page-title">
         <h1 class="text-center">정보수정</h1>
     </div>
-    <form th:action="@{/member/modify}" method="post" id="memberModifyForm"
-        class="row justify-content-center align-self-center form-small d-flex" th:object=${memberDetail}>
+    <form class="row justify-content-center align-self-center form-small d-flex" id="memberModifyForm" method="post"
+          th:action="@{/member/modify}" th:object=${memberDetail}>
         <h2 class="text-center page-title"></h2>
         <div class="mb-3">
             <label for="id">ID</label>
             <div th:text="*{id}"></div>
-            <input type="hidden" name="memNo" th:value="*{memNo}">
+            <input name="memNo" th:value="*{memNo}" type="hidden">
         </div>
         <div class="mb-3">
-			<label for="nick">닉네임</label>
-			<div class="input-group">
-				<input type="text" class="form-control" name="nick" id="nick" placeholder="닉네임(4~12자)"
-					th:value="*{nick}">
-			</div>
-			<div class="check_font" id="nick_check"></div>
+            <label for="nick">닉네임</label>
+            <div class="input-group">
+                <input class="form-control" id="nick" name="nick" placeholder="닉네임(4~12자)" th:value="*{nick}"
+                       type="text">
+            </div>
+            <div class="check_font" id="nick_check"></div>
 
-		</div>
-        <div class="mb-3">
-            <label for="name">이름</label> <input type="text" class="form-control" name="name" id="name"
-                th:value="*{name}">
         </div>
-
         <div class="mb-3">
-            <label for="pwd">비밀번호</label> <input type="password" class="form-control" name="pwd" id="pwd">
+            <label for="name">이름</label> <input class="form-control" id="name" name="name" th:value="*{name}"
+                                                type="text">
         </div>
 
         <div class="mb-3">
-            <label for="newpwd">새 비밀번호</label> <input type="password" class="form-control" name="newpwd" id="newpwd">
+            <label for="pwd">비밀번호</label> <input class="form-control" id="pwd" name="pwd" type="password">
+        </div>
+
+        <div class="mb-3">
+            <label for="newpwd">새 비밀번호</label> <input class="form-control" id="newpwd" name="newpwd" type="password">
             <div class="pw-condition">
                 <ul class="p-2">
-                    <li class="pw-condition-1"><i class="fa fa-check-circle-o" aria-hidden="true"></i>숫자,영문,특수문자만 입력 가능
+                    <li class="pw-condition-1"><i aria-hidden="true" class="fa fa-check-circle-o"></i>숫자,영문,특수문자만 입력 가능
                     </li>
-                    <li class="pw-condition-2"><i class="fa fa-check-circle-o" aria-hidden="true"></i>비밀번호에 6자리 ~ 20자리
-                        이내</li>
-                    <li class="pw-condition-3"><i class="fa fa-check-circle-o" aria-hidden="true"></i>영문 대문자를 1자 이상</li>
-                    <li class="pw-condition-4"><i class="fa fa-check-circle-o" aria-hidden="true"></i>특수문자를 2자 이상</li>
+                    <li class="pw-condition-2"><i aria-hidden="true" class="fa fa-check-circle-o"></i>비밀번호에 6자리 ~ 20자리
+                        이내
+                    </li>
+                    <li class="pw-condition-3"><i aria-hidden="true" class="fa fa-check-circle-o"></i>영문 대문자를 1자 이상</li>
+                    <li class="pw-condition-4"><i aria-hidden="true" class="fa fa-check-circle-o"></i>특수문자를 2자 이상</li>
                 </ul>
             </div>
         </div>
         <div class="mb-3">
-            <label for="newpwdCheck">새 비밀번호 확인</label> <input type="password" class="form-control" name="newpwdCheck"
-                id="newpwdCheck">
+            <label for="newpwdCheck">새 비밀번호 확인</label> <input class="form-control" id="newpwdCheck" name="newpwdCheck"
+                                                              type="password">
         </div>
 
         <div class="mb-3">
             <label for="gender">성별</label>
             <div class="form-check">
-                <input id="genderM" name="gender" type="radio" class="form-check-input" value="M"
-                    th:checked="*{gender == 'M'}"><label class="form-check-label" for="genderM">남성</label>
+                <input class="form-check-input" id="genderM" name="gender" th:checked="*{gender == 'M'}" type="radio"
+                       value="M"><label class="form-check-label" for="genderM">남성</label>
             </div>
             <div class="form-check">
-                <input id="genderF" name="gender" type="radio" class="form-check-input" value="F"
-                    th:checked="*{gender == 'F'}"><label class="form-check-label" for="genderF">여성</label>
+                <input class="form-check-input" id="genderF" name="gender" th:checked="*{gender == 'F'}" type="radio"
+                       value="F"><label class="form-check-label" for="genderF">여성</label>
             </div>
         </div>
 
         <div class="mb-3">
-            <label for="hp">휴대 전화</label> <input type="text" class="form-control" name="hp" id="hp" th:value="*{hp}"
-                placeholder="010-0000-0000">
+            <label for="hp">휴대 전화</label> <input class="form-control" id="hp" name="hp" placeholder="010-0000-0000"
+                                                 th:value="*{hp}"
+                                                 type="text">
         </div>
         <div class="mb-3">
-            <label for="birth">생년월일</label> <input type="date" class="form-control" name="birth" id="birth"
-                th:value="*{birth}">
+            <label for="birth">생년월일</label> <input class="form-control" id="birth" name="birth" th:value="*{birth}"
+                                                   type="date">
         </div>
-        <div class="mb-3 text-right">
-            <input type="button" value="회원 탈퇴" class="btn btn-primary" id="withDrawBtn"/>
+        <input class="btn btn-lg btn-primary mb-4 mt-3 w-100" id="submitBtn" type="button" value="정보 수정"/>
+        <div class="leave_box">
+            <div class="leave">
+                회원탈퇴를 원하신다면 회원탈퇴를 클릭해주세요. <a href="#" id="withDrawBtn">회원탈퇴</a>
+            </div>
         </div>
-        <input type="button" value="정보 수정" id="submitBtn" class="btn btn-lg btn-primary mb-4 mt-3 w-100" />
     </form>
 
     <script>
         $(document).ready(function () {
+            let orgNick = $("input[name=nick]").val();
             // 닉네임 중복 검사(1 = 중복 / 0 = 비중복)
             $("#nick").blur(function () {
-                console.log("call");
-                var nick = $('#nick').val();
-                $.ajax({
-                    url: '/member_nickcheck?nick=' + nick,
-                    type: 'GET',
-                    success: function (data) {
-                        console.log("1 = 중복o / 0 = 중복x : " + data);
-                        const result = data;
-                        if (nick == "") {
-                            $("#nick_check").text("");
-                        } else if (result.overLapNick == 1) {
-                            $("#nick_check").text("사용중인 닉네임 입니다.");
-                            $("#nick_check").css("color", "red");
-                        } else {
-                            $("#nick_check").text("사용 가능한 닉네임입니다.");
-                            $("#nick_check").css("color", "green");
+                const nick = $("input[name=nick]").val();
+                if (nick != orgNick) { //수정된 경우에만 닉네임 중복 검사 실행
+                    $.ajax({
+                        url    : '/nickCheck?nick=' + nick,
+                        type   : 'GET',
+                        success: function (data) {
+                            const result = data;
+                            if (nick == "") {
+                                $("#nick_check").text("");
+                            } else if (result.overLapNick == 1) {
+                                $("#nick_check").text("사용중인 닉네임 입니다.");
+                                $("#nick_check").css("color", "red");
+                            } else {
+                                $("#nick_check").text("사용 가능한 닉네임입니다.");
+                                $("#nick_check").css("color", "green");
+                            }
+                        },
+                        error  : function () {
+                            console.log("실패");
                         }
-                    },
-                    error: function () {
-                        console.log("실패");
-                    }
-                });
+                    });
+                } else {
+                    $("#nick_check").text("");
+                }
             });
 
             //빈칸 검사
@@ -113,6 +120,7 @@
                     return false;
                 }
             }
+
             $('input').on('keyup', function (e) {
                 var el = $(e.currentTarget);
                 noSpaceCheck(el);
@@ -124,15 +132,15 @@
             function ValidatePassword() {
                 checkCount = 0;
                 var rules = [{
-                        Pattern: "[0-9a-zA-Z.;\-]",
-                        Target: "pw-condition-1"
-                    },
+                    Pattern: "[0-9a-zA-Z.;\-]",
+                    Target : "pw-condition-1"
+                },
                     {
                         Pattern: "[A-Z]",
-                        Target: "pw-condition-3"
+                        Target : "pw-condition-3"
                     }, {
                         Pattern: "[!@@#$%^&*]",
-                        Target: "pw-condition-4"
+                        Target : "pw-condition-4"
                     }
                 ];
                 var password = $(this).val();
@@ -165,6 +173,7 @@
                 }
                 return checkCount;
             }
+
             checkCount = $("#newpwd").on('keyup', ValidatePassword);
 
             //새 비밀번호 확인 동일 검사
@@ -177,6 +186,7 @@
                     $('#newpwdCheck').addClass("off");
                 }
             }
+
             $('#newpwdCheck').on('keyup', function (e) {
                 var el = $(e.currentTarget);
                 SamePassword(el);
@@ -249,14 +259,17 @@
                     if (confirm("비밀번호를 변경하시겠습니까?") == false) {
                         return false;
                     }
-                };
 
+                }
                 $('form').submit();
             };
             $('#submitBtn').on('click', function (e) {
+                e.preventDefault()
                 memberReg();
             });
             $('#withDrawBtn').on('click', function (e) {
+                e.preventDefault()
+
                 var memNo = $(memNo).val();
                 if (confirm("정말로 탈퇴하시나요?\n슬프지만 다음에 또 만나요😢") == true) {
                     location.href = '/member/withdarw'

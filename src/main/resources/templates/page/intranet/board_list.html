@@ -50,7 +50,7 @@
                                         <td th:text="${board.postCount}"></td>
                                         <td>
                                             <a class="btn btn-primary btn-sm moveBtn"
-                                               th:href="@{/board/}+${board.boardNo}"
+                                               th:href="@{/boardList/{boardNo}(boardNo=${board.boardNo})}"
                                                type="button">게시판이동 </a>
                                             <button class="btn btn-primary btn-sm delectBtn" type="button">삭제
                                             </button>
@@ -77,7 +77,7 @@
                                                     if (data == "success") {
                                                         location.reload();
                                                     } else {
-                                                        alert("올바르게 작동하지 않았습니다.");
+                                                        alert("해당 게시판에 포함된 게시글이 있습니다.");
                                                         return false;
                                                     }
                                                 },
@@ -93,6 +93,13 @@
                             </script>
                         </div>
                     </form>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+                                <th:block layout:fragment="paging" th:include="@{/fragment/pagination}"></th:block>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

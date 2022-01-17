@@ -1,5 +1,6 @@
 package com.example.board.model;
 
+import com.example.common.paging.CommonVo;
 import lombok.*;
 
 import javax.validation.constraints.Max;
@@ -12,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @ToString
-public class BoardVo {
+public class BoardVo extends CommonVo {
     private int boardNo;  // 게시판 번호
     private String groupName;  // 속할 게시판 그룹명
 
@@ -25,16 +26,12 @@ public class BoardVo {
     @NotNull(message = "게시판 유형을 선택하세요.")
     private String type;  //게시판 유형 (basic/review “자유게시판/리뷰게시판”)
 
-    @NotNull(message = "사진 첨부 사용여부를 선택하세요.")
     private Integer usePhoto; //사진 첨부 사용여부 (1 : on, 0: off)
 
-    @NotNull(message = "동영상 첨부 사용여부를 선택하세요.")
     private Integer useVideo; // 동영상 첨부 사용여부 (1 : on, 0: off)
 
-    @NotNull(message = "파일 첨부 사용여부를 선택하세요.")
     private Integer useFile; // 파일 첨부 사용여부 (1 : on, 0: off)
 
-    @NotNull(message = "댓글 사용여부를 선택하세요.")
     private Integer useComment;  // 댓글 사용여부 (1 : on, 0: off)
     private String creatDatetime; // 게시판 생성 일시
     private int postCount; //게시판 내 게시글 개수

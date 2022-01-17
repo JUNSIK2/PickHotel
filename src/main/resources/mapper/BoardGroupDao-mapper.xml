@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="BoardGroupDao">
+    <!--게시판 그룹 등록 -->
+    <parameterMap id="insertBoardGroupParameter" type="BoardGroupVo">
+        <parameter property="groupName"  javaType="string" jdbcType="VARCHAR"  mode="IN"/>
+    </parameterMap>
+
+    <insert id="insertBoardGroup" parameterType="BoardGroupVo">
+        INSERT INTO board_group(bo_group_name)
+        VALUES (#{groupName})
+    </insert>
+
+
+    <resultMap id="BoardGroupVoResult" type="BoardGroupVo">
+        <result property="groupNo" javaType="int" column="bo_group_no" jdbcType="INTEGER" />
+        <result property="groupName" javaType="string" column="bo_group_name" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <!--게시판 그룹 상세조회-->
+    <select id="selectBoardGroup" resultMap="BoardGroupVoResult">
+        SELECT bo_group_no, bo_group_name
+        FROM board_group WHERE bo_group_no = #{groupNo}
+    </select>
+
+    <!-- 게시판 그룹 목록조회 -->
+    <select id="selectBoardGroupList" resultMap="BoardGroupVoResult">
+        SELECT
+            bo_group_no, bo_group_name
+        FROM board_group
+    </select>
+
+    <!-- 게시판 그룹 목록조회 - page -->
+    <select id="selectPageBoardGroupList" parameterType="BoardGroupVo"  resultMap="BoardGroupVoResult">
+        SELECT
+        bo_group_no, bo_group_name
+        FROM board_group
+        <if
+                test='searchKeyword != null and searchType.equalsIgnoreCase("groupName")'>
+            WHERE bo_gorup_name LIKE CONCAT('%',#{searchKeyword},'%')
+        </if>
+        ORDER BY bo_group_no desc
+        LIMIT
+        #{paginationInfo.firstRecordIndex}, #{recordsPerPage}
+    </select>
+
+    <!-- 게시판 그룹 총 개수-page -->
+    <select id="selectPageBoardGroupCount" parameterType="BoardGroupVo"  resultType="int">
+        SELECT COUNT(*)
+        FROM board_group
+        <if
+                test = 'searchKeyword != null and searchType.equalsIgnoreCase("groupName")' >
+            WHERE bo_group_name = #{searchKeyword}
+        </if>
+    </select>
+
+    <!--게시판 그룹별 게시판 개수 조회 -->
+    <select id="selectBoardGroupCount" parameterType="int" resultType="int">
+        SELECT COUNT(*) FROM board WHERE bo_group_no = #{groupNo}
+    </select>
+
+
+    <parameterMap type="BoardGroupVo" id="updateBoardGroupParameter">
+        <parameter property="groupNo"  javaType="int" jdbcType="INTEGER"  mode="IN"/>
+        <parameter property="groupName" javaType="string" jdbcType="VARCHAR" mode="IN"/>
+    </parameterMap>
+
+    <!-- 게시판 그룹 수정 -->
+    <update id="updateBoardGroup" parameterType="BoardGroupVo">
+        UPDATE board_group SET
+                               bo_group_no=#{groupNo}, bo_group_name = #{groupName}
+        WHERE bo_group_no = #{groupNo}
+    </update>
+
+
+    <!--게시판 삭제  -->
+    <delete id="deleteBoardGroup" parameterType="int">
+        DELETE FROM board_group
+        WHERE bo_group_no = #{groupNo}
+    </delete>
+</mapper>

@@ -17,22 +17,35 @@
                                     <th>등업방식</th>
                                     <th>사용여부</th>
                                     <th>등업기준</th>
-                                    <th></th>
+
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="SiteGrade : ${SiteGrades}">
+                                <tr th:each="SiteGrade : ${SiteGrades}" th:if="${SiteGrade.memGrade} =='1'">
+
+                                    <td>
+                                        <input class="memGradeName" name="memGradeName1"
+                                               th:value="${SiteGrade.memGradeName}"
+                                               type="text">
+                                        <input name="memGrade1" th:value="${SiteGrade.memGrade}" type="hidden">
+                                    </td>
+                                    <td> &nbsp</td>
+                                    <td> &nbsp</td>
+                                    <td> &nbsp</td>
+                                </tr>
+                                <tr th:each="SiteGrade : ${SiteGrades}"
+                                    th:if="${SiteGrade.memGrade} =='2' or ${SiteGrade.memGrade} == '3' or ${SiteGrade.memGrade} == '4' ">
                                     <td>
                                         <input class="memGradeName" name="memGradeName[]"
                                                th:value="${SiteGrade.memGradeName}"
                                                type="text">
 
-                                        <input name="memGrade" th:value="${SiteGrade.memGrade}" type="hidden">
+                                        <input name="memGrade[]" th:value="${SiteGrade.memGrade}" type="hidden">
                                     </td>
                                     <td>
                                         <div class="input-group-prepend">
-                                            <select class="form-control select2bs4 memGradeType"
-                                                    name="memGradeType[]">
+                                            <select th:id="${SiteGrade.memGrade}"
+                                                    class="form-control select2bs4 memGradeType" name="memGradeType[]">
                                                 <option th:selected="${SiteGrade.memGradeType == 0}" value="0">자동
                                                 </option>
                                                 <option th:selected="${SiteGrade.memGradeType == 1}" value="1">수동
@@ -42,7 +55,8 @@
                                     </td>
                                     <td>
                                         <div class="input-group-prepend">
-                                            <select class="form-control select2bs4 memGradeUse" name="memGradeUse[]">
+                                            <select th:id="${SiteGrade.memGrade}"
+                                                    class="form-control select2bs4 memGradeUse" name="memGradeUse[]">
                                                 <option th:selected="${SiteGrade.memGradeUse == 1 }" value="1">사용
                                                 </option>
                                                 <option th:selected="${SiteGrade.memGradeUse == 0 }" value="0">사용안함
@@ -55,23 +69,37 @@
                                         <div>
                                             <span>게시글</span>
                                             <input class="memGradeBoard memSiteArg" min="0"
-                                                   name="memGradeBoard"
+                                                   name="memGradeBoard[]"
                                                    th:value="${SiteGrade.memGradeBoard}" type="number">
                                         </div>
                                         <div>
                                             <span>댓  글</span>
                                             <input class="memGradeComment memSiteArg" min="0"
-                                                   name="memGradeComment"
+                                                   name="memGradeComment[]"
                                                    th:value="${SiteGrade.memGradeComment}"
                                                    type="number">
                                         </div>
                                         <div>
                                             <span>방문수</span> <input class="memGradeVisit memSiteArg" min="0"
-                                                                    name="memGradeVisit"
+                                                                    name="memGradeVisit[]"
                                                                     th:value="${SiteGrade.memGradeVisit}" type="number">
                                         </div>
 
                                     </td>
+
+                                </tr>
+                                <tr th:each="SiteGrade : ${SiteGrades}" th:if="${SiteGrade.memGrade} =='5'">
+
+                                    <td>
+                                        <input class="memGradeName" name="memGradeName5"
+                                               th:value="${SiteGrade.memGradeName}"
+                                               type="text">
+
+                                        <input name="memGrade5" th:value="${SiteGrade.memGrade}" type="hidden">
+                                    </td>
+                                    <td> &nbsp;</td>
+                                    <td> &nbsp;</td>
+                                    <td> &nbsp;</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -81,14 +109,11 @@
             </form>
         </div>
         <div class="card-footer">
-            <button class="btn btn-primary" id="updateGradeBtn" onclick="fnSubmit();">저장</button>
+            <button class="btn btn-primary" id="updateGradeBtn" onclick="fnSubmit();">완료</button>
         </div>
         <script>
 
             function fnSubmit() {
-                alert("작업 중... -시우-");
-                return false;
-
 
                 var rv = true;
 
@@ -107,11 +132,6 @@
                         return false;
                     }
                 });
-
-                if (rv == false) {
-                    return false;
-                }
-
                 if (confirm("등급수정을 완료 하시겠습니까?")) {
                     alert("등급수정이 완료되었습니다.");
                     $("#reqSiteGradeForm").submit();
@@ -119,6 +139,57 @@
                     return false;
                 }
             }
+
+            $(document).ready(function () {
+                $('#reqSiteGradeForm').on('change', '.memGradeType', function () {
+                    const flag = $(this).val();
+                    const memGrade = $(this).attr("id");
+
+                    if (memGrade == 3) {     //열심 멤버
+                        const memGradeType = $("#4 option:selected").val()
+                        if (memGradeType == 0) { //자동
+                            if (flag == 1) {
+                                alert("상위등급의 등업방식이 자동이 존재하여,수동을 선택할 수 없습니다.");
+                                $(this).val(0);
+                                return false;
+                            }
+                        }
+                    } else if (memGrade == 2) {  //일반멤버
+                        const memGradeType4 = $("#4 option:selected").val()
+                        const memGradeType3 = $("#3 option:selected").val()
+
+                        if (memGradeType3 == 0 || memGradeType4 == 0) { //자동
+                            if (flag == 1) {
+                                alert("상위등급의 등업방식이 자동이 존재하여,수동을 선택할 수 없습니다.");
+                                $(this).val(0);
+                                return false;
+                            }
+                        }
+
+                    }
+                });
+
+                $("#reqSiteGradeForm").on('change', '.memGradeUse', function () {
+                    const memGradeUse = $(this);
+                    const memGrade = $(this).parents("td").parents("tr").children("td").eq(0).children("input[name='memGrade[]']").val();
+
+                    if($(this).val() == 0){
+                        $.ajax({
+                            url: '/intranet/grade/list/memgrade_check',
+                            type: 'POST',
+                            data: {
+                                memGrade: memGrade
+                            },
+                            success: function (data) {
+                                if (data == "false") {
+                                    alert("해당 등급에 회원이 존재하여 미사용 처리할 수 없습니다.");
+                                    memGradeUse.val(1);
+                                }
+                            }
+                        })
+                    }
+                });
+            });
         </script>
     </div>
 </div>

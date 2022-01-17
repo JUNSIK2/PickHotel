@@ -1,0 +1,44 @@
+<html layout:decorate="~{layout/user_layout}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<div layout:fragment="content">
+
+    <div class="row" id="page-title">
+        <h1 class="text-center">
+            <i aria-hidden='true' class='fa fa-search'></i><span
+                th:text="'태그 :' + ${param.encodedTagName} + '(' + ${#lists.size(posts)} + ')'"></span>
+        </h1>
+    </div>
+    <div class="todo-content">
+        <table class="table table-bordered table-striped table-condensed flip-content">
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성날짜</th>
+                <th>조회수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <span th:if="${#lists.size(posts) == 0}">
+					<tr>
+						<td colspan="4">등록된 게시글이 없습니다.</td>
+					</tr>
+				</span>
+            <span th:if="${#lists.size(posts) > 0}">
+					<span th:each="post : ${posts}">
+						<tr>
+							<td th:text="${post.postNo}"></td>
+							<td class="text-left"><a
+                                    th:href="@{/board/{boardNo}/post/{postNo}(postNo=${post.postNo},boardNo=${post.boardNo})}"><span
+                                    th:text="${post.subject}"></span></a>
+							</td>
+							<td><span th:text="${post.createDate}"></span></td>
+							<td><span th:text="${post.views}"></span></td>
+						</tr>
+					</span>
+				</span>
+            </tbody>
+        </table>
+
+    </div>
+</div>

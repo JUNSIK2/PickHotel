@@ -1,0 +1,69 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/user_layout}">
+
+<div layout:fragment="content">
+    <script>
+
+        function getList(){
+            var keyword = document.getElementById("searchKeyword").value;
+            if (!keyword.replace(/^\s+|\s+$/g, '')) {
+                alert('키워드를 입력해주세요!');
+                return false;
+            }
+
+            $.ajax({
+               type : "GET",
+               url : "https://dapi.kakao.com/v2/local/search/keyword.json",
+               headers : {"Authorization" : "KakaoAK 958f211ca3b696905af81baf6cd47314"},
+               dataType : "json",
+               data : {"query" : keyword, "category_group_code" : "AD5"},
+               success : function(data){
+                   var documentsList = data.documents;
+                   var listLength = documentsList.length;
+                   var str = '';
+                   for(let i=0; i < listLength; i++) {
+                       str += '<tr>'
+                       str += '<td>' + documentsList[i].address_name + '</td>'
+                       str += '<td>' + documentsList[i].place_name + '</td>'
+                       str += '<td>' + documentsList[i].place_url + '</td>'
+                       str += '<td>' + documentsList[i].x + '</td>'
+                       str += '<td>' + documentsList[i].y + '</td>'
+                       str += '</tr>'
+                   }
+
+                   document.getElementById("mapInfo").innerHTML=str;
+
+               },
+               error : function(){
+                   alert("실패");
+               }
+            });
+        }
+    </script>
+    <div id="page-title" class="row">
+        <h1 class="text-center">방 목록</h1>
+    </div>
+
+    <div class="todo-content">
+
+        <input type="text" class="form-control" placeholder="검색어를 입력하세요." name="searchKeyword" id="searchKeyword"><button type="button" onclick="getList();">검색</button>
+        <div>
+            <table class="table table-bordered table-striped table-condensed flip-content">
+                <thead>
+                <tr>
+                    <th>address_name</th>
+                    <th>place_name</th>
+                    <th>place_url</th>
+                    <th>x</th>
+                    <th>y</th>
+                </tr>
+                </thead>
+                <tbody id="mapInfo">
+
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+</div>

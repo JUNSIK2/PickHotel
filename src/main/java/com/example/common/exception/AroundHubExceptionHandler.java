@@ -16,7 +16,7 @@ import java.util.Map;
 */
 
 @Slf4j
-@RestControllerAdvice
+//@RestControllerAdvice
 public class AroundHubExceptionHandler {
 
     //@ExceptionHandler(value = Exception.class)

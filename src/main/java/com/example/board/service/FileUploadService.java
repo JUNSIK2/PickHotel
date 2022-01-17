@@ -4,6 +4,8 @@ import com.example.board.model.AttachVo;
 import com.example.board.persistent.AttachDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileOutputStream;
@@ -14,9 +16,11 @@ import java.util.Calendar;
 public class FileUploadService {
     private static final String SAVE_PATH = "/upload";
     private static final String PREFIX_URL = "/upload/";
+
     @Autowired
     private AttachDao attachDao;
 
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {RuntimeException.class})
     public String restore(MultipartFile multipartFile, int postNo, int fileType) {
         String url = null;
 
@@ -25,19 +29,12 @@ public class FileUploadService {
             String extName = originalFileName.substring(originalFileName.lastIndexOf("."), originalFileName.length());
             Long size = multipartFile.getSize();
 
-
             // 서버에서 저장 할 파일 이름
             String systemFileName = getSaveFileName(extName);
-
-            System.out.println("originFilename : " + originalFileName);
-            System.out.println("extensionName : " + extName);
-            System.out.println("size : " + size);
-            System.out.println("systemFileName : " + systemFileName);
 
             int fileSize = size.intValue();
             AttachVo attach = new AttachVo(postNo, originalFileName, systemFileName, fileSize, fileType);
             attachDao.insertPostAttach(attach);
-            System.out.println("파일작성");
 
             // file저장
             writeFile(multipartFile, systemFileName);

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import java.util.Map;
 */
 
 @Slf4j
-//@ControllerAdvice
+@ControllerAdvice
 public class AroundExceptionHandler {
 
     //에러페이지 경로 지정
@@ -54,6 +55,7 @@ public class AroundExceptionHandler {
 
         return ResponseEntity.badRequest().body(errors);
     }
+
 
 //    /**
 //     * 오류 발생지점을 정확히 특정하여 사용하고 싶은 경우 사용하는 커스텀 오류

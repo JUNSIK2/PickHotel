@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<div layout:fragment="page-title">게시판 그룹 수정</div>
+<div layout:fragment="content">
+    <form th:action="@{/intranet/board_group/modify}" method="post" id="boardgroupModifyForm">
+        <div th:object=${boardGroup}>
+            <div class="mb-3">
+                <label for="groupName">게시판 그룹 이름</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" name="groupName" id="groupName" placeholder="수정할 게시판 그룹 이름을 입력하세요"
+                           th:value="*{groupName}">
+                    <input type="hidden" name="groupNo" th:value="*{groupNo}">
+
+                    <script type="text/javascript">
+
+                        $(document).ready(function(){
+
+                            $(".error").hide();
+
+                            $("#checkVal").click( function(event){
+
+                                var groupName   = $("#groupName").val();
+                                var groupName    = groupName.length;
+
+                                if(title < 1){
+
+                                    $("#errMsg_01").show();
+                                    $("#errMsg_01").text("비어있음");
+                                    event.preventDefault();
+                                }
+
+                                else{
+                                    $("#errMsg_01").hide();
+                                }
+                            } );
+
+                        });
+                    </script>
+                </div>
+                <div class="check_font" id="title_check"></div>
+            </div>
+
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm" id="checkVal"
+                th:onclick="|location.href='@{/intranet/boardgroup/modify}'|">게시판 그룹
+            수정</button>
+        <button type="buttom" class="btn btn-tertiary btn-sm">돌아가기</button>
+    </form>
+</div>

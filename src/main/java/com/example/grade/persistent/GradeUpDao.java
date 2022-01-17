@@ -20,4 +20,5 @@ public interface GradeUpDao {
     void acceptGradeUp(int gradeno);
 
     void resetGradeUp(int gradeno);
+
 }

@@ -1,11 +1,8 @@
 package com.example.board.service;
 
 import com.example.board.model.CommentVo;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
 public interface CommentService {
 
     //	댓글 추가

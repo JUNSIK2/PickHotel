@@ -6,8 +6,13 @@ import com.example.grade.model.SiteGradeVo;
 import java.util.List;
 
 public interface SiteGradeService {
-    List<SiteGradeVo> retriveSiteGrade();
+    List<SiteGradeVo> retriveSiteGradeList();
 
-    void SiteGradeModify(List<SiteGradeVo> siteGrade);
+    List<SiteGradeVo> retriveSiteGradeToUser();
 
+    SiteGradeVo retriveSiteGrade(int grade);
+
+    void siteGradeModify(SiteGradeVo sitegrade);
+
+    List<SiteGradeVo> retrivePossibleGrade(int memNo);
 }

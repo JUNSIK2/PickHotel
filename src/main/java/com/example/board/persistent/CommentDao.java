@@ -24,6 +24,9 @@ public interface CommentDao {
     // 댓글 내용 수정
     void updateComment(CommentVo comment);
 
+    // 댓글 블라인드 처리
+    void blindComment(int comNo, int isblind);
+
     // 댓글삭제
     void deleteComment(int comNo);
 }

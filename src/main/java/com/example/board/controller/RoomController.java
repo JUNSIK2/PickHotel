@@ -22,34 +22,27 @@ import java.util.Map;
 @RestController
 @Validated
 public class RoomController {
-    class notFoundPost extends Exception {
-        notFoundPost() {
-            super("존재하는 게시글이 아닙니다.");
-        }
-    }
-
     @Autowired
     private RoomService roomService;
 
     //방 쓰기 폼
     @GetMapping("/room/write")
-    public ModelAndView roomWriteForm(){
+    public ModelAndView roomWriteForm() {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("/page/room_write");
         return mv;
     }
 
     //방 작성
-    @PostMapping(value = "/roomUpload" ,produces = "application/json; charset=UTF-8")
-    public ModelAndView roomWrite(@RequestParam(value="roomName", required = false) String roomName,
-                                  @RequestParam(value="roomDeco", required = false) String roomDeco,
-                                  @RequestParam(value="roomAddress", required = false) String roomAddress,
-                                  @RequestParam(value="images", required = false) MultipartFile image) throws IOException {
+    @PostMapping(value = "/roomUpload", produces = "application/json; charset=UTF-8")
+    public ModelAndView roomWrite(@RequestParam(value = "roomName", required = false) String roomName,
+                                  @RequestParam(value = "roomDeco", required = false) String roomDeco,
+                                  @RequestParam(value = "roomAddress", required = false) String roomAddress,
+                                  @RequestParam(value = "images", required = false) MultipartFile image) throws IOException {
 
         RoomVo room = new RoomVo();
 
-        if(image != null){
-            System.out.println("이미지 존재");
+        if (image != null) {
             String originalFileName = image.getOriginalFilename();
             String extName = originalFileName.substring(originalFileName.lastIndexOf("."), originalFileName.length());
             String systemFileName = getSaveFileName(extName);
@@ -58,15 +51,12 @@ public class RoomController {
 
             byte[] data = image.getBytes();
             room.setImageBytes(data);
-        } else {
-            System.out.println("이미지 없음");
         }
 
         room.setRoomName(roomName);
         room.setRoomDeco(roomDeco);
         room.setRoomAddress(roomAddress);
         this.roomService.registerRoom(room);
-        System.out.println("방이름 : " + roomName);
 
         ModelAndView mv = new ModelAndView();
         mv.setViewName("redirect:/room/list");
@@ -75,7 +65,7 @@ public class RoomController {
 
     //방 목록 조회
     @GetMapping("/room/list")
-    public ModelAndView roomList(){
+    public ModelAndView roomList() {
 
         ModelAndView mv = new ModelAndView();
         RoomResponse roomResponse = this.roomService.retrieveRooms();
@@ -103,7 +93,7 @@ public class RoomController {
 
     //방 상세조회
     @GetMapping("/room/{roomNo}")
-    public ModelAndView roomDetail(@PathVariable("roomNo") int roomNo){
+    public ModelAndView roomDetail(@PathVariable("roomNo") int roomNo) {
 
         RoomVo room = this.roomService.retrieveRoom(roomNo);
         ModelAndView mv = new ModelAndView();
@@ -115,7 +105,7 @@ public class RoomController {
 
     //방 삭제
     @DeleteMapping("/room/{roomNo}")
-    public Map roomRemove(@PathVariable("roomNo") int roomNo){
+    public Map roomRemove(@PathVariable("roomNo") int roomNo) {
 
         this.roomService.removeRoom(roomNo);
 

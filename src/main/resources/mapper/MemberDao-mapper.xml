@@ -106,6 +106,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</insert>
 
 
+	<!-- 회원 룰 추가 -->
+	<insert id="InsertRole" parameterType="string">
+		INSERT INTO member_role(mb_id, role_name) VALUES (#{id}, 'ROLE_GRADE1')
+	</insert>
+
 	<select id="selectIdCheck" parameterMap="MemberParamerterMap"
 		resultType="string">
 		select IFNULL(MAX(mb_id),NULL) AS mb_id from member
@@ -125,11 +130,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE mb_id = #{id}
 	</update>
 
+	<!-- 회원 게시글 갯수 증감 -->
+	<update id="updateBoardCount">
+		UPDATE member SET
+		mb_board = mb_board + #{updateCount}
+		WHERE mb_no = #{memNo}
+	</update>
+
 	<!-- 회원 방문횟수 추가 -->
-	<update id="UpdateVisitCount" parameterMap="MemberParamerterMap">
+	<update id="updateVisitCount">
 		UPDATE member SET
 		mb_visit = mb_visit + 1
-		WHERE mb_id = #{id}
+		WHERE mb_no = #{memNo}
+	</update>
+
+	<!-- 회원 댓글수 증감 -->
+	<update id="updateCommentCount">
+		UPDATE member SET
+		mb_comment = mb_comment + #{updateCount}
+		WHERE mb_no = #{memNo}
 	</update>
 
 	<select id="SelectWithDraw" parameterType="string"
@@ -197,6 +216,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			test='searchKeyword !=null  and searchType.equalsIgnoreCase("id")'>
 			and mb_id = #{searchKeyword}
 		</if>
+	</select>
+
+	<!-- 회원등급에 회원 존재 여부 -->
+	<select id="checkMemberGrade" parameterType="int"
+			resultType="int">
+		SELECT
+			COUNT(mb_grade)
+		FROM
+			member
+		where mb_grade = #{grade}
 	</select>
 
 	<!-- 회원 등록 -->

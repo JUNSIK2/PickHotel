@@ -28,9 +28,14 @@ public class AttachDao {
         this.sqlSession.delete("AttachDao.deleteAttachbyPost", poNo);
     }
 
-    //파일을 조회한다.
+    //게시글 번호로 파일목록을 조회한다.
     public List<AttachVo> selectPostAttach(int poNo) {
         return this.sqlSession.selectList("AttachDao.selectPostAttach", poNo);
+    }
+
+    //파일을 조회한다.
+    public AttachVo selectPostAttachByAtNo(int attaNo) {
+        return this.sqlSession.selectOne("AttachDao.selectPostAttachByAtNo", attaNo);
     }
 }
 

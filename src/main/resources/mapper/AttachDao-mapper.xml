@@ -17,6 +17,24 @@
 		VALUES(#{postNo}, #{systemFileName}, #{originalFileName}, #{fileSize},#{fileType})
 	</insert>
 
+	<resultMap id="selectAttachVoMap" type="AttachVo">
+		<result property="no" column="atta_no" />
+		<result property="postNo" column="post_no" />
+		<result property="originalFileName" column="atta_realname" />
+		<result property="systemFileName" column="atta_sysname" />
+		<result property="fileSize" column="atta_size" />
+		<result property="fileType" column="atta_type" />
+	</resultMap>
+
+	<select id="selectPostAttach" parameterType="int" resultMap="selectAttachVoMap">
+		SELECT atta_no, post_no, atta_realname, atta_sysname, atta_size, atta_type
+		FROM attach WHERE post_no = #{poNo}
+	</select>
+
+	<select id="selectPostAttachByAtNo" parameterType="int" resultMap="selectAttachVoMap">
+		SELECT atta_no, post_no, atta_realname, atta_sysname, atta_size, atta_type
+		FROM attach WHERE atta_no = #{no}
+	</select>
 	<!--	<insert id="insertPoastAttach" parameterType="java.util.List">-->
 	<!--		INSERT INTO attach (post_no, atta_realname, atta_sysname,atta_size, atta_type) VALUES-->
 	<!--		<foreach collection="list" item="item" separator=",">-->
@@ -34,19 +52,7 @@
 		DELETE from attach WHERE post_no = #{poNo}
 	</delete>
 
-	<resultMap id="selectAttachVoMap" type="AttachVo">
-		<result property="no" column="atta_no" />
-		<result property="postNo" column="post_no" />
-		<result property="originalFileName" column="atta_realname" />
-		<result property="systemFileName" column="atta_sysname" />
-		<result property="fileSize" column="atta_size" />
-		<result property="fileType" column="atta_type" />
-	</resultMap>
 
-	<select id="selectPostAttach" parameterType="int" resultMap="selectAttachVoMap">
-		SELECT atta_no, post_no, atta_realname, atta_sysname, atta_size, atta_type
-		FROM attach WHERE post_no = #{poNo}
-	</select>
 </mapper>
 
 

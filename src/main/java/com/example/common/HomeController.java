@@ -16,4 +16,16 @@ public class HomeController {
     public String denine() {
         return "error/denine";
     }
+
+//xss테스트 경로
+//    @ResponseBody
+//    @GetMapping(value = "/responseXss")
+//    Map<String, Object> responseXss() {
+//        Map<String, Object> resultMap = new HashMap<>();
+//
+//        resultMap.put("htmlTdTag", "<td></td>");
+//        resultMap.put("htmlTableTag", "<table>");
+//
+//        return resultMap;
+//    }
 }

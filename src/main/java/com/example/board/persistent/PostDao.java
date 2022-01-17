@@ -1,5 +1,6 @@
 package com.example.board.persistent;
 
+import com.example.board.model.BoardVo;
 import com.example.board.model.PostUpdateCommentVo;
 import com.example.board.model.PostVo;
 import org.apache.ibatis.session.SqlSession;
@@ -21,9 +22,17 @@ public class PostDao {
     }
 
     // 전체 게시글 목록 조회
-    public List<PostVo> selectAllPosts(int boardNo) {
-        List<PostVo> lists = this.sqlSession.selectList("PostDao.selectAllPosts", boardNo);
+    public List<PostVo> selectPostByTag(String tag) {
+        List<PostVo> lists = this.sqlSession.selectList("PostDao.selectPostByTag", tag);
         return lists;
+    }
+
+    public List<PostVo> selectPostList(PostVo params) {
+        return this.sqlSession.selectList("PostDao.selectPostList", params);
+    }
+
+    public int selectPostCount(PostVo params) {
+        return this.sqlSession.selectOne("PostDao.selectPostCount", params);
     }
 
     //총 게시글 수를 구한다.
@@ -33,21 +42,21 @@ public class PostDao {
         return count;
     }
 
-    public List<Integer> selectBoardNo() {
-        List<Integer> list = this.sqlSession.selectList("PostDao.selectBoardNo");
-        return list;
+    public List<BoardVo> selectAllBoards() {
+        return this.sqlSession.selectList("PostDao.selectAllBoards");
     }
 
-    public List<String> selectBoardName() {
-        List<String> list = this.sqlSession.selectList("PostDao.selectBoardName");
-        return list;
+    // 게시글 존재 여부 조회
+    public Integer selectPostSearch(PostVo post) {
+        return this.sqlSession.selectOne("PostDao.selectPostSearch", post);
     }
 
-    //게시글 번호에 해당하는 게시글 상세정보를 조회하다.
+    //게시글 번호에 해당하는 게시글 상세정보를 조회
     public PostVo selectDetailPost(int postNo) {
         return this.sqlSession.selectOne("PostDao.selectDetailPost", postNo);
     }
 
+    //내가 작성한 게시글 조회
     public List<PostVo> selectMyPosts(int MemNo) {
         return this.sqlSession.selectList("PostDao.selectMyPosts", MemNo);
     }
@@ -65,6 +74,12 @@ public class PostDao {
     //게시글 정보 변경
     public void updatePost(PostVo post) {
         this.sqlSession.update("PostDao.updatePost", post);
+    }
+
+
+    //게시글을 블라인드 처리한다.
+    public void blindPost(int postNo, int isblind) {
+        this.sqlSession.delete("PostDao.deletePost", postNo);
     }
 
     //게시글 정보를 삭제하다.

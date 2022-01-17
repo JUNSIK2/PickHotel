@@ -1,11 +1,13 @@
 <html layout:decorate="~{layout/user_layout}" xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+
 <div class="board-pageboard-page" id="postDetail" layout:fragment="content">
     <div class="col-lg-12">
         <div class="panel panel-default" th:object="${post}">
             <div class="p-sm-4 panel-heading">
                 <p><span class="post-groupName" th:text="*{groupName}"></span><i>&gt;</i>
-                    <span class="post-boardTitle"><a class="" th:href="@{/board/{boardNo}(boardNo=*{boardNo})}"
+                    <span class="post-boardTitle"><a class="" th:href="@{/boardList/{boardNo}(boardNo=*{boardNo})}"
                                                      th:text="*{boardTitle}"></a></span>
                 </p>
                 <div class="post-subject" th:text="*{subject}"></div>
@@ -17,23 +19,32 @@
                 </div>
             </div>
             <div class="panel-body post-content">
-                <div class="mb-3">
-                    <label for="content">내용</label>
-                    <div id="content" th:utext="*{content}"></div>
-                </div>
-                <div th:if="${attachList != null}">
-                    <div class="photos">
-                        <div class="mb-3">
-                            <div id="images" th:each="attach : ${attachList}">
-                                <span th:if="${attach.fileType == 1}">
-                                    <img th:src="'/upload/' + ${attach.systemFileName}"/>
-                                </span>
+                <div class="mb-3 p-sm-4">
+                    <div class="map_wrap" th:if="${mapVoForApi != null}">
+                        <div id="map" style="width:50%;height:100%;position:relative;overflow:hidden;"></div>
+                        <div class="bg_white" id="menu_wrap">
+                            <div class="option">
+                                <div></div>
                             </div>
+                            <hr>
+                            <ul id="placesList"></ul>
+                            <div id="pagination"></div>
                         </div>
                     </div>
-                    <div class="videos">
-                        <div class="mb-3">
-                            <div id="videos" th:each="attach : ${attachList}">
+                    <div class="mb-3">
+                        <label class="visually-hidden" for="content">내용</label>
+                        <div id="content" th:utext="*{content}"></div>
+                    </div>
+                    <div th:if="${attachList != null}">
+                        <div class="photos">
+                            <div id="images">
+                                <img th:each="attach : ${attachList}" th:if="${attach.fileType == 1}"
+                                     th:src="'/upload/' + ${attach.systemFileName}"/>
+                            </div>
+                        </div>
+                        <div class="videos">
+                            <div class="mb-3">
+                                <div id="videos" th:each="attach : ${attachList}">
                                 <span th:if="${attach.fileType == 2}">
                                     <video controls>
                                         <source th:src="'/upload/' + ${attach.systemFileName}" type="video/mp4"/>
@@ -41,63 +52,57 @@
                                         <source th:src="'/upload/' + ${attach.systemFileName}" type="video/ogg"/>
                                     </video>
                                 </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="room" th:if="${room.no != 0}">
-                    <div>
-                        <span th:text="${room.roomName}"></span>
-                    </div>
-                    <div>
-                        <span th:text="${room.roomDeco}"></span>
-                    </div>
-                    <div>
-                        <span th:text="${room.roomAddress}"></span>
+
+
+                    <div class="review" th:if="${review != null}">
+                        <div class="mb-3">
+                            <label for="rateLoc">위치</label>
+                            <span id="rateLoc" th:text="${review.rateLoc}"></span>
+                            <label for="rateClean">위생</label>
+                            <span id="rateClean" th:text="${review.rateClean}"></span>
+                            <label for="rateComu">의사소통</label>
+                            <span id="rateComu" th:text="${review.rateComu}"></span>
+                            <label for="rateChip">가성비</label>
+                            <span id="rateChip" th:text="${review.rateChip}"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="visitDate">방문 날짜</label>
+                            <span id="visitDate" th:text="${review.visitDate}"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="recommendPlace">주변 맛집과 관광지를 추천</label>
+                            <span id="recommendPlace" th:text="${review.recommendPlace}"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="notRecommendPerson">이런분들께는 비추에요</label>
+                            <span id="notRecommendPerson" th:text="${review.notRecommendPerson}"></span>
+                        </div>
                     </div>
 
-                    <div>
-                        <img th:src="'/upload/' + ${room.systemFileName}"/>
+                    <div class="mb-3 tag-box" th:if="${post.tag != null && post.tag != ''}">
+                        <div id="tag">
+                            <a th:each="tag : ${post.tags}" th:href="@{/postListByTagName(encodedTagName=${tag})}"><span
+                                    th:text="${'#'+tag}"></span></a>
+                        </div>
                     </div>
-                </div>
-                <div class="review" th:if="${review != null}">
-                    <div class="mb-3">
-                        <label for="rateLoc">위치</label>
-                        <span id="rateLoc" th:text="${review.rateLoc}"></span>
-                        <label for="rateClean">위생</label>
-                        <span id="rateClean" th:text="${review.rateClean}"></span>
-                        <label for="rateComu">의사소통</label>
-                        <span id="rateComu" th:text="${review.rateComu}"></span>
-                        <label for="rateChip">가성비</label>
-                        <span id="rateChip" th:text="${review.rateChip}"></span>
+                    <div class="mb-3 panel-heading text-end">
+                        <a class="btn btn-warning" onClick="editPost()" sec:authorize="isAuthenticated()"
+                           th:if="${#authentication.principal.member.memNo} == ${post.writerNo} OR ${#authentication.principal.member.grade} == '5'">수정</a>
+                        <a class="btn btn-danger"
+                           onClick="removePost()" sec:authorize="isAuthenticated()"
+                           th:if="${#authentication.principal.member.memNo} == ${post.writerNo} OR ${#authentication.principal.member.grade} == '5'">삭제</a>
+                        <!--<a class="btn btn-warning" th:href="@{/post/block/{boardNo}(boardNo=*{boardNo})}">신고</a>-->
+                        <a class="btn btn-secondary" th:href="@{/boardList/{boardNo}(boardNo=*{boardNo})}">목록보기</a>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="visitDate">방문 날짜를 선택하세요</label>
-                        <span id="visitDate" th:text="${review.visitDate}"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label for="recommendPlace">주변 맛집과 관광지를 추천해주세요</label>
-                        <span id="recommendPlace" th:text="${review.recommendPlace}"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label for="notRecommendPerson">이런분들께는 비추에요</label>
-                        <span id="notRecommendPerson" th:text="${review.notRecommendPerson}"></span>
-                    </div>
+                    <input id="postNo" name="postNo" th:value="*{postNo}" type="hidden">
+                    <input id="boardNo" name="postNo" th:value="*{boardNo}" type="hidden">
                 </div>
-
-                <div class="mb-3">
-                    <label for="tag">태그</label>
-                    <div id="tag" th:text="*{tag}"></div>
-                </div>
-                <div class="mb-3 panel-heading text-end">
-                    <a class="btn btn-secondary" onClick="editPost()">수정</a>
-                    <a class="btn btn-danger" onClick="removePost()">삭제</a>
-                    <a class="btn btn-warning" th:href="@{/post/block/{boardNo}(boardNo=*{boardNo})}">신고</a>
-                    <a class="btn btn-secondary" th:href="@{/board/{boardNo}(boardNo=*{boardNo})}">목록보기</a>
-                </div>
-
-                <input id="postNo" name="postNo" th:value="*{postNo}" type="hidden">
             </div>
 
             <!-- 댓글시작 -->
@@ -114,67 +119,318 @@
                     </div>
                     <!-- 댓글 목록 -->
                     <ul class="list-group list-group-flush" id="ListComment">
-                        <li class="commont-noline" th:if="${comments} == null">첫번째 댓글을 남겨보세요✨</li>
+
+                        <li class="commont-noline" th:if="${comments==null or comments.isEmpty()}">첫번째 댓글을 남겨보세요✨</li>
                         <li th:class="'commont-line dept_'+${comment.comClass}" th:each="comment : ${comments}"
                             th:id="'comment_'+${comment.comNo}"
-                            th:if="${comments} != null">
+                            th:if="${comments!=null and !comments.isEmpty()}">
 
                             <!-- 댓글 내용 -->
-                            <div class="info"><span class="memNick" th:text="${comment.memNick}"></span><span
-                                    th:text="${comment.writeday}"></span><input name="memNo" th:value="${comment.memNo}"
-                                                                                type="hidden"></div>
-
-                            <div class="cmtContent">
-                                <a class="comment-mention" th:href="@{'/member/'+${comment.memNo}}"
-                                   th:if="${comment.parentMemNick != null}"
-                                   th:text="'@'+${comment.parentMemNick}"></a>
-                                <span th:text="${comment.content}"></span>
-                            </div>
-
-                            <!-- 댓글 설정 메뉴 -->
-                            <div class="comment-menu">
-                                <i aria-hidden="true" class="fa fa-ellipsis-v comment-menu__btn"></i>
-                                <ul style="display:none">
-                                    <li th:if="${session.member != null && comment.memNo == session.member.memNo}"><a
-                                            class="link-dark modifyFormBtn" href="#">수정</a></li>
-                                    <li th:if="${session.member != null && comment.memNo == session.member.memNo}"><a
-                                            class="link-dark removeBtn" href="#">삭제</a></li>
-                                    <li><a class="link-dark commentBlcokBtn" href="#">신고</a></li>
-                                </ul>
-                            </div>
-                            <!-- 답글 -->
-                            <i aria-hidden="true" class="fa fa-commenting"></i><a
-                                class="btn btn-link link-dark dept2CommentOpenBtn"
-                                href="#">답글</a>
-                            <div aria-expanded="true" class="dept2Comment" style="display:none">
-                                <div class="input-group">
-                                    <textarea class="form-control"
-                                              placeholder="명예회손, 무단광고, 불법정보 유포 시 삭제될 수 있습니다."></textarea>
-                                    <button class="btn btn-primary dept2CommentBtn">등록</button>
+                            <div class="delected-comment" th:if="${comment.isDelect == 1}">
+                                <div class="cmtContent">
+                                    작성자가 삭제한 댓글입니다.
                                 </div>
                             </div>
-                            <input name="parents" th:value="${comment.parents}" type="hidden">
+                            <div class="comment-inner">
+                                <div class="info">
+                                    <span class="memNick" th:text="${comment.memNick}"></span><span
+                                        th:text="${comment.writeday}"></span><input name="memNo"
+                                                                                    th:value="${comment.memNo}"
+                                                                                    type="hidden">
+                                </div>
+
+                                <div class="cmtContent">
+                                    <a class="comment-mention" th:href="@{'/member/'+${comment.memNo}}"
+                                       th:if="${comment.parentMemNick != null}"
+                                       th:text="'@'+${comment.parentMemNick}"></a><span
+                                        th:text="${comment.content}"></span>
+                                </div>
+
+                                <!-- 댓글 설정 메뉴 -->
+                                <div class="comment-menu">
+                                    <i aria-hidden="true" class="fa fa-ellipsis-v comment-menu__btn"></i>
+                                    <ul style="display:none">
+                                        <li sec:authorize="isAuthenticated()"
+                                            th:if="${#authentication.principal.member.memNo} == ${comment.memNo} OR ${#authentication.principal.member.grade} == '5'">
+                                            <a
+                                                    class="link-dark modifyFormBtn" href="#">수정</a></li>
+                                        <li sec:authorize="isAuthenticated()"
+                                            th:if="${#authentication.principal.member.memNo} == ${comment.memNo} OR ${#authentication.principal.member.grade} == '5'">
+                                            <a class="link-dark removeBtn" href="#">삭제</a></li>
+                                        <!--<li><a class="link-dark commentBlcokBtn" href="#">신고</a></li>-->
+                                    </ul>
+                                </div>
+                                <!-- 답글 -->
+                                <i aria-hidden="true" class="fa fa-commenting"></i><a
+                                    class="btn link-dark dept2CommentOpenBtn"
+                                    href="#">답글</a>
+                                <div aria-expanded="true" class="dept2Comment" style="display:none">
+                                    <div class="input-group">
+                                    <textarea class="form-control"
+                                              placeholder="명예회손, 무단광고, 불법정보 유포 시 삭제될 수 있습니다."></textarea>
+                                        <button class="btn btn-primary dept2CommentBtn">등록</button>
+                                    </div>
+                                </div>
+                                <input name="parents" th:value="${comment.parents}" type="hidden">
+                            </div>
                         </li>
                     </ul>
                 </div>
+
                 <script>
-
                     const postNo = $("#postNo").val();
+                    const boardNo = $("#boardNo").val();
+                </script>
+                <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8a9a9c523810d54958387638605f8fcf&libraries=services"
+                        th:if="${mapVoForApi != null}"
+                        type="text/javascript"></script>
+                <script th:if="${mapVoForApi != null}">
 
+                    // 페이지 로드 후 카카오 지도에 등록된 정보를 넣어준다.
+                    window.onload = function () {
+                        $.ajax({
+                            type   : "GET",
+                            url    : "/findMapInfo?postNo=" + postNo,
+                            success: function (data) {
+                                var documentsList = data.documents;
+                                var meta = data.meta;
+                                placesSearchCB(documentsList, meta);
+                                console.log("작동")
+                            },
+                            error  : function () {
+                                alert("정보 가져오기 실패");
+                            }
+                        });
+                    };
+
+                    //카카오 스크립트
+
+                    // 마커를 담을 배열
+                    var markers = [];
+
+                    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+                        mapOption = {
+                            center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+                            level : 3 // 지도의 확대 레벨
+                        }
+
+                    // 지도 생성
+                    var map = new kakao.maps.Map(mapContainer, mapOption);
+
+                    // HTML의 geolocation 사용가능이면 사용자 위치로 중심 이동
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(function (position) {
+                            var lat = position.coords.latitude, // 위도
+                                lon = position.coords.longitude; // 경도
+
+                            var locPosition = new kakao.maps.LatLng(lat, lon);
+                            map.setCenter(locPosition);
+                        });
+
+                    }
+
+                    // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
+                    var infowindow = new kakao.maps.InfoWindow({zIndex: 1});
+
+                    // 키워드 검색을 요청하는 함수입니다
+                    function searchPlaces() {
+
+                        var keyword = document.getElementById('keyword').value;
+
+                        if (!keyword.replace(/^\s+|\s+$/g, '')) {
+                            alert('키워드를 입력해주세요!');
+                            return false;
+                        }
+
+                        // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다 -> 키워드를 직접 받아 처리를 해줘야함 정보가 없을경우 없다고 알림
+                        $.ajax({
+                            type   : "GET",
+                            url    : "/map/search?query=" + keyword,
+                            success: function (data) {
+                                var documentsList = data.mapResponse.documents;
+                                var meta = data.mapResponse.meta;
+                                placesSearchCB(documentsList, meta);
+
+                            },
+                            error  : function () {
+                                alert("데이터 가져오기 실패");
+                            }
+                        });
+                    }
+
+                    // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
+                    function placesSearchCB(documentsList, meta) {
+                        console.log("placesSearchCB작동")
+                        if (meta.total_count == 0) {
+                            alert("검색 정보가 없습니다.");
+                            return false;
+                        }
+
+                        // 검색 목록과 마커를 표출합니다
+                        displayPlaces(documentsList);
+
+                        // 페이지 번호를 표출합니다
+                        // displayPagination(meta);
+                    }
+
+                    // 검색 결과 목록과 마커를 표출하는 함수입니다
+                    function displayPlaces(documentsList) {
+                        console.log("displayPlaces작동")
+                        var listEl = document.getElementById('placesList'),
+                            menuEl = document.getElementById('menu_wrap'),
+                            fragment = document.createDocumentFragment(),
+                            bounds = new kakao.maps.LatLngBounds(),
+                            listStr = '';
+
+                        // 검색 결과 목록에 추가된 항목들을 제거합니다
+                        removeAllChildNods(listEl);
+
+                        // 지도에 표시되고 있는 마커를 제거합니다
+                        removeMarker();
+
+                        for (var i = 0; i < documentsList.length; i++) {
+
+                            // 마커를 생성하고 지도에 표시합니다
+                            var placePosition = new kakao.maps.LatLng(documentsList[i].y, documentsList[i].x),
+                                marker = addMarker(placePosition, i),
+                                itemEl = getListItem(i, documentsList[i]); // 검색 결과 항목 Element를 생성합니다
+
+                            // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+                            // LatLngBounds 객체에 좌표를 추가합니다
+                            bounds.extend(placePosition);
+
+                            // 마커와 검색결과 항목에 mouseover 했을때
+                            // 해당 장소에 인포윈도우에 장소명을 표시합니다
+                            // mouseout 했을 때는 인포윈도우를 닫습니다
+                            (function (marker, title) {
+                                kakao.maps.event.addListener(marker, 'mouseover', function () {
+                                    displayInfowindow(marker, title);
+                                });
+
+                                kakao.maps.event.addListener(marker, 'mouseout', function () {
+                                    infowindow.close();
+                                });
+
+                                itemEl.onmouseover = function () {
+                                    displayInfowindow(marker, title);
+                                };
+
+                                itemEl.onmouseout = function () {
+                                    infowindow.close();
+                                };
+                            })(marker, documentsList[i].place_name);
+
+                            fragment.appendChild(itemEl);
+                        }
+
+                        // 검색결과 항목들을 검색결과 목록 Elemnet에 추가합니다
+                        listEl.appendChild(fragment);
+                        menuEl.scrollTop = 0;
+
+                        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+                        map.setBounds(bounds);
+                    }
+
+                    // 검색결과 항목을 Element로 반환하는 함수입니다
+                    function getListItem(index, places) {
+
+                        var el = document.createElement('li'),
+                            itemStr = '<span class="markerbg marker_' + (index + 1) + '"></span>' +
+                                '<div class="info">' +
+                                '   <h5>' + places.place_name + '</h5>';
+
+                        if (places.road_address_name) {
+                            itemStr += '    <span>' + places.road_address_name + '</span>' +
+                                '   <span class="jibun gray">' + places.address_name + '</span>';
+                        } else {
+                            itemStr += '    <span>' + places.address_name + '</span>';
+                        }
+
+                        itemStr += '</div>';
+                        itemStr += '<a href="' + places.place_url + '" target="_blank"><button>상세보기</a></button>';
+
+                        el.innerHTML = itemStr;
+                        el.className = 'item';
+
+                        return el;
+                    }
+
+                    // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
+                    function addMarker(position, idx, title) {
+                        var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
+                            imageSize = new kakao.maps.Size(36, 37),  // 마커 이미지의 크기
+                            imgOptions = {
+                                spriteSize  : new kakao.maps.Size(36, 691), // 스프라이트 이미지의 크기
+                                spriteOrigin: new kakao.maps.Point(0, (idx * 46) + 10), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
+                                offset      : new kakao.maps.Point(13, 37) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
+                            },
+                            markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+                            marker = new kakao.maps.Marker({
+                                position: position, // 마커의 위치
+                                image   : markerImage
+                            });
+
+                        marker.setMap(map); // 지도 위에 마커를 표출합니다
+                        markers.push(marker);  // 배열에 생성된 마커를 추가합니다
+
+                        return marker;
+                    }
+
+                    // 지도 위에 표시되고 있는 마커를 모두 제거합니다
+                    function removeMarker() {
+                        for (var i = 0; i < markers.length; i++) {
+                            markers[i].setMap(null);
+                        }
+                        markers = [];
+                    }
+
+
+                    // 검색결과 목록 또는 마커를 클릭했을 때 호출되는 함수입니다
+                    // 인포윈도우에 장소명을 표시합니다
+                    function displayInfowindow(marker, title) {
+                        var content = '<div style="padding:5px;z-index:1;">' + title + '</div>';
+
+                        infowindow.setContent(content);
+                        infowindow.open(map, marker);
+                    }
+
+                    // 검색결과 목록의 자식 Element를 제거하는 함수입니다
+                    function removeAllChildNods(el) {
+                        while (el.hasChildNodes()) {
+                            el.removeChild(el.lastChild);
+                        }
+                    }
+
+                    //  -------------------------- 카카오 끝 ----------------------
+                </script>
+                <script>
                     // 글 수정
                     function editPost() {
-                        location.href = "/post/modify/" + postNo
+                        location.href = "/member/post/" + postNo + "/modify"
                     };
 
                     // 글 삭제
                     function removePost() {
                         const con = confirm("해당 글을 삭제 하시겠습니까?\n삭제된 글은 복구할수 없습니다.");
                         if (con == true) {
-                            location.href = "/post/delete/" + postNo
+                            location.href = "/member/post/" + postNo + "/delete"
                         }
                     };
 
+
                     $(document).ready(function () {
+
+                        //태그 출력 셋팅
+                        // if ($('#tag').length > 0) {
+                        //     const str = $('#tag').text();
+                        //     const arr = str.split(",");
+                        //     let htmlstr = "";
+                        //     for (var i = 0; i < arr.length; i++) {
+                        //         htmlstr += ` <a href="/"><span>#${arr[i]}</span></a>`;
+                        //     }
+                        //     $('#tag').html(htmlstr);
+                        // }
+
                         //댓글 작성시 로그인 여부에 따라 placeholder값 다르게 출력
                         //작성하려고 할 경우 로그인창으로 유도
                         if (typeof g_sUserMemNo === 'undefined') {
@@ -183,8 +439,7 @@
                             $(document).on("focus", "#addCmtContent", function (e) {
                                 const con = confirm(_confirmLoginTxt)
                                 if (con == true) {
-                                    location.href = _loginPage + "?redirectUrl=" + location.href;
-                                    ;
+                                    location.href = _loginPage + "?prevPage=" + encodeURIComponent(location.href);
                                 }
                                 $(this).blur();
                             });
@@ -192,8 +447,21 @@
                             $("#addCmtContent").attr("placeholder", "댓글을 입력해 주세요");
                         }
 
+                        //댓글 보이게 안보이게
+
+                        /*<![CDATA[*/
+                        var useComment = "[[${useComment}]]";
+                        /*]]>*/
+
+                        if (useComment == 0) {
+                            document.getElementById("addComment").style.display = "none";
+                        } else {
+                            document.getElementById("addComment").style.display = "";
+                        }
+
                         //*****댓글 목록 조회AJAX 시작*******//
                         function init(postNo) {
+
                             const getAjax = function (url, postNo) {
                                 return new Promise((resolve, reject) => {
                                     $.ajax({
@@ -221,42 +489,44 @@
 
                                     //댓글이 존재하지 않을 경우
                                     if (rs.length == 0) {
-                                        htmlStr += `<li class="commont-noline" >첫번째 댓글을 남겨보세요✨</li>`
-                                    }
-
-                                    //댓글이 존재하는 경우
-                                    for (let i = 0; i < rs.length; i++) {
-                                        htmlStr += `<li id="comment_${rs[i].comNo}" class="commont-line dept_${rs[i].comClass}">`
-                                        htmlStr += `<div class="info">`;
-                                        htmlStr += `<span class="memNick">${rs[i].memNick}</span>`;
-                                        htmlStr += `<span>${rs[i].writeday}</span>`;
-                                        htmlStr += `<input type="hidden" name="memNo" value="${rs[i].memNo}">`;
-                                        htmlStr += `</div>`;
-                                        htmlStr += `<div class="cmtContent">`;
-                                        if (rs[i].parentMemNick != null) {
-                                            htmlStr += `<a href="/member/${rs[i].memNo}" class="comment-mention">@${rs[i].parentMemNick}</a>`;
+                                        htmlStr += `<li class="commont-noline" >첫번째 댓글을 남겨보세요✨</li>`;
+                                    } else {
+                                        //댓글이 존재하는 경우
+                                        for (let i = 0; i < rs.length; i++) {
+                                            htmlStr += `<li id="comment_${rs[i].comNo}" class="commont-line dept_${rs[i].comClass}">`
+                                            if (rs[i].isDelect == 1) { //삭제된 댓글임
+                                                htmlStr += `<div class="delected-comment"><div class="cmtContent">작성자가 삭제한 댓글입니다.</div></div>`;
+                                            }
+                                            htmlStr += `<div class="comment-inner"><div class="info">`;
+                                            htmlStr += `<span class="memNick">${rs[i].memNick}</span>`;
+                                            htmlStr += `<span>${rs[i].writeday}</span>`;
+                                            htmlStr += `<input type="hidden" name="memNo" value="${rs[i].memNo}">`;
+                                            htmlStr += `</div>`;
+                                            htmlStr += `<div class="cmtContent">`;
+                                            if (rs[i].parentMemNick != null) {
+                                                htmlStr += `<a href="/member/${rs[i].memNo}" class="comment-mention">@${rs[i].parentMemNick}</a>`;
+                                            }
+                                            htmlStr += `<span>${rs[i].content}</span></div>`;
+                                            htmlStr += `<div class="comment-menu">`;
+                                            htmlStr += `<i class="fa fa-ellipsis-v comment-menu__btn" aria-hidden="true"></i>`;
+                                            htmlStr += `<ul style="display:none">`;
+                                            if (g_sUserMemNo && g_sUserMemNo == rs[i].memNo) {
+                                                htmlStr += `<li><a href="#" class="link-dark modifyFormBtn">수정</a></li>`;
+                                                htmlStr += `<li><a href="#" class="link-dark removeBtn">삭제</a></li>`;
+                                            }
+                                            // htmlStr += `<li><a href="#" class="link-dark commentBlcokBtn">신고</a></li>`;
+                                            htmlStr += `</ul>`;
+                                            htmlStr += `</div>`;
+                                            htmlStr += `<i class="fa fa-commenting" aria-hidden="true"></i><a href="#" class="btn link-dark dept2CommentOpenBtn">답글</a>`;
+                                            htmlStr += `<div class="dept2Comment" aria-expanded="true" style="display:none">`;
+                                            htmlStr += `<div class="input-group">`;
+                                            htmlStr += `<textarea class="form-control" placeholder="명예회손, 무단광고, 불법정보 유포 시 삭제될 수 있습니다."></textarea>`;
+                                            htmlStr += `<button class="btn btn-primary dept2CommentBtn">등록</button>`;
+                                            htmlStr += `</div>`;
+                                            htmlStr += `</div>`;
+                                            htmlStr += `<input type="hidden" name="parents" value="${rs[i].parents}">`;
+                                            htmlStr += `</div></li>`;
                                         }
-                                        htmlStr += `<span>${rs[i].content}</span></div>`;
-                                        htmlStr += `<div class="comment-menu">`;
-                                        htmlStr += `<i class="fa fa-ellipsis-v comment-menu__btn" aria-hidden="true"></i>`;
-                                        htmlStr += `<ul style="display:none">`;
-                                        if (g_sUserMemNo && g_sUserMemNo == rs[i].memNo) {
-                                            htmlStr += `<li><a href="#" class="link-dark modifyFormBtn">수정</a></li>`;
-                                            htmlStr += `<li><a href="#" class="link-dark removeBtn">삭제</a></li>`;
-                                            htmlStr += `<li><a href="#" class="link-dark commentBlcokBtn">신고</a></li>`;
-                                        }
-                                        ;
-                                        htmlStr += `</ul>`;
-                                        htmlStr += `</div>`;
-                                        htmlStr += `<i class="fa fa-commenting" aria-hidden="true"></i><a href="#" class="btn btn-link link-dark dept2CommentOpenBtn">답글</a>`;
-                                        htmlStr += `<div class="dept2Comment" aria-expanded="true" style="display:none">`;
-                                        htmlStr += `<div class="input-group">`;
-                                        htmlStr += `<textarea class="form-control" placeholder="명예회손, 무단광고, 불법정보 유포 시 삭제될 수 있습니다."></textarea>`;
-                                        htmlStr += `<button class="btn btn-primary dept2CommentBtn">등록</button>`;
-                                        htmlStr += `</div>`;
-                                        htmlStr += `</div>`;
-                                        htmlStr += `<input type="hidden" name="parents" value="${rs[i].parents}">`;
-                                        htmlStr += `</li>`;
                                     }
                                     $('#ListComment').html(htmlStr);
                                 } catch (error) {
@@ -270,7 +540,6 @@
                         //*****댓글 등록 AJAX 시작*******//
                         function addComment(postNo, cmtContent, comClass, parents, parentMemNo) {
                             const getAjax = function (url, postNo, cmtContent, comClass, parents, parentMemNo) {
-                                console.log(postNo, cmtContent, comClass, parents, parentMemNo);
                                 return new Promise((resolve, reject) => {
                                     $.ajax({
                                         url    : url,
@@ -295,14 +564,18 @@
                             async function requestProcess(url, postNo, cmtContent, comClass, parents, parentMemNo) {
                                 try {
                                     rs = await getAjax(url, postNo, cmtContent, comClass, parents, parentMemNo);
-                                    if (rs == "OK") {
-                                        init(postNo);
-                                    } else if (rs == "isNotMember") {
-                                        const con = confirm(_confirmLoginTxt)
-                                        if (con == true) {
-                                            location.href = _loginPage + "?redirectUrl=" + location.href;
-                                            ;
+                                    if (rs.result == "OK") {
+                                        //웹소켓 알림 발송
+                                        if (rs.isSend == "true") {
+                                            const str = JSON.stringify(rs);
+                                            websocket.send(str);
                                         }
+                                        init(postNo);
+                                        // } else if (rs.result == "isNotMember") {
+                                        //     const con = confirm(_confirmLoginTxt)
+                                        //     if (con == true) {
+                                        //         location.href = _loginPage;
+                                        //     }
                                     } else {
                                         alert("등록에 실패했습니다.");
                                         return false;
@@ -345,11 +618,11 @@
                                     rs = await getAjax(url, cmtContent, comNo);
                                     if (rs == "OK") {
                                         init(postNo);
-                                    } else if (rs == "isNotMember") {
-                                        const con = confirm(_confirmLoginTxt)
-                                        if (con == true) {
-                                            location.href = _loginPage + "?redirectUrl=" + location.href;
-                                        }
+                                        // } else if (rs == "isNotMember") {
+                                        //     const con = confirm(_confirmLoginTxt)
+                                        //     if (con == true) {
+                                        //         location.href = _loginPage;
+                                        //     }
                                     } else if (rs == "denine") {
                                         alert("권한이 없습니다.");
                                         return false;
@@ -391,11 +664,11 @@
                                     rs = await getAjax(url, comNo);
                                     if (rs == "OK") {
                                         init(postNo);
-                                    } else if (rs == "isNotMember") {
-                                        const con = confirm(_confirmLoginTxt)
-                                        if (con == true) {
-                                            location.href = _loginPage + "?redirectUrl=" + location.href;
-                                        }
+                                        // } else if (rs == "isNotMember") {
+                                        //     const con = confirm(_confirmLoginTxt)
+                                        //     if (con == true) {
+                                        //         location.href = _loginPage;
+                                        //     }
                                     } else if (rs == "denine") {
                                         alert("권한이 없습니다.");
                                         return false;
@@ -420,7 +693,7 @@
                             $(this).next("ul").show();
                         });
                         $(document).click(function (e) {
-                            if (!$('.comment-menu').has(e.target).length) $(".comment-menu ul").hide();
+                            blurClickHide(e, ".comment-menu", ".comment-menu ul");
                         });
                         //******댓글 설정 펼치기 끝*******//
 
@@ -428,7 +701,13 @@
                         $(document).on("click", '#addCmtBtn', function (e) {
                             e.preventDefault();
 
+                            // location.href = _loginPage + "?prevPage=" + encodeURIComponent(location.href);
+
                             const cmtContent = $('#addCmtContent').val().trim();
+                            if (cmtContent == "") {
+                                alert("댓글 내용을 작성해주세요");
+                                return false;
+                            }
                             //addComment(게시글번호, 댓글 내용, 계층, 상위댓글);
                             addComment(postNo, cmtContent, 0, 0);
                         });
@@ -436,9 +715,8 @@
                         //******답글 폼 펼치기 시작*******//
                         $(document).on("click", '.dept2CommentOpenBtn', function (e) {
                             e.preventDefault();
-                            const deptForm = $(this).parents("li").children('.dept2Comment');
-                            //const parentMemNo = $(this).parents("li").siblings(".info").children("input[name=memNo]").val()
-                            //const parentMemName = $(this).parents("li").siblings(".info").children(".memNick").text()
+                            const deptForm = $(this).parents("div").children('.dept2Comment');
+                            $(".dept2Comment").hide();
                             deptForm.toggle();
                         });
                         //******댓글 설정 펼치기 끝*******//
@@ -448,12 +726,9 @@
                             e.preventDefault();
 
                             const cmtContent = $(this).siblings('textarea').val().trim();
-
                             const comClass = $(this).parents("li").attr('class').split("dept_")[1] * 1;
-                            const comNo = $(this).parents("li").attr('id').split("_")[1] * 1;
                             const parent = $(this).parents(".dept2Comment").next("input[name=parents]").val();
-
-                            const parentMemNo = $(this).parents("li").children(".info").children("input[name=memNo]").val();
+                            const parentMemNo = $(this).parents("li").children(".comment-inner").children(".info").children("input[name=memNo]").val();
 
                             //댓글의 답글인 경우
                             if (comClass == 0) {
@@ -492,7 +767,7 @@
                             modifyHtml += `</div>`;
 
                             //수정 폼을 수정하려는 댓글 하단에 추가
-                            $("#" + getComNo).append(modifyHtml);
+                            $("#" + getComNo).children(".comment-inner").append(modifyHtml);
                         });
 
                         //댓글 수정
@@ -519,9 +794,14 @@
                                 const comNo = getComNo.split("_")[1];
                                 delectComment(comNo)
                             }
-                            ;
+
                         });
                         //******댓글AJAX작동 컨트롤 끝*******//
+                        const beforeStr = location.hash;
+                        const afterStr = beforeStr.split('?')[0].replace("#", "");
+                        if (beforeStr != "") {
+                            document.getElementById(afterStr).className += ' quick';
+                        }
                     });
                 </script>
             </div>

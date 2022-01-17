@@ -1,0 +1,16 @@
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<script th:src="@{/js/jquery-1.11.0.min.js}" type="text/javascript"></script>
+<input name="g_sUserMemNo" sec:authorize="isAuthenticated()" th:value="${#authentication.principal.member.memNo}"
+       type="hidden">
+<script>
+    const userMemNo = document.getElementsByName("g_sUserMemNo")[0];
+    var g_sUserMemNo;
+    if (typeof userMemNo != 'undefined') {
+        g_sUserMemNo = document.getElementsByName("g_sUserMemNo")[0].value;
+    }
+</script>
+<script>
+    //공통 변수 설정
+    const _confirmLoginTxt = "로그인 후 가능합니다.\n로그인 창으로 이동하시겠습니까?";
+    const _loginPage = "/login";
+</script>

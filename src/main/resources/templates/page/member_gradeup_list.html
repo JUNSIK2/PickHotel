@@ -1,83 +1,84 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/user_layout}">
+<html layout:decorate="~{layout/user_layout}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <div layout:fragment="content">
-	<div id="page-title" class="row">
-		<h1 class="text-center">등업 신청 목록</h1>
-	</div>
-	<div class="row">
-		<div>
-			<button class="btn btn-primary btncheck" style="float: right;margin-bottom: 6px;">등업 신청</button>
-		</div>
-	</div>
-	<table class="table table-bordered table-striped table-condensed flip-content">
-		<thead>
-			<tr>
-				<th>닉네임</th>
-				<th>신청등급</th>
-				<th>현재등급</th>
-				<th>신청일</th>
-				<th>상태</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:if="${GradeUps} == 'NoData'">
-				<td colspan="5" class="text-center">신청 된 등업건이 없습니다</td>
-			</tr>
+    <div class="row" id="page-title">
+        <h1 class="text-center">등업 신청 목록</h1>
+    </div>
+    <div class="row">
+        <div>
+            <button class="btn btn-primary btncheck" style="float: right;margin-bottom: 6px;">등업 신청</button>
+        </div>
+    </div>
+    <table class="table table-bordered table-striped table-condensed flip-content">
+        <thead>
+        <tr>
+            <th>닉네임</th>
+            <th>신청등급</th>
+            <th>현재등급</th>
+            <th>신청일</th>
+            <th>상태</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${GradeUps} == 'NoData'">
+            <td class="text-center" colspan="5">신청 된 등업건이 없습니다</td>
+        </tr>
 
-			<tr th:each="GradeUp : ${GradeUps}" th:if="${GradeUps} != 'NoData'">
-				<td th:text="${GradeUp.nick}"></td>
-				<td th:text="${GradeUp.aftergrade}"></td>
-				<td th:text="${GradeUp.beforegrade}"></td>
-				<td th:text="${GradeUp.datetime}"></td>
-				<td><span th:text="${GradeUp.gradeupstateP}"></span>
-					<button th:if="${GradeUp.gradeupstate} == '1'" type="button"
-						class="btn btn-primary btncancel">삭제</button> <input type="hidden" name="gradeno"
-						th:value="${GradeUp.gradeno}" class="gradeno"></td>
-			</tr>
-		</tbody>
-	</table>
-	<script>
-		$(function () {
-			$(".btncheck").on('click', function () {
-				$.ajax({
-					url: '/member/gradeup_check',
-					type: 'POST',
-					success: function (data) {
-						if (data == 0) {
-							location.href = "/member/gradeup_write";
-						} else {
-							alert("이미 등업신청 진행중입니다");
-							return false;
-						}
-					}
-				})
-			});
-		});
-		$(function () {
-			$(".btncancel").on('click', function () {
+        <tr th:each="GradeUp : ${GradeUps}" th:if="${GradeUps} != 'NoData'">
+            <td th:text="${GradeUp.nick}"></td>
+            <td th:text="${GradeUp.aftergrade}"></td>
+            <td th:text="${GradeUp.beforegrade}"></td>
+            <td th:text="${GradeUp.datetime}"></td>
+            <td><span th:text="${GradeUp.gradeupstateP}"></span>
+                <button class="btn btn-primary btncancel" th:if="${GradeUp.gradeupstate} == '1'"
+                        type="button">삭제
+                </button>
+                <input class="gradeno" name="gradeno"
+                       th:value="${GradeUp.gradeno}" type="hidden"></td>
+        </tr>
+        </tbody>
+    </table>
+    <script>
+        $(function () {
+            $(".btncheck").on('click', function () {
+                $.ajax({
+                    url: '/member/gradeup_check',
+                    type: 'POST',
+                    success: function (data) {
+                        if (data == 0) {
+                            location.href = "/member/gradeup_write";
+                        } else {
+                            alert("이미 등업신청 진행중입니다");
+                            return false;
+                        }
+                    }
+                })
+            });
+        });
+        $(function () {
+            $(".btncancel").on('click', function () {
 
-				if (confirm("해당신청을 삭제 하시겠습니까?")) {
-					let gradeno = $(this).next(".gradeno").val();
+                if (confirm("해당신청을 삭제 하시겠습니까?")) {
+                    let gradeno = $(this).next(".gradeno").val();
 
-					$.ajax({
-						url: '/member/gradeup_delete/' + gradeno,
-						type: 'GET',
-						success: function (data) {
-							if (data == "success") {
-								location.reload();
-							} else {
-								alert("올바르게 작동하지 않았습니다.");
-								return false;
-							}
-						},
-						error: function (err) {
-							console.log(err);
-						}
+                    $.ajax({
+                        url: '/member/gradeup_delete/' + gradeno,
+                        type: 'GET',
+                        success: function (data) {
+                            if (data != "success") {
+                                alert("이미 처리 완료된 건 입니다.");
+                            }
+                            location.reload();
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
 
-					});
-				};
-			});
-		});
-	</script>
+                    });
+                }
+                ;
+            });
+        });
+    </script>
 </div>

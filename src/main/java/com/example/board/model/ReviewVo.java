@@ -25,7 +25,6 @@ public class ReviewVo {
     @JsonProperty("roomDeco")
     private String roomDeco;
 
-    @NotEmpty
     private int rateLoc;
     private int rateClean;
     private int rateComu;

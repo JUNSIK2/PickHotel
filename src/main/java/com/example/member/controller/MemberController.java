@@ -3,10 +3,18 @@ package com.example.member.controller;
 import com.example.member.CustomMailSender;
 import com.example.member.model.*;
 import com.example.member.service.MemberService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,29 +26,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 public class MemberController {
+
+    @Autowired
+    public CustomMailSender customMailSender;
 
     @Autowired
     public MemberService memberService;
 
     @Autowired
-    public CustomMailSender customMailSender;
+    private PasswordEncoder passwordEncoder;
 
     // 아이디 찾기 폼
-    @GetMapping("/findidform")
+    @GetMapping("/findIdForm")
     public String memberFindIdForm() {
         return "page/member_findidform";
     }
 
     // 아이디 찾기 결과
-    @PostMapping("/member_findid")
+    @PostMapping("/findId")
     public String memberFindId(@Valid MemberFindIDVo member, Model model) {
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("name", member.getName());
-        map.put("birth", member.getName());
-
+        map.put("birth", member.getBirth());
+        System.out.println("ddrr" + member.getBirth());
         List<MemberVo> findIdResultList = memberService.retrieveMemberId(map);
 
         model.addAttribute("findIdResultList", findIdResultList);
@@ -48,29 +60,31 @@ public class MemberController {
         return "page/member_findid";
     }
 
+
     // 비밀번호 찾기 폼
-    @GetMapping("/member_findpwform")
+    @GetMapping("/findPwdForm")
     public String memberFindPwForm() {
-        return "page/member_findpwform";
+        return "page/member_findpwdform";
     }
 
     // 비밀번호 변경 폼
-    @PostMapping("/member_alterpwform")
+    @PostMapping("/alterPwdForm")
     public String memberAlterPwForm(@Valid MemberIdVo member, Model model) {
         model.addAttribute("id", member.getId());
-        return "page/member_alterpwform";
+        return "page/member_alterpwdform";
     }
 
     // 비밀번호 변경
-    @PostMapping("/member_alterpw")
+    @PostMapping("/alterPwd")
     public String memberAlterPw(@Valid MemberIdPwVo member) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", member.getId());
-        map.put("pwd", member.getPwd());
+        map.put("pwd", passwordEncoder.encode(member.getPwd()));
         this.memberService.modifyPw(map);
 
         return "page/index";
     }
+
 
     // 회원가입 폼
     @GetMapping("/join")
@@ -86,24 +100,25 @@ public class MemberController {
         map.put("id", member.getId());
         map.put("nick", member.getNick());
         map.put("name", member.getName());
-        map.put("pwd", member.getPwd());
+        map.put("pwd", passwordEncoder.encode(member.getPwd()));
         map.put("gender", member.getGender());
         map.put("hp", member.getHp());
         map.put("birth", member.getBirth());
 
         this.memberService.registerMember(map);
+        this.memberService.registerRole(member.getId());
 
-        return "redirect:/member/welcome";
+        return "redirect:/welcome";
     }
 
     // 회원 가입 환영 페이지
-    @GetMapping("/member/welcome")
+    @GetMapping("/welcome")
     public String memberWelcome() {
         return "page/member_welcome";
     }
 
     // 탈퇴회원 조회
-    @GetMapping("/member_withdarwcheck")
+    @GetMapping("/withdarwCheck")
     @ResponseBody
     public Map memberWithDarwCheck(@Valid MemberIdVo member, HttpServletResponse response) throws Exception {
 
@@ -115,7 +130,7 @@ public class MemberController {
     }
 
     // 인증메일 발송
-    @GetMapping("/member_sendmail")
+    @GetMapping("/sendMail")
     @ResponseBody
     public Map memberMailSender(@Valid MemberIdVo member, HttpServletRequest req)
             throws MessagingException, IOException {
@@ -133,13 +148,14 @@ public class MemberController {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("sendmail", count);
         System.out.println("random :::::" + random);
+
         HttpSession session = req.getSession();
         session.setAttribute("random", random);
         return map;
     }
 
     // 인증번호 체크
-    @GetMapping("/member_mailcheck")
+    @GetMapping("/mailCheck")
     @ResponseBody
     public Map memberMailSender(HttpServletRequest req) throws MessagingException, IOException {
 
@@ -152,7 +168,7 @@ public class MemberController {
     }
 
     // 아이디 중복체크
-    @GetMapping("/member_idcheck")
+    @GetMapping("/idCheck")
     @ResponseBody
     public Map memberIdCheck(@Valid MemberIdVo member, Model model) {
 
@@ -171,7 +187,7 @@ public class MemberController {
     }
 
     // 닉네임 중복체크
-    @GetMapping("/member_nickcheck")
+    @GetMapping("/nickCheck")
     @ResponseBody
     public Map memberNickCheck(@Valid MemberNickVo member, Model model) {
 
@@ -191,82 +207,28 @@ public class MemberController {
 
     // 회원 탈퇴(사용자)
     @GetMapping("/member/withdarw")
-    public String memberWithdarw(HttpServletRequest req) {
-        HttpSession session = req.getSession();
-        MemberVo member = (MemberVo) session.getAttribute("member");
-        memberService.reviseMemberState(member.getMemNo(), "2");
-        session.invalidate();
-        return "redirect:/";
-    }
+    public String memberWithdarw() {
 
-    // 로그인 폼
-    @GetMapping("/login")
-    public String memberLoginForm() {
-        return "page/member_login";
-    }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserAccount user = (UserAccount) authentication.getPrincipal();
 
-    // 로그인 작동
-    @PostMapping("/login")
-    public String memberLogin(@Valid MemberIdPwVo member, @RequestParam(value = "redirectUrl", required = false) String redirectUrl, HttpServletRequest req, Model model) {
+        memberService.reviseMemberState(user.getMember().getMemNo(), "2");
 
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("id", member.getId());
-        map.put("pwd", member.getPwd());
-        MemberVo member1 = this.memberService.loginMember(map);
-
-        HttpSession session = req.getSession();
-
-        if (member1.getId() == null) {
-            model.addAttribute("message", "아이디 또는 비밀번호가 일치하지 않습니다.");
-            return "page/member_login";
-        } else if (Integer.parseInt(member1.getState()) > 1) {
-            model.addAttribute("message", "탈퇴한 회원입니다.");
-            return "page/member_login";
-        } else {
-            this.memberService.visitCount(member.getId());
-            session.setAttribute("member", member1);
-            session.setMaxInactiveInterval(180);
-
-            //요청을 통한 로그인 페이지 접근시, 다시 되돌아감
-            if (redirectUrl != "") {
-                return "redirect:" + redirectUrl;
-            } else {
-                return "redirect:/";
-            }
-
-        }
-    }
-
-    // 로그아웃
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/"; // 주소 요청으로 변경
+        return "redirect:/logout";
     }
 
     // 회원 정보 상세조회 + 수정 폼
     @GetMapping("/member")
-    public String memberDetail(HttpServletRequest req, Model model) {
-        HttpSession session = req.getSession();
+    public String memberDetail(@AuthenticationPrincipal UserAccount userAccount, Model model) {
+        MemberVo member = userAccount.getMember();
+        int memNo = member.getMemNo();
 
-        // 로그인 상태인 경우
-        if (session != null && session.getAttribute("member") != null && !session.getAttribute("member").equals("")) {
+        // DB에서 회원정보 상세 가져오기
+        MemberVo memberDB = memberService.retrieveMember(memNo);
 
-            // 로그인 세션에 저장된 회원 정보 가져오기
-            int memNo = ((MemberVo) session.getAttribute("member")).getMemNo();
+        model.addAttribute("memberDetail", memberDB);
 
-            // DB에서 회원정보 상세 가져오기
-            MemberVo memberDetail = memberService.retrieveMember(memNo);
-
-            model.addAttribute("memberDetail", memberDetail);
-
-            return "page/member_modify";
-        } else { // 로그인 세션이 존재하지 않는 경우 (로그인 상태가 아닌 경우)
-
-            // 로그인 페이지로 이동
-            return "redirect:/member_loginform";
-
-        }
+        return "page/member_modify";
     }
 
     // 회원 정보 수정 작업
@@ -279,4 +241,16 @@ public class MemberController {
         return "redirect:/member";
     }
 
+    //회원등급에 회원 존재 여부 확인
+    @ResponseBody
+    @PostMapping("/intranet/grade/list/memgrade_check")
+    public String memberGradeCheck(int memGrade) {
+        int checkgrade = memberService.checkMemberGrade(memGrade);
+
+        if (checkgrade != 0) {
+            return "false";
+        } else {
+            return "success";
+        }
+    }
 }
