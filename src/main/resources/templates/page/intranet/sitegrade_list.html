@@ -145,12 +145,32 @@
                     const flag = $(this).val();
                     const memGrade = $(this).attr("id");
 
-                    if (memGrade == 3) {     //열심 멤버
-                        const memGradeType = $("#4 option:selected").val()
-                        if (memGradeType == 0) { //자동
+                    if (memGrade == 4) {  //우수멤버
+                        const memGradeType2 = $("#2 option:selected").val()
+                        const memGradeType3 = $("#3 option:selected").val()
+
+                        if (memGradeType2 == 1 || memGradeType3 == 1) { //수동
+                            if (flag == 0) {
+                                alert("하위등급의 등업방식이 수동이 존재하여,자동을 선택할 수 없습니다.");
+                                $(this).val(1);
+                                return false;
+                            }
+                        }
+                        //0 자동 1 수동
+                    } else if (memGrade == 3) {     //열심 멤버
+                        const memGradeType2 = $("#2 option:selected").val()
+                        const memGradeType4 = $("#4 option:selected").val()
+                        if (memGradeType4 == 0) { //자동
                             if (flag == 1) {
                                 alert("상위등급의 등업방식이 자동이 존재하여,수동을 선택할 수 없습니다.");
                                 $(this).val(0);
+                                return false;
+                            }
+                        }
+                        if(memGradeType2 == 1){
+                            if (flag == 0) {
+                                alert("하위등급의 등업방식이 수동이 존재하여,자동을 선택할 수 없습니다.");
+                                $(this).val(1);
                                 return false;
                             }
                         }
@@ -165,7 +185,6 @@
                                 return false;
                             }
                         }
-
                     }
                 });
 
