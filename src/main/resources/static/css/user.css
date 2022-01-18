@@ -1,0 +1,981 @@
+@charset "UTF-8";
+/*
+작성자 : 김소진
+작성일 : 2022-01-05
+내용 : 사용자 CSS
+*/
+
+header {
+    position: relative;
+    z-index: 2;
+}
+
+.container table thead th {
+    text-align: center;
+}
+
+.container table td {
+    text-align: center;
+}
+
+.container table td.text-left {
+    text-align: left;
+}
+
+footer {
+    clear: both;
+}
+
+footer .footer-inner {
+    height: 70px;
+    padding: 30px 40px 0px;
+    max-width: 1080px;
+    margin: 0 auto;
+}
+
+footer .footer-left > li {
+    float: left;
+    display: inline-block;
+}
+
+footer .footer-left > li .icon {
+    margin: 0 10px;
+}
+
+footer .visit-count {
+    float: right;
+    width: 200px;
+}
+
+footer .visit-count li {
+    float: left;
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+}
+
+
+footer .visit-count li p {
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+img.logo {
+    width: 100px;
+}
+
+.form-small {
+    width: 100%;
+    max-width: 500px;
+    padding: 15px;
+    margin: auto;
+}
+
+.form-signin .checkbox {
+    font-weight: 400;
+}
+
+.form-signin .form-floating:focus-within {
+    z-index: 2;
+}
+
+.form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+aside.bd-sidebar {
+    width: 18%;
+    float: left;
+    height: auto;
+    border: 1px solid #ff5e63;
+}
+
+
+aside #side-title {
+    width: 100%;
+    height: 70px;
+    text-align: center;
+    line-height: 70px;
+    font-size: 20px;
+    font-weight: 900;
+    background: #ff5e63;
+    color: #fff;
+}
+
+aside #side-title + ul {
+    margin-top: 25px;
+}
+
+
+.panel-heading {
+    color: #333333;
+    background-color: #f9f9f9;
+    border-color: #e0e0e0;
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.panel-footer {
+    padding: 10px 15px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+
+/* 화면 중앙배치 */
+.content-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.content-center > #page-title {
+    padding: 0;
+}
+
+/* 화면 타이틀 */
+#page-title {
+    padding: 55px 0 50px 0;
+}
+
+#page-title > h1 {
+    font-family: "Noto Sans KR";
+    letter-spacing: -0.34px;
+    font-weight: 700;
+}
+
+#page-title > h1 + .stit {
+    font-size: 17px;
+    text-align: center;
+    font-weight: 500;
+    margin-top: 16px;
+}
+
+/* 비밀번호 조건 */
+li[class^=pw-condition] {
+    font-size: 13px;
+    color: gray;
+}
+
+li[class^=pw-condition] i {
+    margin-right: 8px;
+}
+
+/* 로그인 폼 */
+#loginForm span.line {
+    margin: 0 10px;
+}
+
+/* 아이디 찾기 결과 */
+#findIdResult ul {
+    border: 1px solid #69696969;
+    padding: 20px 55px;
+    line-height: 1.5;
+}
+
+#findIdResult .info {
+    text-align: center;
+    padding: 15px 0 35px;
+}
+
+
+/* 게시판 공통*/
+.board-page #images img {
+    width: 250px;
+    height: auto;
+}
+
+.board-page #videos video {
+    width: 300px;
+    height: auto;
+}
+
+.board-page #room img {
+    width: 250px;
+    height: auto;
+}
+
+
+#map {
+    border: 1px solid #e5e5e5;
+}
+
+.map_wrap a, .map_wrap a:hover, .map_wrap a:active {
+    color: #000;
+    text-decoration: none;
+}
+
+.map_wrap {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+}
+
+.map_wrap #menu_wrap {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    bottom: 1px;
+    width: 275px;
+    padding: 10px 0;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 1);
+    z-index: 1;
+    font-size: 12px;
+    border-right: 1px solid #e5e5e5;
+    box-shadow: 0 0 5px 0 rgb(0 0 0 / 20%), 5px 0 15px 0 rgb(0 0 0 / 10%);
+}
+
+#menu_wrap hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 2px solid #5F5F5F;
+    margin: 7px 0 10px;
+}
+
+#menu_wrap .option {
+    text-align: center;
+    padding: 0 10px;
+}
+
+#menu_wrap .option .search-box {
+    position: relative;
+    z-index: 110;
+    height: 42px;
+    padding-left: 45px;
+    border: 2px solid #0d6efd;
+    border-radius: 9px;
+    padding: 0;
+}
+
+#menu_wrap .option #keyword {
+    display: block;
+    width: 138px;
+    font-size: 16px;
+    height: 37px;
+    letter-spacing: -.2px;
+    border: none;
+    background-color: #fff !important;
+    float: left;
+}
+
+#menu_wrap .option i.fa.fa-search {
+    float: left;
+    width: 17%;
+    font-size: 17px;
+    line-height: 38px;
+    color: #0d6efd;
+}
+
+#menu_wrap .option button {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    border-radius: 0px 6px 6px 0px;
+    padding: 0 10px;
+}
+
+#placesList li {
+    list-style: none;
+}
+
+#placesList {
+    padding: 0;
+    margin: 10px 0px;
+}
+
+#placesList .item {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    min-height: 65px;
+    padding: 14px 15px;
+    border-top: 1px solid #ebebeb;
+}
+
+#placesList .item.active {
+    background: #ddeaff;
+}
+
+#placesList .item button {
+    width: 50%;
+    border: 1px solid #767676;
+    padding: 7px 0;
+    background: #fff;
+}
+
+#placesList .item button + button {
+    border: 1px solid #0d6efd;
+    border-left: 0;
+    background: #0d6efd;
+    color: #fff;
+}
+
+#placesList .item span {
+    display: block;
+    margin-top: 2px;
+    font-size: 11px;
+}
+
+#placesList .item h5, #placesList .item .info {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+#placesList .item .info {
+    padding: 5px 0 10px 55px;
+}
+
+#placesList .info .gray {
+    color: #8a8a8a;
+}
+
+#placesList .info .jibun {
+    padding-left: 26px;
+    background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_jibun.png) no-repeat;
+}
+
+#placesList .info .tel {
+    color: #0d6efd;
+    font-size: 10px;
+    margin: 0;
+}
+
+#placesList .item .markerbg {
+    float: left;
+    position: absolute;
+    width: 36px;
+    height: 37px;
+    margin: 10px 0 0 10px;
+    background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png) no-repeat;
+}
+
+#placesList .item .marker_1 {
+    background-position: 0 -10px;
+}
+
+#placesList .item .marker_2 {
+    background-position: 0 -56px;
+}
+
+#placesList .item .marker_3 {
+    background-position: 0 -102px
+}
+
+#placesList .item .marker_4 {
+    background-position: 0 -148px;
+}
+
+#placesList .item .marker_5 {
+    background-position: 0 -194px;
+}
+
+#placesList .item .marker_6 {
+    background-position: 0 -240px;
+}
+
+#placesList .item .marker_7 {
+    background-position: 0 -286px;
+}
+
+#placesList .item .marker_8 {
+    background-position: 0 -332px;
+}
+
+#placesList .item .marker_9 {
+    background-position: 0 -378px;
+}
+
+#placesList .item .marker_10 {
+    background-position: 0 -423px;
+}
+
+#placesList .item .marker_11 {
+    background-position: 0 -470px;
+}
+
+#placesList .item .marker_12 {
+    background-position: 0 -516px;
+}
+
+#placesList .item .marker_13 {
+    background-position: 0 -562px;
+}
+
+#placesList .item .marker_14 {
+    background-position: 0 -608px;
+}
+
+#placesList .item .marker_15 {
+    background-position: 0 -654px;
+}
+
+/* #postWrite #pagination {
+    margin: 10px auto;
+    text-align: center;
+}
+
+#postWrite #pagination a {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+#postWrite #pagination .on {
+    font-weight: bold;
+    cursor: default;
+    color: #777;
+}
+ */
+
+/* 게시글 작성 */
+#postWrite {
+    width: 860px;
+    margin: 0 auto;
+}
+
+#postWrite label, #postDetail label {
+    font-size: 17px;
+    font-weight: 600;
+    margin-right: 3px;
+    line-height: 30px;
+}
+
+#postWrite label .chose {
+    font-weight: 100;
+    font-size: 14px;
+    color: #696969;
+    margin-left: 3px;
+}
+
+#postWrite .star-area, #postDetail .star-area {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#postWrite .star-area li, #postDetail .star-area li {
+    float: left;
+    width: 25%;
+    text-align: center;
+}
+
+#postWrite .star-box, #postDetail .star-box {
+    display: inline-block;
+    height: 32px;
+    vertical-align: middle;
+}
+
+#postWrite .star-container {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+    justify-content: flex-end;
+}
+
+#postWrite .star-check {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    -o-appearance: none !important;
+    -ms-appearance: none !important;
+    appearance: none !important;
+    width: 24px;
+    height: 24px;
+    background-image: url('https://www.worthschools.net/userfiles/197/my%20files/4-stars.jpg?id=29736');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: right 0;
+    cursor: pointer;
+    outline: 0;
+}
+
+#postWrite .star-check:checked, #postWrite .star-check:checked ~ input {
+    background-position: left 0;
+}
+
+#postWrite .videos video {
+    height: 200px;
+    width: auto;
+}
+
+#postWrite .photos img {
+    height: 200px;
+    width: auto;
+}
+
+#postWrite .tag-box {
+    position: relative;
+    width: 860px;
+    min-height: 68px;
+    margin-top: 0px;
+    padding: 10px 30px 13px 30px;
+    box-sizing: border-box;
+    border: 1px solid #d1d1d1;
+    border-top: 0;
+    font-size: 13px;
+    background: #fff;
+}
+
+#postWrite .wrap_tag_input {
+    display: inline-block;
+    margin: 0 2px 5px 0;
+    vertical-align: top;
+    color: #959595;
+}
+
+#postWrite .wrap_tag_input:before {
+    content: "#";
+}
+
+#postWrite .wrap_tag_input #tag-input {
+    display: inline-block;
+    position: relative;
+    overflow-y: hidden;
+    width: 180px;
+    height: 16px;
+    min-height: 16px;
+    border: none;
+    outline: none;
+    color: #000;
+    line-height: 16px;
+}
+
+#postWrite .textarea_tag .tag {
+    display: inline-block;
+    position: relative;
+    margin: 0 5px 6px 0;
+    padding: 0 3px;
+    border-radius: 2px;
+    background-color: #eee;
+    vertical-align: top;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+#postWrite .textarea_tag .tag.active {
+    background-color: #656565;
+    color: #fff;
+}
+
+#postWrite #dont-tag {
+    position: absolute;
+    border: 1px solid red;
+    padding: 9px 40px;
+    font-size: 12px;
+    color: red;
+    background: #fff;
+    z-index: 1;
+}
+
+#postWrite #dont-tag:before {
+    content: "!";
+    left: 20px;
+    top: 0px;
+    position: absolute;
+    font-size: 22px;
+}
+
+/* 게시글 목록 */
+.post-list-table .post-subject {
+    color: #000;
+}
+
+.post-list-table span.post-comment {
+    font-size: 13px;
+    margin-left: 3px;
+    color: red;
+}
+
+/* 게시글 상세보기 */
+#postDetail .videos video {
+    height: 200px;
+    width: auto;
+}
+
+#postDetail .photos img {
+    height: auto;
+    width: 370px;
+}
+
+
+#postDetail .post-subject {
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 700;
+}
+
+#postDetail .post-info {
+    margin-top: 16px;
+    margin-right: 14px;
+    color: #94969b;
+    vertical-align: top;
+}
+
+#postDetail .post-info span + i {
+    margin-left: 5px;
+}
+
+
+#postDetail .map_wrap #menu_wrap {
+    height: auto;
+    bottom: auto;
+}
+
+div#postDetail #placesList .item {
+    border: none;
+    padding: 0px 15px;
+}
+
+#postDetail #placesList .item button {
+    width: 100%;
+}
+
+
+#postDetail .star-box i {
+    display: inline-block;
+    width: 25px;
+}
+
+#postDetail .star-box i img {
+    width: 100%;
+}
+
+/* 게시글 상세보기 > 태그*/
+#postDetail #tag > a {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+    max-width: 100%;
+    height: 28px;
+    margin: 0 5px 5px 0;
+    padding: 0 9px;
+    line-height: 28px;
+    vertical-align: top;
+    color: rgb(37, 39, 60);
+}
+
+#postDetail #tag > a:hover {
+    text-decoration: none;
+    background: #7777773b;
+}
+
+.photos .notion, .videos .notion {
+    font-size: 13px;
+    color: #696969;
+}
+
+/* 게시글 상세보기 > 댓글 목록*/
+#ListComment .commont-noline {
+    padding: 15px 0;
+}
+
+#ListComment .commont-line {
+}
+
+#ListComment .commont-noline, #ListComment .commont-line > div {
+    padding: 32px 60px;
+    -webkit-box-shadow: inset 0 -1px 0 0 #eeeff3;
+    box-shadow: inset 0 -1px 0 0 #eeeff3;
+    position: relative;
+}
+
+
+#ListComment > li.dept_1 .comment-inner {
+    padding-left: 100px;
+}
+
+#ListComment .commont-line > div.delected-comment {
+    padding: 20px 60px;
+}
+
+#ListComment .commont-line .comment-inner:before {
+    position: absolute;
+    top: 40px;
+    left: 60px;
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background-image: url(../img/icon-answer.svg);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+}
+
+#ListComment .commont-line.dept_0 .comment-inner:before {
+    content: none;
+}
+
+#ListComment .commont-line.quick {
+    background-color: #ffff;
+    -webkit-animation-name: quick; /* Chrome, Safari, Opera */
+    -webkit-animation-duration: 4s; /* Chrome, Safari, Opera */
+    animation-name: quick;
+    animation-duration: 4s;
+    /*     animation-delay: 1s; */
+}
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes quick {
+    from {
+        background-color: #e0ecff;
+    }
+    to {
+        background-color: #ffffff;
+    }
+}
+
+/* Standard syntax */
+@keyframes quick {
+    from {
+        background-color: #e0ecff;
+    }
+    to {
+        background-color: #ffffff;
+    }
+}
+
+#ListComment > li.dept_0:before {
+    content: none;
+}
+
+#ListComment > li.dept_1 {
+}
+
+#ListComment > li.dept_2 {
+    padding-left: 150px;
+}
+
+#ListComment .info span {
+    position: relative;
+    padding-left: 9px;
+    margin-left: 5px;
+    font-family: "Montserrat", "AppleSDGothicNeoM", "Noto Sans KR", sans-serif, "맑은고딕", "Malgun Gothic", "돋움", Dotum, "굴림", Gulim, Tahoma, sans-serif, verdana, AppleGothic;
+    font-size: 13px;
+    color: #5a667d;
+    font-weight: 400;
+}
+
+#ListComment .info span:nth-child(1) {
+    color: #2673f0;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+#ListComment .info span:nth-child(1):before {
+    content: none;
+}
+
+#ListComment .info span:before {
+    content: "";
+    display: inline-block;
+    width: 2px;
+    height: 2px;
+    background-color: #5a667d;
+    position: absolute;
+    top: 50%;
+    left: 0px;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+#ListComment .cmtContent {
+    margin-bottom: 20px;
+}
+
+
+#ListComment .delected-comment .cmtContent {
+    margin: 0;
+}
+
+#ListComment .cmtContent span {
+    white-space: pre-line;
+    padding-top: 8px;
+    padding-right: 60px;
+    color: #0a1b3d;
+    font-weight: 400;
+    line-height: 20px;
+    margin-bottom: 20px;
+    /* display: block; */
+}
+
+#ListComment .comment-mention {
+    margin-right: 5px;
+    background: #0d6efd;
+    color: #fff;
+    font-size: 9px;
+    padding: 3px 6px;
+    border-radius: 5px;
+}
+
+#ListComment .comment-menu__btn {
+    width: 30px;
+    text-align: center;
+    cursor: pointer;
+}
+
+#ListComment .comment-mention {
+    margin-right: 5px;
+    background: #0d6efd;
+    color: #fff;
+    font-size: 11px;
+    padding: 3px 6px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+#ListComment .fa.fa-commenting {
+    font-size: 13px;
+}
+
+#ListComment .dept2CommentOpenBtn {
+    font-size: 13px;
+    padding: 0;
+}
+
+#ListComment .dept2Comment {
+    margin-top: 16px;
+    margin-bottom: 0;
+}
+
+#ListComment .dept2Comment textarea {
+    height: 60px;
+}
+
+#ListComment .comment-menu {
+    position: absolute;
+    right: 60px;
+    top: 50px;
+    z-index: 3;
+}
+
+#ListComment .comment-menu ul {
+    position: absolute;
+    left: 0;
+    top: 30px;
+    padding: 5px 0px;
+    background: white;
+    text-align: center;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgb(0 0 0 / 18%);
+    box-shadow: 0 6px 12px rgb(0 0 0 / 18%);
+    font-size: 13px;
+}
+
+#ListComment .comment-menu ul li {
+    width: 80px;
+    line-height: 2;
+}
+
+.form-control {
+    border-color: rgba(38, 115, 240, 0.05);
+    background-color: rgba(38, 115, 240, 0.05);
+    height: 50px;
+    letter-spacing: -.5px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 8px;
+    color: #0a1b3d;
+    padding: 10px 14px;
+    resize: none;
+}
+
+.form-control:hover {
+    border-color: #a6aec5;
+    background-color: #ffffff;
+    -webkit-box-shadow: 0 0 0 2px rgb(38 115 240 / 5%);
+    box-shadow: 0 0 0 2px rgb(38 115 240 / 5%);
+}
+
+/*회원 > 정보수정*/
+#memberModifyForm .leave_box {
+    margin-top: 60px;
+    border: 1px solid #e8e8e8;
+    padding: 20px 0;
+    text-align: center;
+    color: #666;
+    font-size: 13px;
+    letter-spacing: -0.05em
+}
+
+#memberModifyForm .leave_box a {
+    color: #0082ed;
+}
+
+/*사이트 등급 안내*/
+#siteGradeNotion .site-grade-info_header {
+    padding: 10px 0 20px;
+}
+
+#siteGradeNotion .site-grade-info_header h3 b {
+    color: #ff575c;
+}
+
+#siteGradeNotion .site-grade-info_footer {
+    background: #e9e9e9;
+    padding: 20px 35px;
+    margin: 27px 0px 70px;
+}
+
+#siteGradeNotion .site-grade-info_footer b {
+    font-weight: 500;
+}
+
+#siteGradeNotion .my-info {
+    font-size: 14px;
+}
+
+#siteGradeNotion .my-info ul {
+    overflow: hidden;
+}
+
+#siteGradeNotion .my-info li {
+    display: inline-block;
+    float: left;
+}
+
+#siteGradeNotion .my-info li:first-child {
+    margin-right: 0px;
+}
+
+
+#siteGradeNotion .my-info li + li {
+    margin-left: 16px;
+    position: relative;
+}
+
+#siteGradeNotion .my-info li + li:before {
+    content: "";
+    width: 1px;
+    height: 1px;
+    background: #000;
+    position: absolute;
+    top: 50%;
+    left: -8px;
+    transform: translateY(-50%);
+}
+
+#siteGradeNotion .my-info li:nth-child(2):before {
+    content: none;
+}

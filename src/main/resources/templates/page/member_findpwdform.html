@@ -1,0 +1,106 @@
+<html layout:decorate="~{layout/user_layout}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<div class="content-center" id="findIdForm" layout:fragment="content">
+    <div class="row" id="page-title">
+        <h1 class="text-center">비밀번호 찾기</h1>
+    </div>
+
+    <form class="row justify-content-center align-self-center form-small d-flex" method="post"
+          th:action="@{/alterPwdForm}">
+        <div class="mb-3">
+            <label for="id">아이디</label>
+            <div class="input-group">
+                <input class="form-control" id="id" name="id" type="text">
+                <button class="btn btn-secondary" disabled="disabled" id="sendCertifyCodeBtn" type="button">인증메일
+                    발송
+                </button>
+            </div>
+            <div class="check_font" id="id_check"></div>
+        </div>
+        <div class="mb-3">
+            <label for="certifyNo">인증번호</label>
+            <div class="input-group">
+                <input class="form-control" disabled="disabled" id="certifyNo" name="certifyNo" type="text">
+                <button class="btn btn-secondary" disabled="disabled" id="checkCertifyCodeBtn" type="button">인증번호
+                    확인
+                </button>
+            </div>
+            <div class="check_font" id="mail_check"></div>
+        </div>
+        <hr class="my-4">
+        <button class="w-100 btn btn-lg btn-primary" disabled="disabled" id="submit" type="submit">비밀번호 변경</button>
+    </form>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // 아이디 유효성 검사(1 = 중복 / 0 = 비중복)
+            $("#id").blur(function () {
+                console.log("call");
+                var id = $('#id').val();
+                $.ajax({
+                    url    : '/idCheck?id=' + id,
+                    type   : 'GET',
+                    success: function (data) {
+                        console.log("1 = 중복o / 0 = 중복x : " + data);
+                        const result = data;
+                        if (result.overLapId == 1) {
+                            $("#id_check").text("존재하는 아이디입니다.");
+                            $("#id_check").css("color", "green");
+                            $("#sendCertifyCodeBtn").attr("disabled", false);
+                        } else {
+                            $("#id_check").text("존재하지 않는 아이디입니다.");
+                            $("#id_check").css("color", "red");
+                            $("#sendCertifyCodeBtn").attr("disabled", true);
+                        }
+                    },
+                    error  : function () {
+                        console.log("실패");
+                    }
+                });
+            });
+
+
+            // 인증메일 보내기
+            $("#sendCertifyCodeBtn").click(function () {
+                var id = $('#id').val();
+                $("#certifyNo").attr("disabled", false);
+                $("#checkCertifyCodeBtn").attr("disabled", false);
+                $.ajax({
+                    url    : '/sendMail?id=' + id,
+                    type   : 'GET',
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error  : function () {
+                        console.log("실패");
+                    }
+                });
+            });
+
+            // 인증번호 확인
+            $("#checkCertifyCodeBtn").click(function () {
+                var certifyNo = $('#certifyNo').val();
+                $.ajax({
+                    url    : '/mailCheck',
+                    type   : 'GET',
+                    success: function (data) {
+                        const result = data;
+                        if (result.random == certifyNo) {
+                            $("#mail_check").text("인증번호가 확인되었습니다.");
+                            $("#mail_check").css("color", "green");
+                            $("#submit").attr("disabled", false);
+                            /* $("#id").attr("disabled", true); */
+                        } else {
+                            $("#mail_check").text("인증번호를 다시 확인해주세요.");
+                            $("#mail_check").css("color", "red");
+                            $("#submit").attr("disabled", true);
+                        }
+                    },
+                    error  : function () {
+                        console.log("실패");
+                    }
+                });
+            });
+        });
+    </script>
+</div>

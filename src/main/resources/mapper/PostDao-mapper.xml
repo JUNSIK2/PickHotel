@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PostDao">
+	<!--게시글 등록-->
+	<parameterMap type="PostVo" id="PostVoParameterMap">
+		<parameter property="postNo" javaType="int" jdbcType="INTEGER" />
+		<parameter property="boardNo" javaType="int" jdbcType="INTEGER" />
+		<parameter property="subject" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="content" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="writerNo" javaType="int" jdbcType="INTEGER" />
+		<parameter property="tag" javaType="string" jdbcType="VARCHAR" />
+	</parameterMap>
+	<insert id="insertPost" parameterMap="PostVoParameterMap" useGeneratedKeys="true" keyProperty="postNo">
+		INSERT INTO post (bo_no, po_mb_no, po_subject, po_content, po_tag, po_datetime, po_views, po_comment)
+		VALUES (#{boardNo}, #{writerNo}, #{subject}, #{content}, #{tag} , NOW(), 0, 0 )
+	</insert>
+
+	<select id="selectLastInsertID" resultType="int">
+		SELECT LAST_INSERT_ID();
+	</select>
+
+	<resultMap id="PostVoResultMap" type="PostVo" >
+		<result property="groupName" javaType="string" column="bo_group_name" jdbcType="VARCHAR" />
+		<result property="boardTitle" javaType="string" column="bo_name" jdbcType="VARCHAR" />
+		<result property="boardNo" javaType="int" column="bo_no" jdbcType="INTEGER" />
+		<result property="postNo" javaType="int" column="post_no" jdbcType="INTEGER" />
+		<result property="subject" javaType="String" column="po_subject" jdbcType="INTEGER" />
+		<result property="content" javaType="string" column="po_content" jdbcType="VARCHAR" />
+		<result property="writerNo" javaType="int" column="po_mb_no" jdbcType="INTEGER" />
+		<result property="writerNick" javaType="string" column="mb_nick" jdbcType="VARCHAR" />
+		<result property="createDate" javaType="String" column="writedate" jdbcType="DATE" />
+		<result property="tag" javaType="string" column="po_tag" jdbcType="VARCHAR" />
+		<result property="views" javaType="int" column="po_views" jdbcType="INTEGER" />
+		<result property="commont" javaType="int" column="po_comment" jdbcType="INTEGER" />
+		<result property="blind" javaType="int" column="po_isblind" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="selectPostByTag" parameterType="string" resultMap="PostVoResultMap">
+		SELECT post_no, bo_no, po_subject, po_content, po_mb_no, mb_nick,
+			   DATE_FORMAT(po_datetime, '%Y/%m/%d %H:%i:%s') as writedate, po_views, po_comment, po_tag
+		FROM post INNER JOIN member ON post.po_mb_no=member.mb_no
+		WHERE concat(',',po_tag,',') like CONCAT('%',#{tag},'%') AND po_isblind = 0
+		ORDER BY writedate DESC
+	</select>
+
+	<select id="selectMyPosts" parameterType="int" resultMap="PostVoResultMap">
+		SELECT post_no, bo_no, po_subject, po_mb_no, mb_nick,
+			   DATE_FORMAT(po_datetime, '%Y/%m/%d %H:%i:%s') as writedate, po_views, po_comment, po_isblind
+		FROM post INNER JOIN member ON post.po_mb_no=member.mb_no
+		WHERE post.po_mb_no = #{MemNo}
+		ORDER BY writedate DESC
+	</select>
+
+	<select id="selectDetailPost" parameterType="int" resultMap="PostVoResultMap">
+		SELECT d.bo_group_name, c.bo_name, a.bo_no, a.post_no,
+			   a.po_subject, a.po_content, a.po_mb_no, b.mb_nick,
+		       DATE_FORMAT(a.po_datetime, '%Y/%m/%d %H:%i:%s') as writedate,
+		       a.po_tag, a.po_views, a.po_comment, a.po_isblind
+		FROM post a INNER JOIN member b ON a.po_mb_no = b.mb_no
+					INNER JOIN board c ON a.bo_no = c.bo_no
+					INNER JOIN board_group d ON c.bo_group_no = d.bo_group_no
+		WHERE post_no = #{postNo}
+		ORDER BY writedate DESC
+	</select>
+
+	<select id="selectPostSearch" parameterMap="PostVoParameterMap" resultType="integer">
+		(select NULL AS bo_no
+		 FROM post
+		 WHERE NOT EXISTS(
+				 SELECT bo_no
+				 FROM post
+				 WHERE bo_no = #{boardNo} AND post_no = #{postNo}))
+		UNION
+		(SELECT bo_no
+		FROM post
+		WHERE bo_no = #{boardNo} AND post_no = #{postNo})
+	</select>
+
+	<select id="selectPostList" parameterType="PostVo" resultMap="PostVoResultMap">
+		SELECT post_no, bo_no, po_mb_no, po_subject,
+		DATE_FORMAT(po_datetime, '%Y/%m/%d %H:%i:%s') as writedate, po_comment, po_views, mb_nick
+		FROM post JOIN member ON post.po_mb_no = member.mb_no
+		WHERE bo_no = #{boardNo} and po_isblind = 0
+		<if
+				test='searchKeyword !=null  and searchType.equalsIgnoreCase("subject")'>
+			and po_subject like concat('%',#{searchKeyword},'%')
+		</if>
+		<if
+				test='searchKeyword !=null  and searchType.equalsIgnoreCase("content")'>
+			and po_content like concat('%',#{searchKeyword},'%')
+		</if>
+		<if
+				test='searchKeyword !=null  and searchType.equalsIgnoreCase("nick")'>
+			and mb_nick like concat('%',#{searchKeyword},'%')
+		</if>
+		ORDER BY post_no DESC
+		LIMIT
+		#{paginationInfo.firstRecordIndex}, #{recordsPerPage}
+	</select>
+
+	<select id="selectPostCount" parameterType="PostVo" resultType="int">
+		SELECT
+		COUNT(post_no)
+		FROM post JOIN member ON post.po_mb_no = member.mb_no
+		where bo_no = #{boardNo} and po_isblind = 0
+		<if
+				test='searchKeyword !=null  and searchType.equalsIgnoreCase("subject")'>
+			and po_subject like concat('%',#{searchKeyword},'%')
+		</if>
+		<if
+				test='searchKeyword !=null  and searchType.equalsIgnoreCase("content")'>
+			and po_content like concat('%',#{searchKeyword},'%')
+		</if>
+		<if
+				test='searchKeyword !=null  and searchType.equalsIgnoreCase("nick")'>
+			and mb_nick like concat('%',#{searchKeyword},'%')
+		</if>
+	</select>
+
+	<!--게시글 수정-->
+	<parameterMap id="PostVoUpdateParameterMap" type="PostVo" >
+		<parameter property="postNo" javaType="int" jdbcType="INTEGER" />
+		<parameter property="subject" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="content" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="tag" javaType="string" jdbcType="VARCHAR" />
+	</parameterMap>
+	<update id="updatePost" parameterMap="PostVoUpdateParameterMap">
+		UPDATE post SET po_subject = #{subject}, po_content = #{content},  po_tag = #{tag}
+		WHERE post_no = #{postNo}
+	</update>
+
+	<!-- 게시글 조회수 증가 -->
+	<update id="upHitcount" parameterType="int">
+		UPDATE post SET po_views = po_views + 1 WHERE post_no = #{postNo}
+	</update>
+
+	<!-- 게시글 댓글수 증가/삭제 -->
+	<parameterMap id="UpdateComment" type="com.example.board.model.PostUpdateCommentVo" >
+		<parameter property="postNo" javaType="int" jdbcType="INTEGER" />
+		<parameter property="updateComment" javaType="int" jdbcType="INTEGER" />
+		</parameterMap>
+	<update id="upCommentcount" parameterMap="UpdateComment">
+		UPDATE post SET po_comment = po_comment +#{updateComment} WHERE post_no = #{postNo}
+	</update>
+
+	<!--게시글 삭제-->
+	<delete id="deletePost" parameterType="int">
+		DELETE FROM post WHERE post_no = #{postNo}
+	</delete>
+</mapper>

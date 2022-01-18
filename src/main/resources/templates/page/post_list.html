@@ -1,0 +1,99 @@
+<html layout:decorate="~{layout/user_layout}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<div class="board-page" id="postList" layout:fragment="content">
+    <div class="row" id="page-title">
+        <h1 class="text-center" th:text="${board.title}"></h1>
+    </div>
+    <div class="todo-content">
+        <table class="table table-bordered table-striped table-condensed flip-content post-list-table">
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성일</th>
+                <th>작성자</th>
+                <th>조회수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${posts==null}">
+                <td class="text-left" colspan="5">등록된 게시글이 없습니다.</td>
+            </tr>
+            <tr th:each="post : ${posts}" th:if="${posts!=null}">
+                <td th:text="${post.postNo}"></td>
+
+                <td class="text-left"><a
+                        th:href="@{/board/{boardNo}/post/{postNo}(postNo=${post.postNo},boardNo=${post.boardNo})}"><span
+                        class="post-subject"
+
+                        th:text="${post.subject}"></span><span
+                        class="post-comment" th:text="'('+${post.commont}+')'"></span></a>
+                </td>
+                <td><span th:text="${post.createDate}"></span></td>
+                <td><span th:text="${post.writerNick}"></span></td>
+                <td><span th:text="${post.views}"></span></td>
+            </tr>
+            </tbody>
+        </table>
+        <div id="writePost" style="text-align: right;">
+
+            <a th:href="@{/board/{boardNo}/post/register(boardNo=${board.boardNo})}">
+                <button class="btn btn-primary" type="button">글작성</button>
+            </a>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+                    <th:block layout:fragment="paging" th:include="@{/fragment/pagination}"></th:block>
+                </div>
+            </div>
+        </div>
+        <div class="justify-content-center mb-5 mt-4 row">
+            <div class="col-lg-6 col-md-6 col-12">
+                <form id="postSearch" method="GET" onsubmit="return false;"
+                      th:action="@{/boardList/{boardNo}(boardNo=${boardNo})}">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <select class="form-control select2bs4" id="searchType" name="searchType">
+                                <option th:selected="${params.searchType == ''}" value="">선택
+                                </option>
+                                <option th:selected="${params.searchType == 'subject'}" value="subject">제목
+                                </option>
+                                <option th:selected="${params.searchType == 'content'}" value="content">내용
+                                </option>
+                                <option th:selected="${params.searchType == 'nick'}" value="nick">닉네임
+                                </option>
+                            </select>
+                        </div>
+                        <input class="form-control" id="searchKeyword" name="searchKeyword"
+                               placeholder="검색어를 입력하세요." th:value="${params.searchKeyword}" type="text">
+                        <button class="btn btn-primary" id="searchBtn" type="button">
+                            <i class="fa fa-search fa-sm"></i>
+                        </button>
+                        <a class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm"
+                           th:href="@{/boardList/{boardNo}(boardNo=${boardNo})}"
+                           th:if="${not #strings.isEmpty(params.searchKeyword)}">필터 해제</a>
+                    </div>
+                </form>
+            </div>
+            <script>
+                var send = document.getElementById("searchBtn");
+                send.addEventListener("click", function () {
+                    var form = document.getElementById("postSearch");
+                    var searchType = document.getElementById("searchType");
+                    var psearchKeywordw = document.getElementById("searchKeyword");
+
+                    if (searchType.value.trim() == "") {
+                        alert("필터를 선택해주세요.");
+                        return false;
+                    }
+                    if (psearchKeywordw.value.trim() == "") {
+                        alert("검색어를 작성해주세요.");
+                        return false;
+                    }
+                    form.submit();
+                });
+            </script>
+        </div>
+    </div>
+</div>

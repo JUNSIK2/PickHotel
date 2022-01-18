@@ -1,0 +1,263 @@
+<html layout:decorate="~{layout/admin_layout}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<div layout:fragment="page-title">회원 목록</div>
+<div layout:fragment="content">
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <div class="dataTables_wrapper dt-bootstrap4" id="dataTable_wrapper">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <form id="memberSearch" method="GET" onsubmit="return false;"
+                                  th:action="@{/intranet/member/list}">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <select class="form-control select2bs4" id="searchType" name="searchType">
+                                            <option th:selected="${params.searchType == ''}" value="">선택
+                                            </option>
+                                            <option th:selected="${params.searchType == 'name'}" value="name">이름
+                                            </option>
+                                            <option th:selected="${params.searchType == 'nick'}" value="nick">닉네임
+                                            </option>
+                                            <option th:selected="${params.searchType == 'id'}" value="id">아이디
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <input class="form-control" id="searchKeyword" name="searchKeyword"
+                                           placeholder="검색어를 입력하세요." th:value="${params.searchKeyword}" type="text">
+                                    <button class="btn btn-primary" id="searchBtn" type="button">
+                                        <i class="fa fa-search fa-sm"></i>
+                                    </button>
+                                    <a class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm"
+                                       th:href="@{/intranet/member/list}"
+                                       th:if="${not #strings.isEmpty(params.searchKeyword)}">필터 해제</a>
+                                </div>
+                            </form>
+                        </div>
+                        <script>
+                            var send = document.getElementById("searchBtn");
+                            send.addEventListener("click", function () {
+                                var form = document.getElementById("memberSearch");
+                                var searchType = document.getElementById("searchType");
+                                var psearchKeywordw = document.getElementById("searchKeyword");
+
+                                if (searchType.value.trim() == "") {
+                                    alert("필터를 선택해주세요.");
+                                    return false;
+                                }
+                                if (psearchKeywordw.value.trim() == "") {
+                                    alert("검색어를 작성해주세요.");
+                                    return false;
+                                }
+                                form.submit();
+                            });
+                        </script>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-4">선택한 회원을
+                            <select class="custom-select-sm form-control-sm" id="updateGrade" name="updateGrade">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            (으)로
+                            <button class="btn btn-primary" id="updateGradeBtn">변경</button>
+                        </div>
+
+                        <div class="col-sm-12 col-md-4">
+                            <button class="btn btn-danger" id="memberBlockBtn">강제 탈퇴</button>
+                            <button class="btn btn-info" id="memberMailBtn">메일</button>
+                            <button class="btn btn-warning" id="memberNoteBtn">쪽지</button>
+                        </div>
+                        <div class="col-sm-12 col-md-4  text-right">
+                            <!-- <select class="custom-select-sm form-control-sm" onchange="searchGo();" name="selectGrade"
+                                id="selectGrade">
+                                <option value="10">전체회원</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select> -->
+                            <label>Show
+                                <select class="custom-select-sm form-control-sm" id="recordsPerPage"
+                                        name="recordsPerPage" onchange="searchGo();">
+                                    <option th:selected="${params.recordsPerPage == 10}" value="10">10</option>
+                                    <option th:selected="${params.recordsPerPage == 25}" value="25">25</option>
+                                    <option th:selected="${params.recordsPerPage == 50}" value="50">50</option>
+                                    <option th:selected="${params.recordsPerPage == 100}" value="100">100</option>
+                                </select> entries
+                            </label>
+                            <script>
+                                function searchGo() {
+                                    let recordsPerPage = document.getElementById("recordsPerPage").value;
+                                    let urlParams = new URLSearchParams(location.search);
+                                    urlParams.set("recordsPerPage", recordsPerPage);
+                                    window.open(location.pathname + '?' + urlParams, '_self');
+                                };
+                            </script>
+                        </div>
+
+                    </div>
+                    <form id="memberList">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table aria-describedby="dataTable_info" cellspacing="0"
+                                       class="table table-bordered dataTable"
+                                       id="dataTable" role="grid" style="width: 100%;"
+                                       width="100%">
+                                    <thead>
+                                    <tr role="row">
+                                        <th><input id="allChecked" type="checkbox"></th>
+                                        <th>닉네임</th>
+                                        <th>회원등급</th>
+                                        <th>가입일</th>
+                                        <th>방문수</th>
+                                        <th>게시글수</th>
+                                        <th>댓글수</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="member : ${members}">
+                                        <td><input class="chk" name="chk[]" th:value="${member.memNo}"
+                                                   type="checkbox">
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/intranet/member/}+${member.memNo}">
+                                                <span th:text="${member.nick} + '(' + ${member.id} + ')'"></span>
+                                            </a>
+                                            <input class="nick" th:value="${member.nick}" type="hidden">
+                                        </td>
+                                        <td th:text="${member.grade}"></td>
+                                        <td th:text="${member.joinDate}"></td>
+                                        <td th:text="${member.visitCount}"></td>
+                                        <td th:text="${member.boardCount}"></td>
+                                        <td th:text="${member.commentCount}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                    <script>
+                        $(document).ready(function () {
+                            jQuery.ajaxSettings.traditional = true;
+                            $("#allChecked").click(function () {
+                                if ($("#allChecked").prop("checked") == true) {
+                                    $(".chk").prop("checked", true)
+                                } else {
+                                    $(".chk").prop("checked", false)
+                                }
+                                ;
+                            });
+
+                            $("#memberBlockBtn").on('click', function () {
+                                if ($(".chk:checked").length == 0) {
+                                    alert("한개 이상의 데이터를 선택해주세요.");
+                                    return false;
+                                }
+
+                                let memNoList = [];
+                                let nickList = [];
+                                $(".chk:checked").each(function () {
+                                    memNoList.push($(this).val());
+                                    nickList.push($(this).parent("td").next("td").find(".nick")
+                                        .val());
+                                });
+                                location.href = '/intranet/member/block_write?memNoList=' + memNoList
+                                        .join(",") +
+                                    "&nickList=" + nickList.join(",");
+                            });
+
+
+                            // 목록 정렬 ajax 시작
+                            const getAjax = function (url, memNoList) {
+                                return new Promise((resolve, reject) => {
+                                    $.ajax({
+                                        url     : url,
+                                        type    : "POST",
+                                        dataType: 'json',
+                                        data    : {
+                                            "memNoList": memNoList,
+                                            "grade"    : $("#updateGrade").val()
+                                        },
+                                        success : function (data) {
+                                            resolve(data);
+                                        },
+                                        error   : function (e) {
+                                            reject(e);
+                                        }
+                                    });
+                                });
+                            }
+
+                            async function requestProcess(url, memNoList) {
+                                try {
+
+                                    result = await getAjax(url, memNoList);
+                                    let target = $('#memberList table tbody');
+                                    target.html("");
+                                    let htmlStr = '';
+                                    for (let i = 0; i < result.length; i++) {
+                                        htmlStr += `<tr><td>`;
+                                        htmlStr += `<input type="checkbox" class="chk" name="chk[]"
+                                                    value="${result[i].memNo}">`;
+
+                                        htmlStr += `<td>
+                                                <a href="/intranet/member/${result[i].memNo}">
+                                                    <span>${result[i].nick}(${result[i].id})</span>
+                                                </a>
+                                            </td>
+                                            <td>${result[i].grade}</td>
+                                            <td>${result[i].joinDate}</td>
+                                            <td>${result[i].visitCount}</td>
+                                            <td>${result[i].boardCount}</td>
+                                            <td>${result[i].commentCount}</td>
+                                        </tr>`
+                                    }
+                                    target.html(htmlStr);
+
+                                } catch (error) {
+                                    console.log("error : ", error);
+                                }
+                            }
+
+                            $("#updateGradeBtn").click(function () {
+
+                                if ($(".chk:checked").length == 0) {
+                                    alert("한개 이상의 데이터를 선택해주세요.");
+                                    return false;
+                                }
+
+                                const memNoList = [];
+
+                                $(".chk:checked").each(function () {
+                                    memNoList.push($(this).val());
+                                })
+                                console.log(memNoList)
+                                const q = confirm(
+                                    "선택된 회원의 등급을 변경하시겠습니까?"
+                                );
+
+                                if (q == true) {
+                                    requestProcess("/intranet/member/grade_modify", memNoList);
+                                } else {
+                                    return false;
+                                }
+                                ;
+                            });
+                            // 목록 정렬 ajax 끝
+                        });
+                    </script>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+                                <th:block layout:fragment="paging" th:include="@{/fragment/pagination}"></th:block>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MemberDao">
+
+	<resultMap id="MemberResultMap" type="MemberVo">
+		<result property="memNo" javaType="int" column="mb_no"
+			jdbcType="INTEGER" />
+		<result property="id" javaType="string" column="mb_id"
+			jdbcType="VARCHAR" />
+		<result property="pwd" javaType="string" column="mb_pwd"
+			jdbcType="VARCHAR" />
+		<result property="name" javaType="string" column="mb_name"
+			jdbcType="VARCHAR" />
+		<result property="nick" javaType="string" column="mb_nick"
+			jdbcType="VARCHAR" />
+		<result property="gender" javaType="string" column="mb_gender"
+			jdbcType="CHAR" />
+		<result property="hp" javaType="string" column="mb_hp"
+			jdbcType="VARCHAR" />
+		<result property="birth" javaType="string" column="mb_birth"
+			jdbcType="DATE" />
+		<result property="joinDate" javaType="string"
+			column="mb_datetime" jdbcType="DATE" />
+		<result property="state" javaType="string" column="mb_state"
+			jdbcType="CHAR" />
+		<result property="boardCount" javaType="int" column="mb_board"
+			jdbcType="INTEGER" />
+		<result property="commentCount" javaType="int"
+			column="mb_comment" jdbcType="INTEGER" />
+		<result property="visitCount" javaType="int" column="mb_visit"
+			jdbcType="INTEGER" />
+		<result property="grade" javaType="int" column="mb_grade"
+			jdbcType="INTEGER" />
+	</resultMap>
+
+	<parameterMap id="MemberParamerterMap" type="MemberVo">
+		<parameter property="memNo" javaType="int"
+			jdbcType="INTEGER" />
+		<parameter property="id" javaType="string"
+			jdbcType="VARCHAR" />
+		<parameter property="pwd" javaType="string"
+			jdbcType="VARCHAR" />
+		<parameter property="name" javaType="string"
+			jdbcType="VARCHAR" />
+		<parameter property="nick" javaType="string"
+			jdbcType="VARCHAR" />
+		<parameter property="gender" javaType="string"
+			jdbcType="CHAR" />
+		<parameter property="hp" javaType="string"
+			jdbcType="VARCHAR" />
+		<parameter property="birth" javaType="string"
+			jdbcType="DATE" />
+		<parameter property="joinDate" javaType="string"
+			jdbcType="DATE" />
+		<parameter property="state" javaType="string"
+			jdbcType="CHAR" />
+		<parameter property="boardCount" javaType="int"
+			jdbcType="INTEGER" />
+		<parameter property="commentCount" javaType="int"
+			jdbcType="INTEGER" />
+		<parameter property="visitCount" javaType="int"
+			jdbcType="INTEGER" />
+		<parameter property="grade" javaType="int"
+			jdbcType="INTEGER" />
+	</parameterMap>
+
+	<!-- 회원ID와 PW로 조회 -->
+	<select id="Selectlogin" parameterMap="MemberParamerterMap"
+		resultMap="MemberResultMap">
+		(select NULL AS mb_no, NULL AS mb_id, NULL AS mb_nick, NULL
+		AS mb_grade, NULL AS mb_state
+		FROM member
+		WHERE NOT EXISTS(
+		select mb_no,
+		mb_id, mb_nick, mb_grade, mb_state
+		from member
+		where mb_id = #{id} and
+		mb_pwd = #{pwd}))
+		UNION
+		(select mb_no, mb_id,
+		mb_nick, mb_grade, mb_state
+		from member
+		where mb_id = #{id} and mb_pwd = #{pwd})
+	</select>
+
+	<!-- 회원이름과 생년월일로 조회 -->
+	<select id="SelectNBMemberList"
+		parameterMap="MemberParamerterMap" resultMap="MemberResultMap">
+		SELECT mb_id, mb_nick,
+		mb_datetime
+		FROM member
+		WHERE mb_name = #{name} AND mb_birth = #{birth}
+	</select>
+
+	<!-- 회원추가 -->
+	<insert id="InsertMember" parameterMap="MemberParamerterMap">
+		INSERT INTO member
+		(mb_id, mb_nick, mb_name, mb_pwd, mb_gender, mb_hp, mb_birth,
+		mb_datetime)
+		VALUES (#{id}, #{nick}, #{name}, #{pwd}, #{gender}, #{hp},
+		#{birth},
+		DATE_FORMAT(now(), '%Y/%m/%d %H:%i:%s'))
+	</insert>
+
+
+	<!-- 회원 룰 추가 -->
+	<insert id="InsertRole" parameterType="string">
+		INSERT INTO member_role(mb_id, role_name) VALUES (#{id}, 'ROLE_GRADE1')
+	</insert>
+
+	<select id="selectIdCheck" parameterMap="MemberParamerterMap"
+		resultType="string">
+		select IFNULL(MAX(mb_id),NULL) AS mb_id from member
+		where
+		mb_id = #{id}
+	</select>
+
+	<select id="selectNickCheck" parameterMap="MemberParamerterMap"
+		resultType="string">
+		select IFNULL(MAX(mb_nick),NULL) AS mb_nick from member
+		where mb_nick = #{nick}
+	</select>
+
+	<update id="UpdatePwMember" parameterMap="MemberParamerterMap">
+		UPDATE member SET
+		mb_pwd = #{pwd}
+		WHERE mb_id = #{id}
+	</update>
+
+	<!-- 회원 게시글 갯수 증감 -->
+	<update id="updateBoardCount">
+		UPDATE member SET
+		mb_board = mb_board + #{updateCount}
+		WHERE mb_no = #{memNo}
+	</update>
+
+	<!-- 회원 방문횟수 추가 -->
+	<update id="updateVisitCount">
+		UPDATE member SET
+		mb_visit = mb_visit + 1
+		WHERE mb_no = #{memNo}
+	</update>
+
+	<!-- 회원 댓글수 증감 -->
+	<update id="updateCommentCount">
+		UPDATE member SET
+		mb_comment = mb_comment + #{updateCount}
+		WHERE mb_no = #{memNo}
+	</update>
+
+	<select id="SelectWithDraw" parameterType="string"
+		resultType="string">
+		SELECT IFNULL(MAX(mb_state),NULL) AS mb_state
+		FROM member
+		WHERE mb_id = #{id}
+	</select>
+
+	<!-- 회원 상세조회 -->
+	<select id="selectMember" parameterType="int"
+		resultMap="MemberResultMap">
+		select mb_no, mb_id, mb_nick, mb_name,
+		mb_pwd, mb_gender,
+		mb_hp, mb_birth, mb_datetime, mb_grade, mb_state,
+		mb_board, mb_comment,
+		mb_visit, mb_grade
+		from member where mb_no =
+		#{memNo}
+	</select>
+
+	<!-- 활동중인 회원 목록 조회 -->
+	<select id="selectMemberList" parameterType="MemberVo"
+		resultMap="MemberResultMap">
+		select mb_no, mb_id, mb_nick, mb_name,
+		mb_pwd, mb_gender, mb_hp,
+		mb_birth, mb_datetime, mb_grade, mb_state, mb_board, mb_comment,
+		mb_visit, mb_grade
+		FROM member
+		where mb_state = 1
+		<if
+			test='searchKeyword !=null  and searchType.equalsIgnoreCase("name")'>
+			and mb_name = #{searchKeyword}
+		</if>
+		<if
+			test='searchKeyword !=null  and searchType.equalsIgnoreCase("nick")'>
+			and mb_nick = #{searchKeyword}
+		</if>
+		<if
+			test='searchKeyword !=null  and searchType.equalsIgnoreCase("id")'>
+			and mb_id = #{searchKeyword}
+		</if>
+		ORDER BY mb_no desc, mb_datetime desc
+		LIMIT
+		#{paginationInfo.firstRecordIndex}, #{recordsPerPage}
+	</select>
+
+	<!-- 활동중인 회원명 수 조회 -->
+	<select id="selectMemberTotalCount" parameterType="MemberVo"
+		resultType="int">
+		SELECT
+		COUNT(*)
+		FROM
+		member
+		where mb_state = 1
+		<if
+			test='searchKeyword !=null  and searchType.equalsIgnoreCase("name")'>
+			and mb_name = #{searchKeyword}
+		</if>
+		<if
+			test='searchKeyword !=null  and searchType.equalsIgnoreCase("nick")'>
+			and mb_nick = #{searchKeyword}
+		</if>
+		<if
+			test='searchKeyword !=null  and searchType.equalsIgnoreCase("id")'>
+			and mb_id = #{searchKeyword}
+		</if>
+	</select>
+
+	<!-- 회원등급에 회원 존재 여부 -->
+	<select id="checkMemberGrade" parameterType="int"
+			resultType="int">
+		SELECT
+			COUNT(mb_grade)
+		FROM
+			member
+		where mb_grade = #{grade}
+	</select>
+
+	<!-- 회원 등록 -->
+	<parameterMap id="insertMemberParameter" type="MemberVo">
+		<parameter property="id" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="pwd" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="name" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="nick" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="gender" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="hp" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="birth" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+	</parameterMap>
+	<insert id="insertMember" parameterMap="insertMemberParameter">
+		INSERT INTO member
+		(mb_id, mb_nick, mb_name, mb_pwd,
+		mb_gender, mb_hp, mb_birth,
+		mb_datetime)
+		VALUES (#{id}, #{pwd},
+		#{name}, #{nick}, #{gender}, #{hp},
+		#{birth},
+		DATE_FORMAT(now(),'%Y/%m/%d %H:%i:%s'))
+	</insert>
+
+	<!-- 회원 정보 변경 -->
+	<parameterMap id="updateMemberParameter" type="MemberVo">
+		<parameter property="pwd" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="name" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="nick" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="gender" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="hp" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="birth" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="memNo" javaType="int"
+			jdbcType="INTEGER" mode="IN" />
+		<parameter property="grade" javaType="int"
+			jdbcType="INTEGER" mode="IN" />
+		<parameter property="state" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+	</parameterMap>
+	<insert id="updateMember" parameterMap="updateMemberParameter">
+		UPDATE member SET
+		<if test="pwd != null and pwd != ''">
+			mb_pwd = #{pwd},
+		</if>
+		mb_name = #{name}, mb_nick = #{nick}, mb_gender = #{gender}, mb_hp =
+		#{hp}, mb_birth = #{birth}, mb_grade = #{grade}, mb_state = #{state}
+		WHERE mb_no = #{memNo}
+	</insert>
+
+	<!-- 회원 등급 변경 시작 -->
+	<parameterMap id="updateMemberGradeParameter"
+		type="MemberVo">
+		<parameter property="grade" javaType="int"
+			jdbcType="INTEGER" mode="IN" />
+		<parameter property="memNo" javaType="int"
+			jdbcType="INTEGER" mode="IN" />
+	</parameterMap>
+	<update id="updateMemberGrade"
+		parameterMap="updateMemberGradeParameter">
+		UPDATE member SET mb_grade = ? WHERE mb_no = ?;
+	</update>
+	<!-- 회원 등급 변경 끝 -->
+
+	<!-- 회원 상태 변경 시작 -->
+	<parameterMap id="updateMemberStateParameter"
+		type="MemberVo">
+		<parameter property="state" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="memNo" javaType="int"
+			jdbcType="INTEGER" mode="IN" />
+	</parameterMap>
+	<update id="updateMemberState"
+		parameterMap="updateMemberStateParameter">
+		UPDATE member SET mb_state = ? WHERE mb_no = ?;
+	</update>
+	<!-- 회원 상태 변경 끝 -->
+</mapper>

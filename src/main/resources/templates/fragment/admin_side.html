@@ -1,0 +1,105 @@
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+	<!-- Sidebar - Brand -->
+	<a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/}">
+		<div class="sidebar-brand-icon rotate-n-15">
+			<i class="fa fa-h-square" aria-hidden="true"></i>
+		</div>
+		<div class="sidebar-brand-text mx-3">PickHotel</div>
+	</a>
+
+	<!-- Divider -->
+	<!-- <hr class="sidebar-divider my-0"> -->
+
+	<!-- Nav Item - Dashboard -->
+	<!-- <li class="nav-item">
+		<a class="nav-link" th:href="@{/intranet}">
+			<i class="fa fa-home" aria-hidden="true"></i>
+			<span>Dashboard</span></a>
+	</li> -->
+
+	<!-- Divider -->
+	<hr class="sidebar-divider">
+
+	<!-- Heading -->
+	<div class="sidebar-heading">
+		회원 관리
+	</div>
+
+	<!-- Nav Item - Pages Collapse Menu -->
+	<li class="nav-item">
+		<a class="nav-link" th:href="@{/intranet/member/list}">
+			<i class="fa fa-user" aria-hidden="true"></i>
+			<span>회원 관리</span></a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" th:href="@{/intranet/member/gradeup_list}">
+			<i class="fa fa-address-card-o" aria-hidden="true"></i>
+			<span>등업 신청관리</span></a>
+	</li>
+
+	<li class="nav-item">
+		<a class="nav-link" th:href="@{/intranet/member/block_list}">
+			<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+			<span>강제 탈퇴 회원 관리</span></a>
+	</li>
+
+	<!-- Divider -->
+	<hr class="sidebar-divider">
+
+	<!-- Heading -->
+	<div class="sidebar-heading">
+		게시판 관리
+	</div>
+
+	 <li class="nav-item">
+		<a class="nav-link" th:href="@{/intranet/board_group_list}">
+			<i class="fa fa-list-alt" aria-hidden="true"></i>
+			<span>게시판 그룹 관리</span></a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" th:href="@{/intranet/board/list}">
+			<i class="fa fa-list" aria-hidden="true"></i>
+			<span>게시판 관리</span></a>
+	</li>
+	<!-- <li class="nav-item">
+		<a class="nav-link" th:href="@{/intranet/post_block_list}">
+			<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+			<span>신고 게시판/댓글 관리</span></a>
+	</li> -->
+	
+	<!-- Divider -->
+	 <hr class="sidebar-divider">
+
+	<!-- Heading -->
+	 <div class="sidebar-heading">
+		사이트 관리
+	</div>
+
+	<!-- Nav Item - Dashboard -->
+	<!-- <li class="nav-item">
+		<a class="nav-link" th:href="@{/intranet/event_list}">
+			<i class="fa fa-star" aria-hidden="true"></i>
+			<span>이벤트 관리</span></a>
+	</li> -->
+	<!-- Nav Item - Dashboard -->
+	<!-- <li class="nav-item">
+		<a class="nav-link" th:href="@{/intranet/statistics}">
+			<i class="fa fa-area-chart" aria-hidden="true"></i>
+			<span>방문통계</span></a>
+	</li> -->
+
+	 <li class="nav-item">
+		<a class="nav-link" th:href="@{/intranet/grade/list}">
+			<i class="fa fa-cog" aria-hidden="true"></i>
+			<span>사이트 등급 관리</span></a>
+	</li>
+
+	<!-- Divider -->
+	<hr class="sidebar-divider d-none d-md-block">
+
+	<!-- Sidebar Toggler (Sidebar) -->
+	<div class="text-center d-none d-md-inline">
+		<button class="rounded-circle border-0" id="sidebarToggle"></button>
+	</div>
+</ul>

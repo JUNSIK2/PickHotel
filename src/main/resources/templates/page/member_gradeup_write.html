@@ -1,0 +1,103 @@
+<html layout:decorate="~{layout/user_layout}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<div layout:fragment="content">
+    <div class="row" id="page-title">
+        <h1 class="text-center">등업 신청</h1>
+    </div>
+    <div class="row">
+        <form id="reqGradeForm" method="POST" th:action="@{/member/gradeup}">
+            <table class="table table-bordered">
+                <thead>
+                <tr class="bg-info">
+                    <th>신청자</th>
+                    <th>신청등급</th>
+                    <th>현재등급</th>
+                    <th>방문수</th>
+                    <th>총 게시글</th>
+                    <th>댓글 수</th>
+                    <th>가입일</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:object="${gradeUp}">
+                    <!-- 세션 가져올것 -->
+                    <td th:text="*{nick}"></td>
+                    <td>
+                        <select id="aftergrade" name="aftergrade" th:if="${possibleGrades} != 'NoData'">
+                            <option selected value="">신청가능등급</option>
+                            <option th:each="possibleGrade : ${possibleGrades}"
+                                    th:text="${possibleGrade.memGradeName}" th:value="${possibleGrade.memGrade}">신청가능등급
+                            </option>
+                        </select>
+                        <span th:if="${possibleGrades} == 'NoData'">-</span>
+                    </td>
+                    <td th:text="*{beforegrade}"></td>
+                    <td th:text="*{visitCount}"></td>
+                    <td th:text="*{boardCount}"></td>
+                    <td th:text="*{commentCount}"></td>
+                    <td th:text="*{joinDate}"></td>
+                </tr>
+
+                <tr style="text-align: right;">
+                    <td colspan="7">
+
+                        <input onchange="selectcheck" onclick="fnSubmit();" th:if="${possibleGrades} != 'NoData'"
+                               type="button" value="등업신청">
+                        <input onclick="fnlist();"
+                               type="button"
+                               value="목록보기">
+                    </td>
+                </tr>
+            </table>
+            <p class="notion">등업 조건에 충족한 경우에만 등업신청이 가능합니다.</p>
+            <p class="notion">등업신청게시판에 표시되는 게시글수는 신청시점이 아닌 현재 시점 수치입니다.</p>
+        </form>
+        <hr>
+        <script>
+
+
+            function fnSubmit() {
+
+                if ($('#aftergrade').val() == '') {
+                    alert("등급을 선택하세요.");
+                    return false;
+                }
+
+                if (confirm("등업신청을 완료 하시겠습니까?")) {
+                    let aftergrade = $("#aftergrade").val();
+                    $.ajax({
+                        url    : '/member/gradeup',
+                        type   : 'POST',
+                        data   : {
+                            "aftergrade": aftergrade
+                        },
+                        success: function (data) {
+                            if (data == "success") {
+                                alert("등업신청이 완료되었습니다.");
+                                location.href = "/member/gradeup_list";
+                            } else {
+                                alert("올바르지 않은 접근입니다.");
+                                location.reload();
+                            }
+                        },
+                        error  : function (err) {
+                            console.log(err);
+                        }
+                    });
+                } else {
+                    return;
+                }
+            }
+
+            function fnlist() {
+
+                if (confirm("등업신청을 취소 하시겠습니까?")) {
+                    alert("등업신청이 취소되었습니다.");
+                    location.href = "/member/gradeup_list"
+                } else {
+                    return;
+                }
+            }
+        </script>
+    </div>
+</div>

@@ -1,0 +1,14 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/user_layout}">
+<div>
+    <div layout:fragment="content" class="content-center">
+        <div id="page-title" class="row">
+            <img src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/loudly-crying-face_1f62d.png"
+                alt="" style="width: 90px;margin: 0 auto;margin-bottom: 23px;">
+            <h1 class="text-center">OPPS!</h1>
+            <h5 class="stit" style="font-size: 17px;text-align: center;font-weight: 500;margin-top: 16px;">접근 권한이 없습니다.
+            </h5>
+        </div>
+        <button class="btn btn-lg btn-primary mb-4 mt-3 w-100"  th:onclick="|location.href='@{/}'|">메인으로 이동</button>
+    </div>
+</div>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="GradeUpDao">
+
+    <!-- 등업신청 -->
+    <parameterMap type="GradeUpVo" id="insertGradeUpParameter">
+        <parameter property="memNo" javaType="int"
+                   jdbcType="TINYINT" mode="IN"/>
+        <parameter property="aftergrade" javaType="int"
+                   jdbcType="TINYINT" mode="IN"/>
+        <parameter property="beforegrade" javaType="int"
+                   jdbcType="TINYINT" mode="IN"/>
+    </parameterMap>
+    <insert id="insertGradeUp" parameterMap="insertGradeUpParameter">
+        INSERT INTO gradeup
+            (mb_no, gu_aft_grade, gu_bef_grade, gu_datetime)
+        VALUES (#{memNo},
+                #{aftergrade}, #{beforegrade}, DATE_FORMAT(now(), '%Y/%m/%d %H:%i:%s'))
+    </insert>
+
+    <!-- 등업신청 목록조회 -->
+    <resultMap id="GradeUpVoResult" type="GradeUpVo">
+        <result property="memNo" column="mb_no"/>
+        <result property="id" column="mb_id"/>
+        <result property="nick" column="mb_nick"/>
+        <result property="grade" column="mb_grade"/>
+        <result property="gradeno" column="gu_no"/>
+        <result property="aftergrade" column="gu_aft_grade"/>
+        <result property="beforegrade" column="gu_bef_grade"/>
+        <result property="visitCount" column="mb_visit"/>
+        <result property="boardCount" column="mb_board"/>
+        <result property="commentCount" column="mb_comment"/>
+        <result property="joinDate" javaType="string"
+                column="mb_datetime" jdbcType="DATE"/>
+        <result property="datetime" javaType="string"
+                column="gu_datetime" jdbcType="DATE"/>
+        <result property="gradeupstate" javaType="string"
+                column="gu_state" jdbcType="CHAR"/>
+        <result property="gradeupstateP" javaType="string"
+                column="gu_state_p" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="selectGradeUp" parameterType="int"
+            resultMap="GradeUpVoResult">
+        SELECT m.mb_no,
+               m.mb_id,
+               m.mb_nick,
+               m.mb_grade,
+               g.gu_no,
+               g.gu_aft_grade,
+               g.gu_bef_grade,
+               m.mb_visit,
+               m.mb_board,
+               m.mb_comment,
+               date_format(m.mb_datetime, '%Y-%m-%d') as
+                                                         mb_datetime,
+               date_format(g.gu_datetime, '%Y-%m-%d') as gu_datetime,
+               case
+                   gu_state
+                   when
+                       '1' then '대기중'
+                   when '2' then '승인'
+                   when '3' then '반려'
+                   END                                AS
+                                                         gu_state_p,
+               gu_state
+        FROM gradeup AS g
+                 left join member as m on m.mb_no = g.mb_no
+        WHERE m.mb_no = #{memNo}
+        ORDER BY g.gu_no DESC
+    </select>
+
+    <!-- 등업신청 목록 전체조회 (관리자) -->
+    <select id="selectAllGradeUplist" resultMap="GradeUpVoResult">
+        SELECT m.mb_no,
+               m.mb_id,
+               m.mb_nick,
+               m.mb_grade,
+               g.gu_no,
+               g.gu_aft_grade,
+               g.gu_bef_grade,
+               m.mb_visit,
+               m.mb_board,
+               m.mb_comment,
+               date_format(m.mb_datetime, '%Y-%m-%d') as
+                                                         mb_datetime,
+               date_format(g.gu_datetime, '%Y-%m-%d') as gu_datetime,
+               case
+                   gu_state
+                   when
+                       '1' then '대기중'
+                   when '2' then '승인'
+                   when '3' then '반려'
+                   END                                AS
+                                                         gu_state_p,
+               gu_state
+        FROM gradeup as g
+                 left join member as m on m.mb_no = g.mb_no
+        ORDER BY g.gu_no DESC
+    </select>
+
+    <!-- 등업 신청 상세 조회 -->
+    <select id="selectOneGradeUp" parameterType="int"
+            resultMap="GradeUpVoResult">
+        SELECT m.mb_no,
+               m.mb_id,
+               m.mb_nick,
+               g.gu_no,
+               g.gu_aft_grade,
+               g.gu_bef_grade,
+               m.mb_visit,
+               m.mb_board,
+               m.mb_comment,
+               date_format(m.mb_datetime, '%Y-%m-%d') as
+                                                         mb_datetime,
+               date_format(g.gu_datetime, '%Y-%m-%d') as gu_datetime,
+               case
+                   gu_state
+                   when
+                       '1' then '대기중'
+                   when '2' then '승인'
+                   when '3' then '반려'
+                   END                                AS
+                                                         gu_state_p,
+               gu_state
+        FROM gradeup as g
+                 left join member as m on m.mb_no =
+                                          g.mb_no
+        WHERE g.gu_no = #{gradeno}
+        ORDER BY g.gu_no DESC
+    </select>
+
+    <!-- 등업 신청 가능 여부 확인 -->
+    <select id="selectGradeUpYetCount" parameterType="GradeUpVo"
+            resultType="int">
+        select EXISTS(select *
+                      FROM gradeup
+                      where mb_no = ${memNo}
+                        AND gu_state =
+                            1) as success;
+    </select>
+
+    <!-- 등업신청 목록 삭제 -->
+    <delete id="deleteGradeUp" parameterType="int">
+        DELETE
+        FROM gradeup
+        WHERE gu_no = #{gradeno}
+    </delete>
+
+    <!-- 등업신청 상태 변경 -->
+    <update id="acceptGradeUp" parameterType="int">
+        UPDATE gradeup
+        SET gu_state = 2
+        WHERE gu_no = #{gradeno}
+    </update>
+
+    <update id="resetGradeUp" parameterType="int">
+        UPDATE gradeup
+        SET gu_state = 3
+        WHERE gu_no = #{gradeno}
+    </update>
+</mapper>

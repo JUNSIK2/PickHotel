@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="RoleResourceDao">
+
+    <select id="findRolesById" parameterType="string" resultType="MemberRoleVo">
+        select mr.member_role_id as memberRoleId, r.role_desc as roleDesc, r.role_name as roleName
+        from member m inner join member_role mr inner join role r
+            ON m.mb_id = mr.mb_id AND mr.role_name = r.role_name
+        WHERE m.mb_id = #{id}
+    </select>
+
+    <select id="findUserById" parameterType="string" resultType="MemberVo">
+        SELECT mb_no as memNo, mb_name as name, mb_id as id, mb_pwd as pwd, mb_nick as nick, mb_grade as grade, mb_state as state
+        FROM member
+        WHERE mb_id = #{id}
+    </select>
+
+    <select id="findroleHierarchy" parameterType="integer" resultType="string">
+        select  role_name
+        from    (select * from role
+                 order by role_desc, role_id) products_sorted,
+                (select @pv := #{desc}) initialisation
+        where   find_in_set(role_desc, @pv)
+          and     length(@pv := concat(@pv, ',', role_id))
+    </select>
+
+    <select id="findRoleResources"  resultType="RoleResourcesVo">
+        select rr.role_resource_id as roleResourceId, res.resource_name as resourceName, res.resource_type as resourceType,
+               r.role_name as roleName, r.role_desc as roleDesc
+        from role_resources rr inner join role r inner join resources res
+            on rr.role_name = r.role_name and  rr.resource_name = res.resource_name
+    </select>
+
+    <select id="findResources"  resultType="ResourcesVo">
+        select resource_id as resourceId, resource_name as resourceName, resource_type as resoruceType
+        from resources
+    </select>
+
+    <select id="findRoleAll"  resultType="RoleVo">
+        SELECT role_id as roleId, role_desc as roleDesc, role_name as roleName
+        FROM role
+        ORDER BY role_desc asc
+    </select>
+
+</mapper>

@@ -1,0 +1,39 @@
+<nav aria-label="Page navigation example" th:fragment="paging"
+     th:if="${params != null and params.paginationInfo.totalRecordCount > 0}" th:object="${params.paginationInfo}"
+     th:with="info=${params.paginationInfo}">
+    <ul class="pagination justify-content-center">
+        <li class="page-item"
+            th:if="*{hasPreviousPage == true}"
+            th:onclick="movePage([[ ${#request.requestURI} ]], [[ ${params.makeQueryString(1)} ]])">
+            <a class="page-link" href="javascript:void(0)" tabindex="-1"><span aria-hidden="true">&laquo;</span></a>
+        </li>
+        <li class="page-item" th:if="*{hasPreviousPage == true}"
+            th:onclick="movePage([[ ${#request.requestURI} ]], [[ ${params.makeQueryString(info.firstPage - 1)} ]])">
+            <a aria-label="Previous" class="page-link" href="javascript:void(0)"><span
+                    aria-hidden="true">&lsaquo;</span></a>
+        </li>
+        <li class="page-item" th:class="${pageNo == params.currentPageNo} ? 'active'"
+            th:each="pageNo : *{#numbers.sequence( firstPage, lastPage )}">
+            <a class="page-link" href="javascript:void(0)"
+               th:onclick="movePage([[ ${#request.requestURI} ]], [[ ${params.makeQueryString(pageNo)} ]])"
+               th:text="${pageNo}"></a>
+        </li>
+        <li class="page-item" th:if="*{hasNextPage == true}"
+            th:onclick="movePage([[ ${#request.requestURI} ]], [[ ${params.makeQueryString(info.lastPage + 1)} ]])">
+            <a aria-label="Next" class="page-link" href="javascript:void(0)"><span
+                    aria-hidden="true">&rsaquo;</span></a>
+        </li>
+        <li class="page-item" th:if="*{hasNextPage == true}"
+            th:onclick="movePage([[ ${#request.requestURI} ]], [[ ${params.makeQueryString(info.totalPageCount)} ]])">
+            <a aria-label="Next" class="page-link" href="javascript:void(0)"><span aria-hidden="true">&raquo;</span></a>
+        </li>
+    </ul>
+</nav>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        function movePage(uri, queryString) {
+            location.href = uri + queryString;
+        }
+    </script>
+</th:block>
+</nav>

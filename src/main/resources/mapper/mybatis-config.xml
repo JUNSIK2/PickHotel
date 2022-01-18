@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<settings>
+
+		<!-- DB 컬럼명을 JAVA Camel 표기법으로 자동 매핑 설정 -->
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+		<!-- mybatis 사용 시 resultType이 map인 경우 값이 null일 때 column명을 key로 생성해준다. -->
+		<setting name="callSettersOnNulls" value="true"/>
+
+	</settings>
+
+	<typeAliases>
+
+		<!-- 회원 -->
+		<typeAlias type="com.example.member.model.MemberVo" alias="MemberVo" />
+		<typeAlias type="com.example.member.model.MemberRoleVo" alias="MemberRoleVo" />
+		<typeAlias type="com.example.member.model.ResourcesVo" alias="ResourcesVo" />
+		<typeAlias type="com.example.member.model.RoleVo" alias="RoleVo" />
+		<typeAlias type="com.example.member.model.RoleResourcesVo" alias="RoleResourcesVo" />
+
+
+		<typeAlias type="com.example.member.model.MemberStateVo" alias="MemberStateVo" />
+		<typeAlias type="com.example.member.model.MemberAndMemberStateVo" alias="MemberAndMemberStateVo" />
+
+
+		<!-- 회원 등업 -->
+		<typeAlias type="com.example.grade.model.GradeUpVo" alias="GradeUpVo" />
+		<typeAlias type="com.example.grade.model.MemberGradeVo" alias="MemberGradeVo" />
+
+		<!-- 게시판 -->
+		<typeAlias type="com.example.board.model.BoardVo" alias="BoardVo" />
+		<typeAlias type="com.example.board.model.BoardGroupVo" alias="BoardGroupVo" />
+
+		<!-- 게시글 -->
+		<typeAlias type="com.example.board.model.AttachVo" alias="AttachVo" />
+		<typeAlias type="com.example.board.model.CommentVo" alias="CommentVo" />
+		<typeAlias type="com.example.board.model.PostVo" alias="PostVo" />
+		<typeAlias type="com.example.board.model.ReviewVo" alias="ReviewVo" />
+		<typeAlias type="com.example.board.model.RoomVo" alias="RoomVo" />
+
+		<!--쪽지	-->
+		<typeAlias type="com.example.note.model.NoteVo" alias="NoteVo" />
+
+		<!-- 사이트 등급 -->
+		<typeAlias type="com.example.grade.model.SiteGradeVo" alias="SiteGradeVo" />
+
+		<!-- 알림 -->
+		<typeAlias type="com.example.alarm.model.AlarmVo" alias="AlarmVo" />
+
+	</typeAliases>
+</configuration>

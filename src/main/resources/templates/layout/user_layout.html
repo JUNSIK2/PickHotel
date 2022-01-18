@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link rel="shortcut icon" th:href="@{/img/favicon.ico}">
+    <title layout:title-pattern="$LAYOUT_TITLE : $CONTENT_TITLE">PickHotel</title>
+    <!-- 공통 CSS 삽입 -->
+    <th:block layout:fragment="css" th:include="@{/fragment/css}"></th:block>
+    <!-- 사용자 CSS 삽입 -->
+    <link rel="stylesheet" th:href="@{/css/user.css}">
+</head>
+
+<body>
+<!-- 공통 스크립트 삽입 -->
+<th:block layout:fragment="_script" th:include="@{/fragment/_script}"></th:block>
+
+<th:block layout:fragment="header" th:include="@{/fragment/header}"></th:block>
+<div class="container">
+    <div id="content" layout:fragment="content"></div>
+</div>
+<th:block layout:fragment="footer" th:include="@{/fragment/footer}"></th:block>
+
+<th:block layout:fragment="live_alarm" sec:authorize="isAuthenticated()"
+          th:include="@{/fragment/live_alarm}"></th:block>
+</body>
+
+<!-- 공통 스크립트 푸터 삽입 -->
+<th:block layout:fragment="script" th:include="@{/fragment/script}"></th:block>
+
+<!-- 사용자 스크립트 -->
+<script th:src="@{/js/user.js}" type="text/javascript"></script>
+</html>

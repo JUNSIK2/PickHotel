@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ReviewDao">
+	<parameterMap type="ReviewVo" id="ReviewParameterMap">
+		<parameter property="postNo" javaType="int" jdbcType="INTEGER" />
+		<parameter property="roomNo" javaType="int" jdbcType="INTEGER" />
+		<parameter property="rateLoc" javaType="int" jdbcType="INTEGER" />
+		<parameter property="rateClean" javaType="int" jdbcType="INTEGER" />
+		<parameter property="rateComu" javaType="int" jdbcType="INTEGER" />
+		<parameter property="rateChip" javaType="int" jdbcType="INTEGER" />
+		<parameter property="visitDate" javaType="string" jdbcType="DATE" />
+		<parameter property="recommendPlace" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="notRecommendPerson" javaType="string" jdbcType="VARCHAR" />
+	</parameterMap>
+	<insert id="insertReview" parameterType="ReviewVo" parameterMap="ReviewParameterMap">
+		INSERT INTO review (post_no,roo_no, re_rate_loc, re_rate_clean,
+							re_rate_comu, re_rate_chip, re_vsdate, re_push_pl, re_push_npl )
+		VALUES (#{postNo},#{roomNo}, #{rateLoc}, #{rateClean}, #{rateComu},
+				#{rateChip}, #{visitDate}, #{recommendPlace}, #{notRecommendPerson})
+	</insert>
+
+	<update id="updateReview" parameterType="ReviewVo" parameterMap="ReviewParameterMap">
+		UPDATE review SET re_rate_loc=#{rateLoc}, re_rate_clean=#{rateClean}, re_rate_comu=#{rateComu}, re_rate_chip=#{rateChip},
+						  re_vsdate=#{visitDate}, re_push_pl=#{recommendPlace}, re_push_npl=#{notRecommendPerson}
+		WHERE post_no = #{postNo}
+	</update>
+
+	<delete id="deleteReview" parameterType="int">
+		DELETE from review where post_no=#{postNo}
+	</delete>
+
+	<resultMap id="ReviewVoResultMap" type="ReviewVo">
+		<result property="postNo" column="post_no" />
+		<result property="roomNo" column="roo_no" />
+		<result property="rateLoc" column="re_rate_loc" />
+		<result property="rateClean" column="re_rate_clean" />
+		<result property="rateComu" column="re_rate_comu" />
+		<result property="rateChip" column="re_rate_chip" />
+		<result property="visitDate" column="re_vsdate" />
+		<result property="recommendPlace" column="re_push_pl" />
+		<result property="notRecommendPerson" column="re_push_npl" />
+	</resultMap>
+
+	<select id="selectReview" parameterType="int" resultMap="ReviewVoResultMap">
+		SELECT post_no, roo_no, re_rate_loc, re_rate_clean, re_rate_comu, re_rate_chip,
+			   re_vsdate, re_push_pl, re_push_npl
+		FROM review WHERE post_no=#{postNo}
+	</select>
+
+
+</mapper>
+
+
+
+
+
+
+
+
+

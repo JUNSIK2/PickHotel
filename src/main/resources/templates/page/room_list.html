@@ -1,0 +1,45 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/user_layout}">
+
+<div layout:fragment="content">
+    <div id="page-title" class="row">
+        <h1 class="text-center">방 목록</h1>
+    </div>
+
+    <div id="writePost" style="text-align: right;">
+        <a th:href="@{/room/write}"><button type="button" class="btn btn-primary">방작성</button></a>
+    </div><br />
+
+    <div class="todo-content">
+
+    <div th:if="${roomResponse == null}">
+        <span>등록된 방이 없습니다.</span>
+    </div>
+    <div th:if="${roomResponse != null}">
+        <table class="table table-bordered table-striped table-condensed flip-content">
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>방 이름</th>
+                <th>방 주소</th>
+                <th>상세보기 버튼</th>
+            </tr>
+            </thead>
+            <tbody>
+					<tr th:each="content : ${roomResponse.content}">
+                        <span th:each="room : ${content}">
+                            <td th:text="${room.no}"></td>
+                            <td th:text="${room.roomName}"></td>
+                            <td><span th:text="${room.roomAddress}"></span></td>
+                            <td>
+                               <a th:href="@{/room/{roomNo}(roomNo=${room.no})}"> <button type="button">상세보기</button></a>
+                            </td>
+                        </span>
+					</tr>
+            </tbody>
+        </table>
+
+
+</div>
+</div>
+</div>

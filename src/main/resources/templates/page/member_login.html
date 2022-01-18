@@ -1,0 +1,40 @@
+<html layout:decorate="~{layout/user_layout}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<div id="loginForm" layout:fragment="content">
+    <div class="content-center">
+        <div class="row" id="page-title">
+            <img alt=""
+                 src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/waving-hand_1f44b.png"
+                 style="width: 90px;margin: 0 auto;margin-bottom: 23px;">
+            <h1 class="text-center">오늘도 반갑습니다!</h1>
+            <h5 class="stit">로그인을 진행합니다
+            </h5>
+        </div>
+        <form class="row justify-content-center align-self-center form-signin form-small d-flex" method="POST"
+              th:action="@{/login}">
+            <div>
+                <div class="form-floating">
+                    <input class="form-control" id="id" name="id" type="email"><label for="id">이메일</label>
+                </div>
+
+                <div class="form-floating">
+                    <input class="form-control" id="pwd" name="pwd" type="password"><label for="pwd">비밀번호</label>
+
+                    <!--<input id="remember-me" name="remember-me" type="checkbox"/> 로그인 상태 유지-->
+
+                    <div class="text-center" th:if="${not #strings.isEmpty(message)}">
+                        <span style="color: red;" th:text="${message}"></span>
+                    </div>
+                </div>
+                <button class="btn btn-lg btn-primary mb-4 mt-3 w-100" type="submit">로그인</button>
+                <div class="mb-4 mt-2 text-center" style="font-size: 14px;">
+                    <a class="link-dark" style="text-decoration: none;" th:href="@{/findIdForm}">아이디 찾기</a>
+                    <span class="line">|</span><a class="link-dark" style="text-decoration: none;"
+                                                  th:href="@{/findPwdForm}">비밀번호 찾기</a>
+                    <span class="line">|</span><a class="link-dark" style="text-decoration: none;"
+                                                  th:href="@{/join}">회원가입</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

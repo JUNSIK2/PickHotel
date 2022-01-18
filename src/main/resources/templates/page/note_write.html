@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/user_layout}">
+<div layout:fragment="content" >
+    <div id="page-title" class="row">
+		<h1 class="text-center">쪽지 쓰기</h1>
+		<a th:href="@{/member/note/Receivelist}">받은 쪽지</a>
+		<a th:href="@{/member/note/Sendlist}">보낸 쪽지</a>
+<!--		<a th:href="@{/member/note/Savelist}">보관함</a>-->
+
+		<form id="writeForm" th:action="@{/member/note/write}" method="post">
+			<div class="mb-3">
+				<label for="getMbIds" class="form-label">받는 사람</label>
+				<input type="text" class="form-control" name="getMbIds" id="getMbIds" placeholder="받는사람아이디">
+				<p class="">받는 사람이 여러명일 경우 ,(쉼표)로 구분하여 작성할 것</p>
+			</div>
+			<div class="mb-3">
+				<label for="getMbIds" class="form-label">내용</label>
+				<textarea class="form-control" name="noteCon" cols="30" rows="6" placeholder="내용"></textarea>
+			</div>
+			<button type="button" class="btn btn-primary" id="submitBtn" onclick="Onclick();">전송</button>
+		</form>
+	</div>
+	<script>
+		function Onclick(){
+			var getMbIds = document.getElementById("getMbIds").value;
+
+			$.ajax({
+				url : '/member/note/checkMbId?getMbIds=' + getMbIds,
+				type : 'GET',
+				success : function(data){
+					if(data.mbIdArray.length > 10){
+						alert("최대 10명까지 동시에 보낼 수 있습니다.");
+						return false;
+					}
+					if(data.notExsitsMbIds.length == 0){
+						document.getElementById("writeForm").submit();
+					} else {
+						var mbIdString = data.notExsitsMbIds.toString();
+						alert("존재하지 않는 아이디 : " + mbIdString);
+						return false;
+					}
+
+				} ,
+				error : function(){
+					console.log("fail");
+				}
+			})
+		}
+	</script>
+</div>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="BoardDao">
+	<!--게시판 등록 -->
+	<parameterMap type="BoardVo"  id="insertBoardParameter">
+		<parameter property="groupNo"  javaType="int" jdbcType="INTEGER"  mode="IN"/>
+		<parameter property="type"  javaType="string" jdbcType="VARCHAR"  mode="IN"/>
+		<parameter property="title"  javaType="string" jdbcType="VARCHAR"  mode="IN"/>
+		<parameter property="boGrade"  javaType="int" jdbcType="INTEGER"  mode="IN"/>
+		<parameter property="usePhoto"  javaType="int" jdbcType="INTEGER"  mode="IN"/>
+		<parameter property="useVideo"  javaType="int" jdbcType="INTEGER" mode="IN"/>
+		<parameter property="useFile"  javaType="int" jdbcType="INTEGER"  mode="IN"/>
+		<parameter property="useComment"  javaType="int" jdbcType="INTEGER"  mode="IN"/>
+	</parameterMap>
+	<insert id ="insertBoard"  parameterMap="insertBoardParameter">
+		INSERT INTO board(bo_group_no, bo_type, bo_name, bo_grade, bo_use_photo, bo_use_video, bo_use_fupdown, bo_use_comment, bo_datetime)
+		VALUES ( #{groupNo}, #{type}, #{title}, #{boGrade}, #{usePhoto}, #{useVideo}, #{useFile}, #{useComment}, now())
+	</insert>
+
+	<resultMap id="BoardVoResult" type="BoardVo">
+		<result property="boardNo" javaType="int" column="bo_no" jdbcType="INTEGER" />
+		<result property="groupNo" javaType="int" column="bo_group_no" jdbcType="INTEGER" />
+		<result property="groupName"  javaType="string" column="bo_group_name" jdbcType="VARCHAR" />
+		<result property="title"  javaType="string" column="bo_name"  jdbcType="VARCHAR" />
+		<result property="type"   javaType="string" column="bo_type"  jdbcType="VARCHAR" />
+		<result property="boGrade"  javaType="int" column="bo_grade" jdbcType="INTEGER" />
+		<result property="usePhoto" javaType="int"  column="bo_use_photo"  jdbcType="INTEGER" />
+		<result property="useVideo" javaType="int"  column="bo_use_video"  jdbcType="INTEGER" />
+		<result property="useFile" javaType="int"  column="bo_use_fupdown"  jdbcType="INTEGER" />
+		<result property="useComment" javaType="int"  column="bo_use_comment"  jdbcType="INTEGER" />
+		<result property="creatDatetime"  javaType="string" column="bo_datetime" jdbcType="VARCHAR" />
+		<result property="postCount" javaType="int"  column="bo_post"  jdbcType="INTEGER" />
+	</resultMap>
+
+	<!-- 게시판 상세조회 -->
+	<select id="selectBoard" parameterType="int" resultMap="BoardVoResult">
+		select bo_no, bo_group_no, bo_name, bo_type, bo_grade,
+		bo_use_photo, bo_use_video, bo_use_fupdown, bo_use_comment, bo_datetime, bo_post
+		from board where bo_no = #{boardNo}
+	</select>
+
+	<!-- 게시판 목록조회 -->
+	<select id="selectBoardList" resultMap="BoardVoResult">
+		SELECT a.bo_no, a.bo_group_no, b.bo_group_name ,a.bo_name, a.bo_type, a.bo_grade, a.bo_use_photo, a.bo_use_video, a.bo_use_fupdown, a.bo_use_comment,
+			bo_datetime, bo_post
+		FROM board a inner join board_group b on a.bo_group_no = b.bo_group_no
+	</select>
+
+	<!-- 게시판 목록조회 - page -->
+	<select id="selectPageBoardList" parameterType="BoardVo"  resultMap="BoardVoResult">
+		SELECT
+		a.bo_no, a.bo_group_no, b.bo_group_name ,a.bo_name, a.bo_type, a.bo_grade, a.bo_use_photo, a.bo_use_video, a.bo_use_fupdown, a.bo_use_comment,
+		bo_datetime, bo_post
+		FROM board a inner join board_group b on a.bo_group_no = b.bo_group_no
+		<if test='searchKeyword != null and searchType.equalsIgnoreCase("boardName")'>
+			WHERE bo_name LIKE CONCAT('%',#{searchKeyword},'%')
+		</if>
+		ORDER BY bo_no desc
+		LIMIT
+		#{paginationInfo.firstRecordIndex}, #{recordsPerPage}
+	</select>
+
+	<!-- 게시판 총 개수-page -->
+	<select id="selectPageBoardCount" parameterType="BoardVo"  resultType="int">
+		SELECT COUNT(*)
+		FROM board
+		<if test = 'searchKeyword != null and searchType.equalsIgnoreCase("title")' >
+			WHERE bo_name = #{searchKeyword} <!--if문이 안될 수도 있으니 where절 사용-->
+		</if>
+	</select>
+
+	<!-- 유형별 게시판 목록 조회 -->
+	<select id="selectBoardListByType" parameterType="string" resultMap="BoardVoResult">
+		SELECT bo_name, bo_no FROM board WHERE bo_type = #{type}
+	</select>
+
+	<!--게시판 그룹별 게시판 개수 조회 -->
+	<select id="selectBoardGroupCount" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM board WHERE bo_group_no = #{groupNo}
+	</select>
+
+	<!--게시판 타입 조회 -->
+	<select id="selectBoardType" parameterType="int" resultMap="BoardVoResult">
+		select bo_type
+		from board where bo_no = #{boardNo}
+	</select>
+
+	<!-- 게시판 수정 -->
+	<parameterMap type="BoardVo" id="updateBoardParameter">
+		<parameter property="boardNo" javaType="int" jdbcType="INTEGER" mode="IN"/>
+		<parameter property="groupNo"  javaType="int" jdbcType="INTEGER"  mode="IN"/>
+		<parameter property="title" javaType="string" jdbcType="VARCHAR" mode="IN"/>
+		<parameter property="boGrade" javaType="int" jdbcType="INTEGER" mode="IN"/>
+		<parameter property="type"  javaType="string" jdbcType="INTEGER" mode="IN"/>
+		<parameter property="usePhoto" javaType="int" jdbcType="INTEGER" mode="IN"/>
+		<parameter property="useVideo" javaType="int" jdbcType="INTEGER" mode="IN"/>
+		<parameter property="useFile" javaType="int" jdbcType="INTEGER" mode="IN"/>
+		<parameter property="useComment" javaType="int" jdbcType="INTEGER" mode="IN"/>
+		<parameter property="postCount" javaType="int" jdbcType="INTEGER" mode="IN"/>
+	</parameterMap>
+
+	<update id="updateBoard" parameterMap="updateBoardParameter">
+		UPDATE board SET
+		bo_group_no=#{groupNo}, bo_name = #{title}, bo_grade = #{boGrade}, bo_use_photo = #{usePhoto},
+		bo_type = #{type}, bo_use_video = #{useVideo}, bo_use_fupdown = #{useFile}, bo_use_comment = #{useComment}
+		WHERE bo_no = #{boardNo}
+	</update>
+
+	<!-- 게시판 게시글 수 수정 -->
+	<update id="updateBoardPost">
+		UPDATE board
+		SET bo_post = bo_post + #{updatepostCount}
+		WHERE bo_no = #{boardNo}
+	</update>
+
+	<!--게시판 삭제  -->
+	<delete id="deleteBoard" parameterType="int">
+		DELETE FROM board
+		WHERE bo_no = #{boardNo}
+	</delete>
+</mapper>

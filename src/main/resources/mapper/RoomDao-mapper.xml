@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="RoomDao">
+
+	<parameterMap id="insertRoomVoParameterMap" type="RoomVo">
+		<parameter property="no" javaType="int" jdbcType="INTEGER" />
+		<parameter property="roomName" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="roomDeco" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="roomAddress" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="systemFileName" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="originalFileName" javaType="string" jdbcType="VARCHAR" />
+	</parameterMap>
+
+	<insert id="insertRoom" parameterMap="insertRoomVoParameterMap">
+		INSERT INTO room (roo_no, roo_name, roo_dec, roo_address, roo_sysname, roo_realname)
+		VALUES (#{no}, #{roomName}, #{roomDeco}, #{roomAddress}, #{systemFileName}, #{originalFileName})
+	</insert>
+
+	<resultMap id="selectRoomVoResultMap" type="RoomVo">
+		<result property="no" column="roo_no" />
+		<result property="roomName" column="roo_name" />
+		<result property="roomDeco" column="roo_dec" />
+		<result property="roomAddress" column="roo_address" />
+		<result property="systemFileName" column="roo_sysname" />
+		<result property="originalFileName" column="roo_realname" />
+	</resultMap>
+
+	<select id="selectRoomList" resultMap="selectRoomVoResultMap">
+		SELECT roo_no, roo_name, roo_dec, roo_address, roo_sysname, roo_realname
+		FROM room
+	</select>
+
+	<select id="selectRoom" parameterType="int" resultMap="selectRoomVoResultMap">
+		SELECT roo_no, roo_name, roo_dec, roo_address, roo_sysname, roo_realname
+		FROM room WHERE roo_no = #{roomNo}
+	</select>
+
+
+	<update id="updateRoom" parameterMap="insertRoomVoParameterMap">
+		UPDATE room SET roo_name=#{roomName}, roo_dec=#{roomDeco}, roo_address=[#{roomAddress}], roo_sysname, roo_realname)
+			systemFileName=#{systemFileName}, originalFileName=#{originalFileName} WHERE roo_no = #{no}
+	</update>
+
+	<delete id="deleteRoom" parameterType="int">
+		DELETE FROM room WHERE roo_no=#{roomNo}
+	</delete>
+</mapper>

@@ -1,0 +1,40 @@
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<header class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+    <div id="user-box" sec:authorize="isAuthenticated()">
+        <ul class="notice-box">
+            <li class="alarm-area">
+                <a class="nav-link px-2 link-dark user-alarm" href="#" id="dropdownAlarmList">알림<span
+                        class="dropdown notion"></span></a>
+                <div class="dropdown-menu-1 " id="alarm-box" style="display: none">
+                </div>
+            </li>
+            <li class="note-area">
+                <a class="nav-link px-2 link-dark user-note" th:href="@{/note/list}">쪽지<span class="notion">
+								<!-- <i
+									class="ico">3</i> --></span></a></li>
+        </ul>
+        <div class="dropdown private-box">
+            <a class="d-block link-dark text-decoration-none dropdown"
+               href="#" id="dropdownUserMenu">
+                <img alt="회원 등급 아이콘" class="rounded-circle" height="32"
+                     th:src="@{|/img/icon_grade_${#authentication.principal.member.grade}.png|}"
+                     width="32"><span class="user-name" sec:authentication="principal.member.nick"></span>
+            </a>
+            <ul class="dropdown-menu-1 text-small" id="dropdownUserMenuBox" style="display: none">
+                <li><a class="dropdown-item" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/intranet}">관리자 페이지</a>
+                </li>
+                <!-- <li><a class="dropdown-item" th:href="@{/member/room?type=review}">나의 숙소 리뷰</a></li> -->
+                <li><a class="dropdown-item" th:href="@{/member/room?type=basic}">내가 쓴 게시글</a></li>
+                <li><a class="dropdown-item" th:href="@{/member/gradeup_list}">등업신청</a></li>
+                <li><a class="dropdown-item" th:href="@{/member}">정보수정</a>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <a class="dropdown-item" th:href="@{/logout}">로그아웃</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>

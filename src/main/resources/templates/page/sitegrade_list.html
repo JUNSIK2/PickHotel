@@ -1,0 +1,65 @@
+<html layout:decorate="~{layout/user_layout}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+
+<div id="siteGradeNotion" layout:fragment="content">
+    <div class="row" id="page-title">
+        <h1 class="text-center">사이트 등급 안내</h1>
+    </div>
+    <div class="site-grade-info_header">
+        <h3><b th:text="${boardGradeName}"></b> 등급이 되시면 읽기가 가능한 게시판 입니다.</h3>
+        현재 <span th:text="${member.nick}"></span>님은 <b th:text="${member.gradeName}"></b> 등급이시며, 등업에 관련된 궁금하신 사항은 최고
+        관리자에게 문의해 주세요.
+    </div>
+    <div class="dataTables_wrapper dt-bootstrap4" id="dataTable_wrapper">
+        <div class="row">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>등급명</th>
+                    <th>등업방식</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="siteGrade : ${siteGrades}">
+                    <td><img alt="회원 등급 아이콘" class="rounded-circle" height="32"
+                             th:src="@{|/img/icon_grade_${siteGrade.memGrade}.png|}" width="32"></td>
+                    <td>
+                        <span th:text="${siteGrade.memGradeName}"></span>
+                    </td>
+                    <td class="text-left">
+                        <p class="m-0" th:if="${siteGrade.memGrade != 5}">
+                            <span th:if="${siteGrade.memGradeType == 0}" th:text="자동등업"></span>
+                            <span th:if="${siteGrade.memGradeType == 1}" th:text="수동등업"></span>
+                            (<span>게시글 수</span>
+                            <span th:text="${siteGrade.memGradeBoard}"></span>개,
+                            <span>댓글수</span>
+                            <span th:text="${siteGrade.memGradeComment}"></span>개,
+                            <span>방문수</span>
+                            <span th:text="${siteGrade.memGradeVisit}"></span>회 만족시 <span
+                                th:if="${siteGrade.memGradeType == 0}" th:text="자동등업"></span>
+                            <span th:if="${siteGrade.memGradeType == 1}" th:text="수동등업"></span>)
+                        </p>
+                        <p class="m-0" th:if="${siteGrade.memGrade == 5}">관리자 승인 후 등업가능합니다.</p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="site-grade-info_footer">
+        <div class="type-info">
+            <p class="mb-1"><b>자동등업</b> : 매니저가 설정한 조건을 만족하면 신청 없이 등업이 됩니다.</p>
+            <p><b>수동등업</b> : 매니저가 설정한 조건을 만족하면 등업 신청이 가능합니다. 최고 관리자 수락을 거쳐 등업됩니다.</p>
+        </div>
+        <div class="my-info">
+            <ul class="m-0 p-0">
+                <li>내 활동정보</li>
+                <li>총 게시글 <span th:text="${member.boardCount}"></span>개</li>
+                <li>총 댓글수 <span th:text="${member.commentCount}"></span>개</li>
+                <li>총 출석수 <span th:text="${member.visitCount}"></span>회</li>
+                <li>가입일 <span th:text="${member.joinDate}"></span></li>
+            </ul>
+        </div>
+    </div>
+</div>

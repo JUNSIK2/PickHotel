@@ -1,0 +1,39 @@
+<html layout:decorate="~{layout/user_layout}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<div class="content-center" id="findIdResult" layout:fragment="content">
+    <div class="row" id="page-title">
+        <h1 class="text-center">아이디 찾기</h1>
+        <h5 class="stit">고객님 아이디 찾기가 완료 되었습니다</h5>
+    </div>
+    <div class="row justify-content-center align-self-center form-small">
+        <div th:if="${ #lists.isEmpty(findIdResultList) }">
+            <ul>
+                <li>존재하는 회원이 없습니다.<br>정보를 다시 확인하거나, 회원가입 해주세요.
+                </li>
+            </ul>
+            <button class="w-100 btn btn-lg btn-secondary mb-1" th:onclick="|location.href='@{/findIdForm}'|"
+                    type="button">아이디 다시찾기
+            </button>
+            <button class="w-100 btn btn-lg btn-primary" th:onclick="|location.href='@{/join}'|"
+                    type="button">회원가입하기
+            </button>
+        </div>
+        <div th:if="${ not #lists.isEmpty(findIdResultList) }">
+            <ul th:each="result : ${findIdResultList}">
+                <li>
+                    <div th:if=" ${ #lists.size(findIdResultList) > 1 }">
+                        <span th:text="${result.nick}"></span> -
+                    </div>
+                    아이디 : <span th:text="${result.id}"></span> <br> 가입일 : <span th:text="${result.joinDate}"></span>
+                </li>
+            </ul>
+            <div class="info">고객님의 아이디 찾기가 성공적으로 이루어졌습니다.<br>이제 PickHotel을 구경하러 가볼까요!</div>
+            <button class="w-100 btn btn-lg btn-primary mb-1" th:onclick="|location.href='@{/login}'|"
+                    type="button">로그인
+            </button>
+            <button class="w-100 btn btn-lg btn-secondary" th:onclick="|location.href='@{/findPwdForm}'|"
+                    type="button">비밀번호찾기
+            </button>
+        </div>
+    </div>
+</div>

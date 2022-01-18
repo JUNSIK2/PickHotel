@@ -1,0 +1,20 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/user_layout}">
+
+<div layout:fragment="content" class="content-center">
+    <div id="page-title" class="row">
+        <h1 class="text-center" style="
+        font-weight: 600;
+        font-size: 100px;
+    ">WELCOME</h1>
+    </div>
+    <div class="text-center">
+        <h2>저희와 함께해주셔서 감사해요😀</h2>
+        <div class="mt-4"> <button type="button" class="btn btn-primary btn-lg btn-block"
+                th:onclick="|location.href='@{/}'|">PickHotel
+                시작하기</button>
+            <button type="button" class="btn btn-secondary btn-lg btn-block"
+                th:onclick="|location.href='@{/login}'|">로그인</button>
+        </div>
+    </div>
+</div>

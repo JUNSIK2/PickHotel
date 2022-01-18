@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MemberState">
+
+	<!-- 강제 탈퇴 상태인 회원 목록 조회 -->
+	<resultMap type="MemberAndMemberStateVo"
+		id="MemberBlockResult">
+		<result column="mb_id" property="id" javaType="string"
+			jdbcType="VARCHAR" />
+		<result column="mb_nick" property="nick" javaType="string"
+			jdbcType="VARCHAR" />
+		<result column="mb_no" property="memNo" javaType="int"
+			jdbcType="INTEGER" />
+		<result column="ms_no" property="stateNo" javaType="int"
+			jdbcType="INTEGER" />
+		<result column="ms_reason" property="reason" javaType="string"
+			jdbcType="VARCHAR" />
+		<result column="ms_datetime" property="withdrawDate"
+			javaType="string" jdbcType="VARCHAR" />
+		<result column="mb_state" property="state" javaType="string"
+			jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="selectMemberBlockList" parameterType="MemberStateVo"
+		resultMap="MemberBlockResult">
+		SELECT m.mb_id, m.mb_nick,
+		m.mb_no, s.ms_no,
+		s.ms_reason,
+		s.ms_datetime, IF(m.mb_state =
+		2,"-","가입불가") as mb_state
+		FROM
+		memberstate as s Left JOIN member
+		as m on
+		m.mb_no = s.mb_no
+
+		<if
+			test='searchKeyword !=null  and searchType.equalsIgnoreCase("name")'>
+			and m.mb_name = #{searchKeyword}
+		</if>
+		<if
+			test='searchKeyword !=null  and searchType.equalsIgnoreCase("nick")'>
+			and m.mb_nick = #{searchKeyword}
+		</if>
+		<if
+			test='searchKeyword !=null  and searchType.equalsIgnoreCase("id")'>
+			and m.mb_id = #{searchKeyword}
+		</if>
+		ORDER BY s.ms_no DESC, s.ms_datetime DESC
+		LIMIT
+		#{paginationInfo.firstRecordIndex},
+		#{recordsPerPage}
+	</select>
+
+	<!-- 강제 탈퇴 상태인 회원명 수를 조회한다 -->
+	<select id="selectMemberBlockTotalCount"
+		parameterType="MemberStateVo" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM
+		memberstate as s Left JOIN member
+		as m on
+		m.mb_no = s.mb_no
+		WHERE
+		m.mb_state != 1
+		<if
+			test='searchKeyword !=null  and searchType.equalsIgnoreCase("name")'>
+			and mb_name = #{searchKeyword}
+		</if>
+		<if
+			test='searchKeyword !=null  and searchType.equalsIgnoreCase("nick")'>
+			and mb_nick = #{searchKeyword}
+		</if>
+		<if
+			test='searchKeyword !=null  and searchType.equalsIgnoreCase("id")'>
+			and mb_id = #{searchKeyword}
+		</if>
+	</select>
+
+	<!-- 강제 탈퇴 정보 상세조회 -->
+	<select id="selectMemberBlock" parameterType="int"
+		resultMap="MemberBlockResult">
+		SELECT m.mb_id, m.mb_nick,
+		m.mb_no,
+		s.ms_no,
+		s.ms_reason,
+		s.ms_datetime, IF(m.mb_state =
+		2,"-","가입불가") as
+		mb_state
+		FROM memberstate
+		as s Left JOIN member
+		as m on
+		m.mb_no = s.mb_no
+		WHERE s.ms_no =
+		#{stateNo}
+	</select>
+	
+	<!-- 강제 탈퇴 정보 등록 -->
+	<parameterMap type="MemberStateVo"
+		id="insertMemberStateParameter">
+		<parameter property="memNo" javaType="int"
+			jdbcType="INTEGER" mode="IN" />
+		<parameter property="reason" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="withdrawDate" javaType="string"
+			jdbcType="VARCHAR" mode="IN" />
+	</parameterMap>
+	<insert id="insertMemberState" parameterType="MemberStateVo"
+		parameterMap="insertMemberStateParameter">
+		INSERT INTO memberstate (mb_no, ms_reason, ms_datetime)
+		VALUES (#{memNo}, #{reason}, DATE_FORMAT(now(), '%Y/%m/%d %H:%i:%s'))
+	</insert>
+
+	<!-- 강제 탈퇴 정보 수정 -->
+	<insert id="updateMemberState" parameterType="MemberStateVo"
+		parameterMap="insertMemberStateParameter">
+		UPDATE memberstate SET reason = #{reason} WHERE mb_no =
+		#{memNo}
+	</insert>
+
+	<!-- 강제 탈퇴 정보 삭제 -->
+	<insert id="delectMemberState" parameterType="int">
+		DELECT FROM
+		memberstate WHERE memNo = #{memNo}
+	</insert>
+
+</mapper>

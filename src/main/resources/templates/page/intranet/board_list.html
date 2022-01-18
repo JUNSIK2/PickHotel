@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/admin_layout}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+
+<div layout:fragment="page-title">게시판 관리</div>
+<div layout:fragment="content">
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <div class="dataTables_wrapper dt-bootstrap4" id="dataTable_wrapper">
+                    <div class="row text-right">
+                        <div class="col-sm-12">
+                            <a class="btn btn-primary" style="float: right" th:href="@{/intranet/board/write}">게시판
+                                등록</a>
+                        </div>
+                    </div>
+                    <form id="boardList">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table aria-describedby="dataTable_info" cellspacing="0"
+                                       class="table table-bordered dataTable"
+                                       id="dataTable" role="grid" style="width: 100%;"
+                                       width="100%">
+                                    <thead>
+                                    <tr role="row">
+                                        <th>#</th>
+                                        <th>게시판ID</th>
+                                        <th>게시판 명</th>
+                                        <th>게시판 그룹</th>
+                                        <th>접근등급</th>
+                                        <th>게시판 유형</th>
+                                        <th>게시글 갯수</th>
+                                        <th>비고</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="board : ${boardList}">
+                                        <td>
+                                            <span th:text="${boardStat.count}"></span>
+                                        </td>
+                                        <td th:text="${board.boardNo}"></td>
+                                        <td>
+                                            <a th:href="@{/intranet/board/}+${board.boardNo}">
+                                                <span th:text="${board.title}"></span>
+                                            </a>
+                                        </td>
+                                        <td th:text="${board.groupName}"></td>
+                                        <td th:text="${board.boGrade}"></td>
+                                        <td th:text="${board.type}"></td>
+                                        <td th:text="${board.postCount}"></td>
+                                        <td>
+                                            <a class="btn btn-primary btn-sm moveBtn"
+                                               th:href="@{/boardList/{boardNo}(boardNo=${board.boardNo})}"
+                                               type="button">게시판이동 </a>
+                                            <button class="btn btn-primary btn-sm delectBtn" type="button">삭제
+                                            </button>
+                                            <input class="boardNo" name="boardNo" th:value="${board.boardNo}"
+                                                   type="hidden">
+                                        </td>
+
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <script>
+                                $(function () {
+                                    $(".delectBtn").on('click', function () {
+
+                                        if (confirm("해당 게시판을 정말 삭제하시겠습니까?")) {
+                                            let boardNo = $(this).next(".boardNo").val();
+
+                                            $.ajax({
+                                                url    : '/intranet/board_delete/' + boardNo,
+                                                type   : 'GET',
+                                                success: function (data) {
+                                                    if (data == "success") {
+                                                        location.reload();
+                                                    } else {
+                                                        alert("해당 게시판에 포함된 게시글이 있습니다.");
+                                                        return false;
+                                                    }
+                                                },
+                                                error  : function (err) {
+                                                    console.log(err);
+                                                }
+
+                                            });
+                                        }
+                                        ;
+                                    });
+                                });
+                            </script>
+                        </div>
+                    </form>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+                                <th:block layout:fragment="paging" th:include="@{/fragment/pagination}"></th:block>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

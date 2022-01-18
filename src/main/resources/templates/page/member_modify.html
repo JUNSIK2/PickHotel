@@ -1,0 +1,280 @@
+<html layout:decorate="~{layout/user_layout}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<div layout:fragment="content">
+    <div class="row" id="page-title">
+        <h1 class="text-center">정보수정</h1>
+    </div>
+    <form class="row justify-content-center align-self-center form-small d-flex" id="memberModifyForm" method="post"
+          th:action="@{/member/modify}" th:object=${memberDetail}>
+        <h2 class="text-center page-title"></h2>
+        <div class="mb-3">
+            <label for="id">ID</label>
+            <div th:text="*{id}"></div>
+            <input name="memNo" th:value="*{memNo}" type="hidden">
+        </div>
+        <div class="mb-3">
+            <label for="nick">닉네임</label>
+            <div class="input-group">
+                <input class="form-control" id="nick" name="nick" placeholder="닉네임(4~12자)" th:value="*{nick}"
+                       type="text">
+            </div>
+            <div class="check_font" id="nick_check"></div>
+
+        </div>
+        <div class="mb-3">
+            <label for="name">이름</label> <input class="form-control" id="name" name="name" th:value="*{name}"
+                                                type="text">
+        </div>
+
+        <div class="mb-3">
+            <label for="pwd">비밀번호</label> <input class="form-control" id="pwd" name="pwd" type="password">
+        </div>
+
+        <div class="mb-3">
+            <label for="newpwd">새 비밀번호</label> <input class="form-control" id="newpwd" name="newpwd" type="password">
+            <div class="pw-condition">
+                <ul class="p-2">
+                    <li class="pw-condition-1"><i aria-hidden="true" class="fa fa-check-circle-o"></i>숫자,영문,특수문자만 입력 가능
+                    </li>
+                    <li class="pw-condition-2"><i aria-hidden="true" class="fa fa-check-circle-o"></i>비밀번호에 6자리 ~ 20자리
+                        이내
+                    </li>
+                    <li class="pw-condition-3"><i aria-hidden="true" class="fa fa-check-circle-o"></i>영문 대문자를 1자 이상</li>
+                    <li class="pw-condition-4"><i aria-hidden="true" class="fa fa-check-circle-o"></i>특수문자를 2자 이상</li>
+                </ul>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="newpwdCheck">새 비밀번호 확인</label> <input class="form-control" id="newpwdCheck" name="newpwdCheck"
+                                                              type="password">
+        </div>
+
+        <div class="mb-3">
+            <label for="gender">성별</label>
+            <div class="form-check">
+                <input class="form-check-input" id="genderM" name="gender" th:checked="*{gender == 'M'}" type="radio"
+                       value="M"><label class="form-check-label" for="genderM">남성</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" id="genderF" name="gender" th:checked="*{gender == 'F'}" type="radio"
+                       value="F"><label class="form-check-label" for="genderF">여성</label>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="hp">휴대 전화</label> <input class="form-control" id="hp" name="hp" placeholder="010-0000-0000"
+                                                 th:value="*{hp}"
+                                                 type="text">
+        </div>
+        <div class="mb-3">
+            <label for="birth">생년월일</label> <input class="form-control" id="birth" name="birth" th:value="*{birth}"
+                                                   type="date">
+        </div>
+        <input class="btn btn-lg btn-primary mb-4 mt-3 w-100" id="submitBtn" type="button" value="정보 수정"/>
+        <div class="leave_box">
+            <div class="leave">
+                회원탈퇴를 원하신다면 회원탈퇴를 클릭해주세요. <a href="#" id="withDrawBtn">회원탈퇴</a>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        $(document).ready(function () {
+            let orgNick = $("input[name=nick]").val();
+            // 닉네임 중복 검사(1 = 중복 / 0 = 비중복)
+            $("#nick").blur(function () {
+                const nick = $("input[name=nick]").val();
+                if (nick != orgNick) { //수정된 경우에만 닉네임 중복 검사 실행
+                    $.ajax({
+                        url    : '/nickCheck?nick=' + nick,
+                        type   : 'GET',
+                        success: function (data) {
+                            const result = data;
+                            if (nick == "") {
+                                $("#nick_check").text("");
+                            } else if (result.overLapNick == 1) {
+                                $("#nick_check").text("사용중인 닉네임 입니다.");
+                                $("#nick_check").css("color", "red");
+                            } else {
+                                $("#nick_check").text("사용 가능한 닉네임입니다.");
+                                $("#nick_check").css("color", "green");
+                            }
+                        },
+                        error  : function () {
+                            console.log("실패");
+                        }
+                    });
+                } else {
+                    $("#nick_check").text("");
+                }
+            });
+
+            //빈칸 검사
+            function noSpaceCheck(obj) {
+                var str_space = /\s/;
+                if (str_space.exec(obj.val())) {
+                    alert("해당 항목에는 공백을 사용할수 없습니다.\n\n공백은 자동적으로 제거 됩니다.");
+                    obj.focus();
+                    var val = obj.val().replace(' ', '');
+                    obj.val(val);
+                    return false;
+                }
+            }
+
+            $('input').on('keyup', function (e) {
+                var el = $(e.currentTarget);
+                noSpaceCheck(el);
+            });
+
+            //새 비밀번호 양식 검사
+            var checkCount = 0;
+
+            function ValidatePassword() {
+                checkCount = 0;
+                var rules = [{
+                    Pattern: "[0-9a-zA-Z.;\-]",
+                    Target : "pw-condition-1"
+                },
+                    {
+                        Pattern: "[A-Z]",
+                        Target : "pw-condition-3"
+                    }, {
+                        Pattern: "[!@@#$%^&*]",
+                        Target : "pw-condition-4"
+                    }
+                ];
+                var password = $(this).val();
+
+                if (password.length > 6 && password.length < 20) {
+                    $(".pw-condition-2").removeClass("off");
+                    $(".pw-condition-2").addClass("on");
+                    checkCount++;
+                } else {
+                    $(".pw-condition-2").removeClass("on");
+                    $(".pw-condition-2").addClass("off");
+                    checkCount--;
+                }
+
+                for (var i = 0; i < rules.length; i++) {
+                    if (new RegExp(rules[i].Pattern).test(password)) {
+                        $("." + rules[i].Target).removeClass("off");
+                        $("." + rules[i].Target).addClass("on");
+                        checkCount++;
+                    } else {
+                        $("." + rules[i].Target).removeClass("on");
+                        $("." + rules[i].Target).addClass("off");
+                        checkCount--;
+                    }
+                }
+                if (checkCount == 4) {
+                    $("#newpwd").removeClass("off");
+                } else {
+                    $("#newpwd").addClass("off");
+                }
+                return checkCount;
+            }
+
+            checkCount = $("#newpwd").on('keyup', ValidatePassword);
+
+            //새 비밀번호 확인 동일 검사
+            function SamePassword(el) {
+                if ($.trim($("#newpwd").val()) == $.trim(el.val())) {
+                    $('#newpwdCheck').removeClass("off");
+                    $('#newpwdCheck').addClass("on");
+                } else {
+                    $('#newpwdCheck').removeClass("on");
+                    $('#newpwdCheck').addClass("off");
+                }
+            }
+
+            $('#newpwdCheck').on('keyup', function (e) {
+                var el = $(e.currentTarget);
+                SamePassword(el);
+            });
+
+            //폼 유효성 검사
+            function memberReg() {
+
+                if ($.trim($('#nick').val()) == '') {
+                    alert("닉네임을 입력하십시오.");
+                    $('#nick').focus();
+                    return false;
+                }
+                if ($.trim($('#name').val()) == '') {
+                    alert("이름을 입력하십시오.");
+                    $('#name').focus();
+                    return false;
+                }
+                if ($.trim($('#pwd').val()) == '') {
+                    alert("비밀번호를 입력하십시오.");
+                    $('#pwd').focus();
+                    return false;
+                }
+
+                if ($.trim($('#newpwd').val()) != '') {
+                    if ($.trim($('#newpwdCheck').val()) == '') {
+                        alert("새 비밀번호 확인를 입력하시오.");
+                        $('#newpwd').focus();
+                        return false;
+                    }
+                    if (checkCount != 4) {
+                        alert("새 비밀번호 조건을 충족하시오.");
+                        $('#newpwd').focus();
+                        return false;
+                    }
+
+                    if ($.trim($('#newpwd').val()) != $.trim($('#newpwdCheck').val())) {
+                        alert("새 비밀번호 확인이 옳지 않습니다.");
+                        $('#newpwd').focus();
+                        return false;
+                    }
+                }
+
+                if (!($('#genderM')[0].checked == true || $('#genderF')[0].checked == true)) {
+                    alert("성별을 선택하십시오.");
+                    return false;
+                }
+                if (($.trim($('#hp').val()) == '')) {
+                    alert("휴대전화번호를 입력하십시오.");
+                    $('#hp').focus();
+                    return false;
+                } else {
+                    var regPhone = /(01[0|1|6|9|7])[-](\d{3}|\d{4})[-](\d{4}$)/g;
+
+                    if (!regPhone.test($.trim($('#hp').val()))) {
+                        alert("010-0000-000형식으로 입력하십시오.");
+                        $('#phone').focus();
+                        return false;
+
+                    }
+                }
+                if (($.trim($('#birth').val()) == '')) {
+                    alert("생년월일을 입력하십시오.");
+                    $('#birth').focus();
+                    return false;
+                }
+
+                //비밀번호 변경을 하려는 경우
+                if (checkCount == 4) {
+                    if (confirm("비밀번호를 변경하시겠습니까?") == false) {
+                        return false;
+                    }
+
+                }
+                $('form').submit();
+            };
+            $('#submitBtn').on('click', function (e) {
+                e.preventDefault()
+                memberReg();
+            });
+            $('#withDrawBtn').on('click', function (e) {
+                e.preventDefault()
+
+                var memNo = $(memNo).val();
+                if (confirm("정말로 탈퇴하시나요?\n슬프지만 다음에 또 만나요😢") == true) {
+                    location.href = '/member/withdarw'
+                }
+            });
+        });
+    </script>
+</div>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link rel="shortcut icon" th:href="@{/img/favicon.ico}">
+    <title layout:title-pattern="$LAYOUT_TITLE : $CONTENT_TITLE">PickHotel Intranet</title>
+    <!-- 공통 CSS 삽입 -->
+    <th:block layout:fragment="css" th:include="@{/fragment/css}"></th:block>
+    <!-- 관리자 CSS 삽입 -->
+    <link rel="stylesheet" th:href="@{/css/datatables/dataTables.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{/css/sb-admin-2.min.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+
+</head>
+
+<body id="page-top">
+<!-- 공통 스크립트 삽입 -->
+<th:block layout:fragment="_script" th:include="@{/fragment/_script}"></th:block>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <th:block layout:fragment="admin_side" th:include="@{/fragment/admin_side}"></th:block>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div class="d-flex flex-column" id="content-wrapper">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <th:block layout:fragment="admin_header" th:include="@{/fragment/admin_header}"></th:block>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Page Heading -->
+                <h1 class="h3 mb-4 text-gray-800" layout:fragment="page-title">title</h1>
+                <div layout:fragment="content"></div>
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <th:block layout:fragment="admin_footer" th:include="@{/fragment/admin_footer}"></th:block>
+        <!-- End of Footer -->
+
+        <th:block layout:fragment="live_alarm" sec:authorize="isAuthenticated()"
+                  th:include="@{/fragment/live_alarm}"></th:block>
+    </div>
+    <!-- End of Content Wrapper -->
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- 공통 스크립트 푸터 삽입 -->
+<th:block layout:fragment="script" th:include="@{/fragment/script}"></th:block>
+
+<!-- 관리자 스크립트 -->
+<script th:src="@{/js/bootstrap.bundle.min.js}" type="text/javascript"></script>
+<script th:src="@{/css/datatables/jquery.dataTables.min.js}" type="text/javascript"></script>
+<script th:src="@{/css/datatables/dataTables.bootstrap4.min.js}" type="text/javascript"></script>
+<script th:src="@{/js/sb-admin-2.min.js}" type="text/javascript"></script>
+
+</body>
+
+</html>

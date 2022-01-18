@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CommentDao">
+	<resultMap type="CommentVo" id="CommentResultMap">
+		<result property="comNo" javaType="int" column="co_no" jdbcType="INTEGER" />
+		<result property="postNo" javaType="int" column="post_no" jdbcType="INTEGER" />
+		<result property="memNo" javaType="int" column="co_mb_no" jdbcType="INTEGER" />
+		<result property="content" javaType="string" column="co_content" jdbcType="VARCHAR" />
+		<result property="order" javaType="int" column="co_order" jdbcType="INTEGER" />
+		<result property="parents" javaType="int" column="co_p_no" jdbcType="INTEGER" />
+		<result property="comClass" javaType="int" column="co_class" jdbcType="INTEGER" />
+		<result property="parentMemNo" javaType="int" column="co_p_mb_no" jdbcType="INTEGER" />
+		<result property="isblind" javaType="int" column="co_isblind" jdbcType="INTEGER" />
+		<result property="writeday" javaType="string" column="co_datetime" jdbcType="DATE" />
+		<result property="memNick" javaType="string" column="mb_nick" jdbcType="VARCHAR" />
+		<result property="isDelect" javaType="int" column="isDelect" jdbcType="INTEGER" />
+	</resultMap>
+	<!--댓글 목록 조회-->
+	<select id="selectCommentList" parameterType="int" resultMap="CommentResultMap">
+		SELECT IFNULL(b.result,0) AS isDelect, a.co_no, a.post_no, a.co_mb_no, a.co_p_no, a.co_order, a.co_content, a.co_class, a.co_order, a.co_p_no, a.co_p_mb_no, a.co_isblind,
+			   DATE_FORMAT(a.co_datetime, '%Y/%m/%d %h:%m:%s') as co_datetime, mb_nick
+		FROM comment a
+				 LEFT JOIN
+			 (SELECT 1 AS result, a.co_p_no, min(a.co_order) AS minOrder  from
+				 (SELECT if(result = 1, result, 0) AS result, b.* from
+					 (SELECT co_p_no, 1 AS result from comment
+					  WHERE post_no = ${postNo}
+					  GROUP BY co_p_no
+					  having avg(co_class) = 1
+					 ) a
+						 right JOIN comment b ON b.co_p_no = a.co_p_no) a
+			  WHERE a.result = 1
+			  GROUP BY a.co_p_no) b
+			 ON a.co_p_no = b.co_p_no AND a.co_order = b.minOrder
+				 LEFT JOIN member ON a.co_mb_no = member.mb_no
+		WHERE post_no = ${postNo}
+		ORDER BY co_p_no desc, co_class, co_order
+	</select>
+
+	<!--댓글 상세 조회-->
+	<select id="selectComment" parameterType="int" resultMap="CommentResultMap">
+		SELECT co_no, post_no, co_mb_no, co_p_no, co_order, co_content, co_class, co_order, co_p_no, co_p_mb_no, co_isblind,
+		DATE_FORMAT(co_datetime, '%Y/%m/%d %h:%m:%s') as co_datetime, mb_nick 
+		FROM comment LEFT JOIN member ON comment.co_mb_no = member.mb_no 
+		WHERE co_no = ${comNo}
+	</select>
+
+	<!-- 댓글 마지막 PK 조회-->
+	<select id="selectCommentMax" resultType="int">
+		SELECT IFNULL(MAX(co_no),0) FROM comment
+	</select>
+
+	<!-- 재댓글 마지막 PK 조회-->
+	<select id="selectCommentOrder" parameterType="int" resultType="int">
+		SELECT IFNULL(MAX(co_order),0) FROM comment where co_p_no = #{parents}
+	</select>
+
+	<!--댓글 추가-->
+	<insert id="insertComment" parameterMap="CommentParameterMap" useGeneratedKeys="true" keyProperty="comNo">
+		INSERT INTO comment (co_no, post_no, co_mb_no, co_content, co_order, co_p_no, co_class, co_p_mb_no, co_datetime) 
+		VALUES (#{comNo}, #{postNo}, #{memNo}, #{content}, #{order}, #{parents}, #{comClass}, #{parentMemNo}, now()) 
+	</insert>
+
+	<!--댓글 수정-->
+	<parameterMap id="CommentParameterMap" type="CommentVo" >
+		<parameter property="comNo" javaType="int" jdbcType="INTEGER" />
+		<parameter property="content" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="writeday" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="memNo" javaType="int" jdbcType="INTEGER" />
+		<parameter property="memNick" javaType="string" jdbcType="VARCHAR" />
+	</parameterMap>
+	<update id="updateComment" parameterMap="CommentParameterMap">
+		UPDATE comment SET co_content = #{content} WHERE co_no = #{comNo}
+	</update>
+
+	<!--댓글 삭제-->
+	<delete id="deleteComment" parameterType="int">
+		DELETE FROM comment WHERE co_no = #{comNo}
+	</delete>
+</mapper>
+
+
+
+
+
+
+

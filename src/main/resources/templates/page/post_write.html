@@ -1,0 +1,908 @@
+<html layout:decorate="~{layout/user_layout}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<div class="board-page" id="postWrite" layout:fragment="content">
+    <div class="row" id="page-title">
+        <h1 class="text-center">게시글 작성</h1>
+    </div>
+    <form accept-charset="UTF-8" enctype="multipart/form-data" id="saveAll" method="POST"
+          th:action="@{/member/uploadFile}">
+        <div class="mb-2">
+            <select aria-label="Default select example" class="form-select" id="bordNo" name="bordNo"
+                    onchange="OnChange('click');">
+                <div th:each="board : ${boardList}">
+					<span th:if="${board.key}==${defaultListNo}">
+						<option selected="${defaultListNo}" th:value="${board.key}"><span
+                                th:text="${board.value}"></span></option>
+					</span>
+                    <span th:unless="${board.key}==${defaultListNo}">
+						<option th:value="${board.key}"><span th:text="${board.value}"></span></option>
+					</span>
+                </div>
+            </select>
+        </div>
+        <div class="mb-2">
+            <label class="visually-hidden" for="subject">제목</label>
+            <input class="form-control" id="subject" name="subject" placeholder="제목을 입력하세요" required type="text">
+        </div>
+
+        <div class="mb-5 map_wrap" th:if="${boardType == 'review'}">
+            <div id="map" style="height:100%;position:relative;overflow:hidden;"></div>
+            <div class="bg_white" id="menu_wrap">
+                <div class="option">
+                    <div class="search-box">
+                        <i aria-hidden="true" class="fa fa-search"></i>
+                        <input id="keyword" placeholder="숙소 검색" size="15" type="text">
+                        <button class="btn btn-primary btn-sm" onclick="searchPlaces(); return false;" type="button">
+                            검색
+                        </button>
+                    </div>
+                </div>
+                <ul id="placesList"></ul>
+                <div id="pagination"></div>
+            </div>
+        </div>
+        <script>
+            document.querySelector('#keyword').addEventListener('keyup', (e) => {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    searchPlaces()
+                }
+            });
+        </script>
+        <div class="mb-4 mapInfo">
+            <input id="place_name" name="place_name" readonly type="hidden">
+            <input id="road_address_name" name="road_address_name" readonly type="hidden">
+            <input id="address_name" name="address_name" type="hidden">
+            <input id="category_group_code" name="category_group_code" type="hidden">
+            <input id="category_group_name" name="category_group_name" type="hidden">
+            <input id="category_name" name="category_name" type="hidden">
+            <input id="distance" name="distance" type="hidden">
+            <input id="id" name="id" type="hidden">
+            <input id="phone" name="phone" type="hidden">
+            <input id="place_url" name="place_url" type="hidden">
+            <input id="x" name="x" type="hidden">
+            <input id="y" name="y" type="hidden">
+        </div>
+        <div class="review">
+            <div class="mb-5">
+                <div class="fs-5 fw-bold mb-4 text-center">숙소가 어땠는지 알려주세요!
+                    <p class="fs-6 fw-light" style="color: #696969;">당신의 리뷰가 누군가에게는 큰 도움이 됩니다</p>
+                </div>
+                <ul class="star-area">
+                    <li>
+                        <label>위치</label>
+                        <div class="star-box">
+                            <div class="star-container">
+                                <input class="star-check" name="showRateLoc" onclick="getRateLoc()" title="5"
+                                       type="radio"
+                                       value="5"/>
+                                <input class="star-check" name="showRateLoc" onclick="getRateLoc()" title="4"
+                                       type="radio"
+                                       value="4"/>
+                                <input class="star-check" name="showRateLoc" onclick="getRateLoc()" title="3"
+                                       type="radio"
+                                       value="3"/>
+                                <input class="star-check" name="showRateLoc" onclick="getRateLoc()" title="2"
+                                       type="radio"
+                                       value="2"/>
+                                <input class="star-check" name="showRateLoc" onclick="getRateLoc()" title="1"
+                                       type="radio"
+                                       value="1"/>
+                            </div>
+                        </div>
+                        <input id="rateLoc" name="rateLoc" type="hidden">
+                        <script>
+                            function getRateLoc() {
+                                var rateLocNodeList = document.getElementsByName("showRateLoc");
+
+                                rateLocNodeList.forEach((node) => {
+                                    if (node.checked) {
+                                        document.getElementById("rateLoc").value = node.value;
+                                    }
+                                })
+                            }
+                        </script>
+                    </li>
+                    <li>
+                        <label>위생</label>
+                        <div class="star-box">
+                            <input id="rateClean" name="rateClean" type="hidden">
+                            <div class="star-container">
+                                <input class="star-check" name="showRateClean" onclick="getRateClean()" title="5"
+                                       type="radio"
+                                       value="5"/>
+                                <input class="star-check" name="showRateClean" onclick="getRateClean()" title="4"
+                                       type="radio"
+                                       value="4"/>
+                                <input class="star-check" name="showRateClean" onclick="getRateClean()" title="3"
+                                       type="radio"
+                                       value="3"/>
+                                <input class="star-check" name="showRateClean" onclick="getRateClean()" title="2"
+                                       type="radio"
+                                       value="2"/>
+                                <input class="star-check" name="showRateClean" onclick="getRateClean()" title="1"
+                                       type="radio"
+                                       value="1"/>
+                            </div>
+                        </div>
+                        <script>
+                            function getRateClean() {
+                                var rateLocNodeList = document.getElementsByName("showRateClean");
+
+                                rateLocNodeList.forEach((node) => {
+                                    if (node.checked) {
+                                        document.getElementById("rateClean").value = node.value;
+                                    }
+                                })
+                            }
+                        </script>
+                    </li>
+                    <li>
+                        <label>의사소통</label>
+                        <div class="star-box">
+                            <div class="star-container">
+                                <input class="star-check" name="showRateComu" onclick="getRateComu()" title="5"
+                                       type="radio"
+                                       value="5"/>
+                                <input class="star-check" name="showRateComu" onclick="getRateComu()" title="4"
+                                       type="radio"
+                                       value="4"/>
+                                <input class="star-check" name="showRateComu" onclick="getRateComu()" title="3"
+                                       type="radio"
+                                       value="3"/>
+                                <input class="star-check" name="showRateComu" onclick="getRateComu()" title="2"
+                                       type="radio"
+                                       value="2"/>
+                                <input class="star-check" name="showRateComu" onclick="getRateComu()" title="1"
+                                       type="radio"
+                                       value="1"/>
+                            </div>
+                        </div>
+                        <input id="rateComu" name="rateComu" type="hidden">
+                        <script>
+                            function getRateComu() {
+                                var rateLocNodeList = document.getElementsByName("showRateComu");
+
+                                rateLocNodeList.forEach((node) => {
+                                    if (node.checked) {
+                                        document.getElementById("rateComu").value = node.value;
+                                    }
+                                })
+                            }
+                        </script>
+                    </li>
+                    <li>
+                        <label>가성비</label>
+                        <div class="star-box">
+                            <div class="star-container">
+                                <input class="star-check" name="showRateChip" onclick="getRateChip()" title="5"
+                                       type="radio"
+                                       value="5"/>
+                                <input class="star-check" name="showRateChip" onclick="getRateChip()" title="4"
+                                       type="radio"
+                                       value="4"/>
+                                <input class="star-check" name="showRateChip" onclick="getRateChip()" title="3"
+                                       type="radio"
+                                       value="3"/>
+                                <input class="star-check" name="showRateChip" onclick="getRateChip()" title="2"
+                                       type="radio"
+                                       value="2"/>
+                                <input class="star-check" name="showRateChip" onclick="getRateChip()" title="1"
+                                       type="radio"
+                                       value="1"/>
+                            </div>
+                        </div>
+                        <input id="rateChip" name="rateChip" type="hidden">
+                        <script>
+                            function getRateChip() {
+                                var rateLocNodeList = document.getElementsByName("showRateChip");
+
+                                rateLocNodeList.forEach((node) => {
+                                    if (node.checked) {
+                                        document.getElementById("rateChip").value = node.value;
+                                    }
+                                })
+                            }
+                        </script>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="mb-4">
+                <p class="m-0"><label for="visitDate">방문 날짜<span class="chose">(선택)</span></label></p>
+                <input id="visitDate" name="visitDate" type="date"/>
+            </div>
+            <div class="mb-4">
+                <label for="recommendPlace">주변 맛집과 관광지를 추천해주세요<span class="chose">(선택)</span></label>
+                <input class="form-control" id="recommendPlace" name="recommendPlace"
+                       placeholder="예) 유명한 곱창 골목이 있어요, 가까운 곳에 절이 있어요"
+                       type="text">
+            </div>
+            <div class="mb-4">
+                <label for="notRecommendPerson">이런 분들께는 비추에요<span class="chose">(선택)</span></label>
+                <input class="form-control" id="notRecommendPerson" name="notRecommendPerson"
+                       placeholder="예) 위생에 예민하신 분들은 피해주세요"
+                       type="text">
+            </div>
+        </div>
+        <div>
+            <label class="visually-hidden" for="content">내용</label>
+            <textarea id="content" name="content" placeholder="내용을 입력해 주세요"></textarea>
+        </div>
+        <div class="mb-4 tag-box">
+            <label class="visually-hidden" for="tag-input">태그</label>
+            <input id="fake-tag" name="tag" type="hidden">
+            <div class="textarea_tag">
+                <span class="wrap_tag_input">
+                <input autocomplete="off" class="tag_input" id="tag-input" placeholder="태그 입력 (최대 30개)"
+                       type="text"></span>
+            </div>
+        </div>
+
+        <div class="mb-4 photos">
+            <p class="m-0"><label for="images">사진<span class="chose">(선택)</span></label></p>
+            <p class="m-0 notion">3MB 이하</p>
+            <input accept="image/*" id="images" multiple name="images" type="file"/>
+            <div class="photogallery"></div>
+        </div>
+
+        <div class="mb-4 videos">
+            <p class="m-0"><label for="videos">동영상<span class="chose">(선택)</span></label></p>
+            <p class="m-0 notion">.mp4, .webm, .ogg, .mov만 사용가능, 30MB 이하</p>
+            <input accept="video/*" id="videos" multiple name="videos" type="file"/>
+            <div class="videogallery"></div>
+        </div>
+        <div class="text-center">
+            <button class="btn btn-primary btn-lg" id="saveBtn" onclick="submitCheck()" type="button">등록</button>
+        </div>
+    </form>
+
+    <script th:src="@{/js/ckeditor/ckeditor.js}"></script>
+    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8a9a9c523810d54958387638605f8fcf&libraries=services"
+            type="text/javascript"></script>
+
+    <script>
+        //태그 JS시작
+        $("#tag-input").keydown(function (event) {
+
+
+            let rs = true;
+            let msg = "";
+
+            let val = $(this).val();
+
+            //스페이스나 엔터 클릭시 태그 추가
+            if (event.keyCode == '13' || event.keyCode == '32') {
+                event.preventDefault();
+
+                if (val.trim() == "") {
+                    return false;
+                }
+
+                const special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+                if (special_pattern.test(val) == true) {
+
+                    rs = false;
+                    msg = "특수문자는 태그로 등록할 수 없습니다.";
+                } else {
+                    if ($("#tag-item-" + val).length > 0) {
+                        rs = false;
+                        msg = "이미 등록된 태그입니다.";
+                    }
+                }
+
+                if ($(".textarea_tag .tag").length > 30) {
+
+                    rs = false;
+                    msg = "태그는 최대 30개까지 입력할 수 있습니다.";
+                }
+                if (rs === false) {
+                    $("#tag-input")
+                    if ($('#dont-tag').length > 0) {
+                        $('#dont-tag').remove();
+                    }
+
+                    $(".textarea_tag").after(`<div id='dont-tag'>${msg}</div>`);
+                    setTimeout(function () {
+                        $('#dont-tag').remove();
+                    }, 3000);
+                    return false;
+                } else {
+                    const htmlstr = `<span aria-label="${val}" class="tag" id="tag-item-${val}">#${val}</span>`;
+                    $(".wrap_tag_input").before(htmlstr);
+                    $(this).val("");
+                }
+            }
+        });
+
+        $(document).keydown(function (event) {
+
+            let val = $("#tag-input").val();
+            let prev = $(".textarea_tag .tag.active").prev(".tag");
+            let next = $(".textarea_tag .tag.active").next(".tag");
+
+            // 삭제
+            if (event.keyCode == '8') {
+                if ($(".textarea_tag .tag.active").length > 0) {
+                    $(".textarea_tag .tag.active").remove();
+                    if (prev.length > 0) {
+                        prev.addClass("active");
+                    } else {
+                        next.addClass("active");
+                    }
+                } else {
+                    if (val == "") {
+                        $(".textarea_tag .tag").removeClass("active");
+                        $(".textarea_tag .tag").last().addClass("active");
+                    }
+                }
+            }
+
+            //왼쪽
+            if (event.which == '37' || event.which == '39') {
+                if ($(".textarea_tag .tag.active").length > 0) {
+
+                    //왼쪽
+                    if (event.which == '37') {
+                        if (prev.length > 0) {
+                            $(".textarea_tag .tag.active").removeClass("active");
+                            prev.addClass("active");
+                        }
+                    } else {
+                        if (next.length == 0) {
+                            $("#tag-input").focus();
+                        } else {
+
+                            $(".textarea_tag .tag.active").removeClass("active");
+                            next.addClass("active");
+                        }
+                    }
+                } else {
+                    if ($('#tag-input').is(':focus') == true) {
+                        if (val == "") {
+                            if (event.which == '37') {
+                                $(".textarea_tag .tag").removeClass("active");
+                                $(".textarea_tag .tag").last().addClass("active");
+                                $("#tag-input").blur();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        $(document).on('click', '.textarea_tag .tag', function () {
+            $(".textarea_tag .tag").removeClass("active");
+            if ($(this).hasClass("active")) {
+                $(this).removeClass("active")
+            } else {
+                $(this).addClass("active")
+            }
+        });
+
+        $(document).on('click', '#tag-input', function () {
+            $(".textarea_tag .tag").removeClass("active");
+        });
+        $(document).on('focus', '#tag-input', function () {
+            $(".textarea_tag .tag").removeClass("active");
+        });
+        //태그 JS끝
+    </script>
+
+    <script type="text/javascript">
+
+        //페이지 로딩시 사용성 체크 사용
+        window.onload = function () {
+            OnChange();
+            CKEDITOR.replace('content');
+        }
+
+        // //onBeforeUnload 이벤트 지정
+        // $(window).bind('beforeunload', function () {
+        //     //페이지 변경이 있었는지 체크..
+        //     var isChanged = true;
+        //
+        //     //출력할 내용을 Return 해주면 확인 창이 뜨게 됩니다.
+        //     if (isChanged){
+        //         return '작성중인 글이 존재합니다. 페이지를 나가시겠습니까?';
+        //         //확인 창을 띄우지 않으려면 아무 내용도 Return 하지 마세요!! (Null조차도)
+        //     }
+        // });
+        //
+        // //Form Submit 등 onBeforeUnload Event가 발생하길 원하지 않는 경우, 이벤트 해제
+        // $("#saveAll").submit(function () {
+        //     $(window).unbind('beforeunload');
+        // });
+        // //작성중인 창 떠나기전 확인 끝
+
+        // 사용성 체크
+        function OnChange(type) {
+
+            // if (type == "click") {
+            //     const con = confirm("선택한 게시판의 글양식이 본문에 추가됩니다. 계속 하시겠습니까?");
+            //     if (con == false) {
+            //         return false;
+            //     }
+            // }
+            var bordNoSelect = document.getElementById("bordNo").options[document.getElementById("bordNo").selectedIndex].value;
+            $.ajax({
+                url    : '/board/' + bordNoSelect + '/post/checkUse',
+                type   : 'GET',
+                success: function (data) {
+                    const result = data;
+                    if (result.board.usePhoto == 1) {
+                        $('.photos').show();
+                    } else {
+                        $('.photos').hide();
+                    }
+
+                    if (result.board.useVideo == 1) {
+                        $('.videos').show();
+                    } else {
+                        $('.videos').hide();
+                    }
+
+                    if (result.board.type == "review") {
+                        $('.review').show();
+                        $('.mapInfo').show();
+                        $('.map_wrap').show();
+
+                    } else {
+                        $('.review').hide();
+                        $('.mapInfo').hide();
+                        $('.map_wrap').hide();
+                    }
+                },
+                error  : function () {
+                    console.log("failed");
+                }
+            });
+        }
+
+        function submitCheck() {
+            var bordNoSelect = document.getElementById("bordNo").options[document.getElementById("bordNo").selectedIndex].value;
+            var place_name = document.getElementById('place_name').value;
+            var subject = document.getElementById('subject').value;
+            var rateLoc = document.getElementById("rateLoc").value;
+            var rateClean = document.getElementById("rateClean").value;
+            var rateComu = document.getElementById("rateComu").value;
+            var rateChip = document.getElementById("rateChip").value;
+            var content = CKEDITOR.instances['content'].getData();
+            $.ajax({
+                url    : '/board/' + bordNoSelect + '/post/checkUse',
+                type   : 'GET',
+                success: function (data) {
+                    var result = data;
+                    if (result.board.type == "review") {
+                        if (!place_name.replace(/^\s+|\s+$/g, '')) {
+                            alert('리뷰를 남기실 숙소를 지도에서 선택해주세요!');
+                            return false;
+                        }
+
+                        if (rateLoc == "" || rateClean == "" || rateComu == "" || rateChip == "") {
+                            alert("평가하지 않은 항목이 있습니다.");
+                            return false;
+                        }
+
+                    }
+                    if (!subject.replace(/^\s+|\s+$/g, '')) {
+                        alert("제목을 입력해주세요");
+                        return false;
+                    }
+
+                    if (!content.replace(/^\s+|\s+$/g, '')) {
+                        alert("내용을 입력해주세요");
+                        return false;
+                    }
+
+                    let tags = [];
+                    $(".textarea_tag .tag").each(function () {
+                        tags.push($(this).attr("aria-label"));
+                    })
+                    document.getElementById('fake-tag').value = tags.toString();
+                    document.getElementById('content').value = content;
+                    document.getElementById('saveAll').submit();
+                },
+                error  : function () {
+                    console.log("failed");
+                }
+            });
+        }
+
+        // 이미지 유효성 검사
+        var sel_files = [];
+
+        $(document).ready(function () {
+            $("#images").on("change", handleImgsFilesSelect);
+        });
+
+        function handleImgsFilesSelect(e) {
+
+            sel_files = [];
+            $(".photogallery").empty();
+
+            var files = e.target.files;
+            var filesArr = Array.prototype.slice.call(files);
+            var sizeCheck = true;
+
+            filesArr.forEach(function (f) {
+                video_files.push(f);
+            });
+
+            filesArr.forEach(function (file) {
+                var fileSize = file.size;
+                var maxSize = 3 * 1024 * 1024;
+
+                if (fileSize > maxSize) {
+                    alert("이미지 사이즈는 3MB 이내로 등록 가능합니다.");
+                    sizeCheck = false;
+
+                    $("#images").val("");
+                    sel_files = [];
+                    $(".photogallery").empty();
+                    return;
+                }
+            });
+
+            if (sizeCheck == true) {
+                filesArr.forEach(function (f) {
+
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        var img_html = "<img src=\"" + e.target.result + "\" />&nbsp;&nbsp;";
+                        $(".photogallery").append(img_html);
+                    }
+                    reader.readAsDataURL(f);
+                });
+            }
+
+        }
+
+        //비디오 유효성 검사
+        var video_files = [];
+
+        $(document).ready(function () {
+            $("#videos").on("change", handleVideosFilesSelect);
+        });
+
+        function handleVideosFilesSelect(e) {
+
+            video_files = [];
+            $(".videogallery").empty();
+
+            var files = e.target.files;
+            var filesArr = Array.prototype.slice.call(files);
+            var fileExtensionCheck = true;
+            var fileSizeCheck = true;
+
+            filesArr.forEach(function (f) {
+                video_files.push(f);
+            });
+
+            video_files.forEach(function (file) {
+                var abc = file.name.lastIndexOf(".");
+                var fileNameLength = file.name.length;
+                var fileExtension = file.name.substring(abc + 1, fileNameLength);
+
+                if (fileExtension == "mov" || fileExtension == "ogg" || fileExtension == "webm" || fileExtension == "mp4") {
+
+                } else {
+                    alert("사용할 수 없는 확장자가 포함되어 있습니다.");
+                    fileExtensionCheck = false;
+
+                    $("#videos").val("");
+                    video_files = [];
+                    $(".videogallery").empty();
+                    return;
+                }
+            });
+
+            video_files.forEach(function (file) {
+                var fileSize = file.size;
+                var maxSize = 30 * 1024 * 1024;
+                if (fileExtensionCheck == true) {
+                    if (file.size > maxSize) {
+                        alert("동영상은 30MB 이내로 등록 가능합니다.");
+                        fileSizeCheck = false;
+
+                        $("#videos").val("");
+                        video_files = [];
+                        $(".videogallery").empty();
+                        return;
+                    }
+                }
+            });
+
+            if (fileExtensionCheck == true && fileSizeCheck == true) {
+                filesArr.forEach(function (f) {
+
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        var video_html = "<video controls>";
+                        video_html += "<source src=\"" + e.target.result + "\" type=\"video/mp4\" />";
+                        video_html += "<source src=\"" + e.target.result + "\" type=\"video/webm\" />";
+                        video_html += "<source src=\"" + e.target.result + "\" type=\"video/ogg\" />";
+                        video_html += "이 동영상은 지원하지 않습니다.</video>&nbsp;&nbsp;"
+                        $(".videogallery").append(video_html);
+                    }
+                    reader.readAsDataURL(f);
+
+                });
+            }
+        }
+
+        //카카오 스크립트
+        // 마커를 담을 배열
+        var markers = [];
+
+        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+            mapOption = {
+                center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+                level : 3 // 지도의 확대 레벨
+            }
+
+        // 지도 생성
+        var map = new kakao.maps.Map(mapContainer, mapOption);
+
+        // HTML의 geolocation 사용가능이면 사용자 위치로 중심 이동
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var lat = position.coords.latitude, // 위도
+                    lon = position.coords.longitude; // 경도
+
+                var locPosition = new kakao.maps.LatLng(lat, lon);
+                map.setCenter(locPosition);
+            });
+
+        }
+
+        // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
+        var infowindow = new kakao.maps.InfoWindow({zIndex: 1});
+
+        // 키워드 검색을 요청하는 함수입니다
+        function searchPlaces() {
+
+            var keyword = document.getElementById('keyword').value;
+
+            if (!keyword.replace(/^\s+|\s+$/g, '')) {
+                alert('키워드를 입력해주세요!');
+                return false;
+            }
+
+            // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다 -> 키워드를 직접 받아 처리를 해줘야함 정보가 없을경우 없다고 알림
+            $.ajax({
+                type   : "GET",
+                url    : "/map/search?query=" + keyword,
+                success: function (data) {
+                    var documentsList = data.mapResponse.documents;
+                    var meta = data.mapResponse.meta;
+                    placesSearchCB(documentsList, meta);
+
+                },
+                error  : function () {
+                    alert("데이터 가져오기 실패");
+                }
+            });
+        }
+
+        // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
+        function placesSearchCB(documentsList, meta) {
+            if (meta.total_count == 0) {
+                alert("검색 정보가 없습니다.");
+                return false;
+            }
+
+            // 검색 목록과 마커를 표출합니다
+            displayPlaces(documentsList);
+
+            // 페이지 번호를 표출합니다
+            // displayPagination(meta);
+        }
+
+        // 검색 결과 목록과 마커를 표출하는 함수입니다
+        function displayPlaces(documentsList) {
+
+            var listEl = document.getElementById('placesList'),
+                menuEl = document.getElementById('menu_wrap'),
+                fragment = document.createDocumentFragment(),
+                bounds = new kakao.maps.LatLngBounds(),
+                listStr = '';
+
+            // 검색 결과 목록에 추가된 항목들을 제거합니다
+            removeAllChildNods(listEl);
+
+            // 지도에 표시되고 있는 마커를 제거합니다
+            removeMarker();
+
+            for (var i = 0; i < documentsList.length; i++) {
+
+                // 마커를 생성하고 지도에 표시합니다
+                var placePosition = new kakao.maps.LatLng(documentsList[i].y, documentsList[i].x),
+                    marker = addMarker(placePosition, i),
+                    itemEl = getListItem(i, documentsList[i]); // 검색 결과 항목 Element를 생성합니다
+
+                // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+                // LatLngBounds 객체에 좌표를 추가합니다
+                bounds.extend(placePosition);
+
+                // 마커와 검색결과 항목에 mouseover 했을때
+                // 해당 장소에 인포윈도우에 장소명을 표시합니다
+                // mouseout 했을 때는 인포윈도우를 닫습니다
+                (function (marker, title) {
+                    kakao.maps.event.addListener(marker, 'mouseover', function () {
+                        displayInfowindow(marker, title);
+                    });
+
+                    kakao.maps.event.addListener(marker, 'mouseout', function () {
+                        infowindow.close();
+                    });
+
+                    itemEl.onmouseover = function () {
+                        displayInfowindow(marker, title);
+                    };
+
+                    itemEl.onmouseout = function () {
+                        infowindow.close();
+                    };
+                })(marker, documentsList[i].place_name);
+
+                fragment.appendChild(itemEl);
+            }
+
+            // 검색결과 항목들을 검색결과 목록 Elemnet에 추가합니다
+            listEl.appendChild(fragment);
+            menuEl.scrollTop = 0;
+
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+            map.setBounds(bounds);
+        }
+
+        // 검색결과 항목을 Element로 반환하는 함수입니다
+        function getListItem(index, places) {
+
+            var el = document.createElement('li'),
+                itemStr = '<span class="markerbg marker_' + (index + 1) + '"></span>' +
+                    '<div id="infoNumber' + (index + 1) + '"><div class="info">' +
+                    '   <h5>' + places.place_name + '</h5>';
+
+            if (places.road_address_name) {
+                itemStr += '    <span>' + places.road_address_name + '</span>' +
+                    '   <span class="jibun gray">' + places.address_name + '</span>';
+            } else {
+                itemStr += '    <span>' + places.address_name + '</span>';
+            }
+
+            itemStr += `<span class="tel">${places.phone}</span>`;
+            itemStr += `<input type="hidden" value="${places.address_name}">`;
+            itemStr += `<input type="hidden" value="${places.category_group_code}">`;
+            itemStr += `<input type="hidden" value="${places.category_group_name}">`;
+            itemStr += `<input type="hidden" value="${places.category_name}">`;
+            itemStr += `<input type="hidden" value="${places.distance}">`;
+            itemStr += `<input type="hidden" value="${places.id}">`;
+            itemStr += `<input type="hidden" value="${places.phone}">`;
+            itemStr += `<input type="hidden" value="${places.place_name}">`;
+            itemStr += `<input type="hidden" value="${places.place_url}">`;
+            itemStr += `<input type="hidden" value="${places.road_address_name}">`;
+            itemStr += `<input type="hidden" value="${places.x}">`;
+            itemStr += `<input type="hidden" value="${places.y}"></div></div>`;
+            itemStr += `<a href="${places.place_url}" target="_blank"><button>상세보기</a></button>`;
+            itemStr += `<button id="${index}" onclick="GetMapInfo(this)" type="button">숙소선택</button>`;
+
+            el.innerHTML = itemStr;
+            el.className = 'item';
+
+            return el;
+        }
+
+        $(document).on('click', '.item', function () {
+            $(this).children("button").eq(1).trigger('onclick');
+        });
+
+        // 숙소를 선택했을 때 정보를 가져옴
+        function GetMapInfo(target) {
+            $('#address_name').val('');
+            $('#category_group_code').val('');
+            $('#category_group_name').val('');
+            $('#category_name').val('');
+            $('#distance').val('');
+            $('#id').val('');
+            $('#phone').val('');
+            $('#place_name').val('');
+            $('#place_url').val('');
+            $('#road_address_name').val('');
+            $('#x').val('');
+            $('#y').val('');
+
+            var infoNum = document.getElementById(target.getAttribute('id')).getAttribute('id');
+            var infoNumberId = 'infoNumber' + infoNum;
+
+            var info = document.getElementsByClassName('info');
+            var realInfo = info[infoNum];
+
+            var item = document.getElementsByClassName('item');
+            var realItem = item[infoNum];
+            for (var i = 0; i < item.length; i++) {
+                if (item[i].classList.contains("active")) {
+                    item[i].classList.remove("active");
+                }
+            }
+            realItem.classList.add("active");
+
+            var mapInfo = [];
+            mapInfo = $(realInfo).children();
+            var address_name = mapInfo[4].value;
+            var category_group_code = mapInfo[5].value;
+            var category_group_name = mapInfo[6].value;
+            var category_name = mapInfo[7].value;
+            var distance = mapInfo[8].value;
+            var id = mapInfo[9].value;
+            var phone = mapInfo[10].value;
+            var place_name = mapInfo[11].value;
+            var place_url = mapInfo[12].value;
+            var road_address_name = mapInfo[13].value;
+            var x = mapInfo[14].value;
+            var y = mapInfo[15].value;
+
+            document.getElementById("address_name").value = address_name;
+            document.getElementById("category_group_code").value = category_group_code;
+            document.getElementById("category_group_name").value = category_group_name;
+            document.getElementById("category_name").value = category_name;
+            document.getElementById("distance").value = distance;
+            document.getElementById("id").value = id;
+            document.getElementById("phone").value = phone;
+            document.getElementById("place_name").value = place_name;
+            document.getElementById("place_url").value = place_url;
+            document.getElementById("road_address_name").value = road_address_name;
+            document.getElementById("x").value = x;
+            document.getElementById("y").value = y;
+
+        }
+
+        // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
+        function addMarker(position, idx, title) {
+            var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
+                imageSize = new kakao.maps.Size(36, 37),  // 마커 이미지의 크기
+                imgOptions = {
+                    spriteSize  : new kakao.maps.Size(36, 691), // 스프라이트 이미지의 크기
+                    spriteOrigin: new kakao.maps.Point(0, (idx * 46) + 10), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
+                    offset      : new kakao.maps.Point(13, 37) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
+                },
+                markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+                marker = new kakao.maps.Marker({
+                    position: position, // 마커의 위치
+                    image   : markerImage
+                });
+
+            marker.setMap(map); // 지도 위에 마커를 표출합니다
+            markers.push(marker);  // 배열에 생성된 마커를 추가합니다
+
+            return marker;
+        }
+
+        // 지도 위에 표시되고 있는 마커를 모두 제거합니다
+        function removeMarker() {
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+            markers = [];
+        }
+
+
+        // 검색결과 목록 또는 마커를 클릭했을 때 호출되는 함수입니다
+        // 인포윈도우에 장소명을 표시합니다
+        function displayInfowindow(marker, title) {
+            var content = '<div style="padding:5px;z-index:1;">' + title + '</div>';
+
+            infowindow.setContent(content);
+            infowindow.open(map, marker);
+        }
+
+        // 검색결과 목록의 자식 Element를 제거하는 함수입니다
+        function removeAllChildNods(el) {
+            while (el.hasChildNodes()) {
+                el.removeChild(el.lastChild);
+            }
+        }
+    </script>
+</div>
+

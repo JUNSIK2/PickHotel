@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/user_layout}">
+<div layout:fragment="content">
+    <div id="page-title" class="row">
+        <h1 class="text-center">쪽지 상세보기</h1>
+
+
+
+        <form id="noteState">
+            <span><a th:href="@{/member/note/Writenote}"><button class="btn btn-primary" type="button">쪽지 쓰기</button></a></span>&nbsp;
+            <input type="hidden" name="noteType" th:value="${noteType}">
+            <input type="hidden" name="noteNo" th:value="${note.noteNo}">
+            <button class="btn btn-danger" id="removeBtn" type="submit">삭제</button>&nbsp;
+<!--            <button class="btn btn-success" id="saveBtn" type="submit">보관</button>-->
+            <span><a th:href="@{/member/note/Receivelist}">받은 쪽지</a></span>&nbsp;
+            <span><a th:href="@{/member/note/Sendlist}">보낸 쪽지</a></span><br><br>
+        </form>
+
+
+<!--        <span><a th:href="@{/member/note/Savelist}">보관함</a></span>-->
+
+        <div>
+            보낸 사람 : <span th:text="${note.noteSendMbNick}"></span><br>
+            받는 사람 : <span th:text="${str}"></span><br>
+            내용 : <span th:text="${note.noteCon}"></span><br>
+            보낸 시간 : <span th:text="${note.noteDateTime}"></span>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#removeBtn').on('click', function () {
+                $('#noteState').attr('action', '/member/note/delete');
+                $('#noteState').attr('method', 'post');
+                $('#noteState').submit();
+            });
+
+            // $('#saveBtn').on('click', function () {
+            //     $('#noteState').attr('action', '/member/note/save');
+            //     $('#noteState').attr('method', 'post');
+            //     $('#noteState').submit();
+            // });
+        });
+    </script>
+</div>

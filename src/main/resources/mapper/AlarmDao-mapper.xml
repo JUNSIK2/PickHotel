@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="AlarmDao">
+
+	<!--알림 추가-->
+	<parameterMap id="AlarmParameterMap" type="AlarmVo" >
+		<parameter property="no" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="type" javaType="string" jdbcType="CHAR" />
+		<parameter property="read" javaType="string" jdbcType="INTEGER" />
+		<parameter property="content" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="url" javaType="string" jdbcType="VARCHAR" />
+		<parameter property="memNo" javaType="int" jdbcType="INTEGER" />
+	</parameterMap>
+	<insert id="insertAlarm" parameterMap="AlarmParameterMap" useGeneratedKeys="true" keyProperty="no">
+		INSERT INTO alarm (al_type, al_content, al_url, al_datetime, mb_no)
+		VALUES (#{type}, #{content}, #{url}, NOW(), #{memNo})
+	</insert>
+
+	<!--알림 목록 조회-->
+	<resultMap id="AlarmResultMap" type="AlarmVo" >
+		<result property="no" javaType="int" column="al_no" jdbcType="INTEGER" />
+		<result property="type" javaType="string" column="al_type" jdbcType="VARCHAR" />
+		<result property="read" javaType="int" column="al_read" jdbcType="INTEGER" />
+		<result property="content" javaType="string" column="al_content" jdbcType="VARCHAR" />
+		<result property="url" javaType="string" column="al_url" jdbcType="VARCHAR" />
+		<result property="creatDate" javaType="string" column="al_datetime"  jdbcType="VARCHAR" />
+		<result property="memNo" javaType="int" column="mb_no" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="selectAlarmList" parameterType="int" resultMap="AlarmResultMap">
+		SELECT al_no, al_type, al_content, al_url, al_read, al_datetime
+		FROM alarm
+		WHERE mb_no = #{memNo}
+		ORDER BY al_no DESC
+	</select>
+
+	<!-- 회원의 미열람 상태인 알림의 개수를 조회한다. -->
+	<select id="selectNoReadAlarmCount" parameterType="int" resultType="int">
+	SELECT count(*)
+	FROM alarm
+	WHERE al_read = 0 AND mb_no = #{memNo}
+	</select>
+
+	<!--알림 읽음 상태로 변경한다.-->
+	<update id="updateReadAlarmList" parameterType="int">
+		UPDATE alarm SET al_read = 1 WHERE mb_no = #{memNo}
+	</update>
+
+	<!--조건에 해당하는 알림을 삭제한다.-->
+	<delete id="delectAlarm" parameterType="int">
+		DELETE FROM alarm WHERE al_no = #{no}
+	</delete>
+
+	<!--조건에 해당하는 알림을 전체 삭제한다.-->
+	<delete id="delectAllAlarm" parameterType="int">
+		DELETE FROM alarm WHERE mb_no = #{memNo}
+	</delete>
+</mapper>
+
+
+
+
+
+
+

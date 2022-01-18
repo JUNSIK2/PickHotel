@@ -1,0 +1,62 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/user_layout}">
+
+<div layout:fragment="content">
+    <style>
+        img {
+            width : 250px;
+            height : auto;
+        }
+    </style>
+
+    <div id="page-title" class="row">
+        <h1 class="text-center">방 상세보기</h1>
+    </div>
+
+    <div th:if="${room == null}">
+        <span>상세조회가 없습니다. 또는 오류</span>
+    </div>
+    <div class="panel panel-default" th:if="${room != null}">
+        <div class="panel-heading">
+            <div>방 번호 : <span th:text="${room.no}"></span></div>
+            <div>방 이름 : <span th:text="${room.roomName}"></span></div>
+            <div>방 설명 : <span th:text="${room.roomDeco}"></span></div>
+            <div>방 주소 : <span th:text="${room.roomAddress}"></span></div>
+            <div>방 사진 : <img th:src="'/upload/' + ${room.systemFileName}"></div>
+
+        </div>
+
+        <div class="mb-3 panel-heading">
+            <a onClick="listRoom()" class="btn btn-secondary">목록으로 돌아가기</a>
+            <a onClick="removeRoom()" class="btn btn-danger">삭제</a>
+        </div>
+    </div>
+
+    <input type="hidden" id="roomNo" name="roomNo" th:value="${room.no}">
+    <script>
+        const roomNo = $('#roomNo').val();
+
+        function removeRoom(){
+            const con = confirm("해당 방을 삭제 하시겠습니까?");
+            if(con == true){
+                $.ajax({
+                    url : "/room/" + roomNo,
+                    type : "DELETE",
+                    success : function(data){
+                        if(data != null){
+                            alert("삭제 성공");
+                            location.href="/room/list"
+                        }
+                    }
+                })
+            }
+        }
+
+        function listRoom(){
+            location.href="/room/list"
+        }
+
+
+
+    </script>
+</div>

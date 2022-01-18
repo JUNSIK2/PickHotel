@@ -1,0 +1,27 @@
+<html layout:decorate="~{layout/user_layout}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<div layout:fragment="content">
+    <style>
+        .main-title {
+            letter-spacing: -2px;
+            font-size: 2.3rem;
+        }
+
+        .main-title + .lead {
+            font-size: 1rem;
+        }
+    </style>
+    <!--    <iframe frameborder="0" src="/chat"></iframe>-->
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-10 col-sm-8 col-lg-6">
+            <img alt="메인 이미지" class="d-block mx-lg-auto img-fluid" height="500" loading="lazy" th:src="@{/img/main.png}"
+                 width="700">
+        </div>
+        <div class="col-lg-6">
+            <h1 class="display-5 fw-bold mb-3 main-title">전국각지 숙소 리뷰<br>답답하셨다면 바로 검색!</h1>
+            <p class="lead">게스트의 시선에서 숙소 모습과 이야기를 들어보세요.</p>
+        </div>
+    </div>
+</div>

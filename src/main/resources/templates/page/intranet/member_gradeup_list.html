@@ -1,0 +1,242 @@
+<html layout:decorate="~{layout/admin_layout}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<div layout:fragment="page-title">등업 신청 목록</div>
+<div layout:fragment="content">
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <div class="dataTables_wrapper dt-bootstrap4" id="dataTable_wrapper">
+                    <!-- <div class="row">
+                        <table>
+                            <tr>
+                                <td>회원 검색</td>
+                                <td><select for="" id="content" name="content">
+                                        <option value="" selected>전체</option>
+                                        <option value="userid" id="userid" name="userid">아이디</option>
+                                        <option value="nick" id="nick" name="nick">닉네임</option>
+                                    </select>
+                                <td colspan="3"><textarea id="memo" name="memo" cols="30" rows="3"
+                                        style="margin: 0px; height: 20px; width: 150px;"></textarea></td>
+                                <td colspan="1"><button type="submit" id="search" name="search"
+                                        onclick="javascript:fnsearch();">검색</button>
+                        </table>
+                    </div> -->
+                    <div class="mb-3 row">
+                        <table>
+                            <td colspan="7">선택한 회원을
+                                <button class="btn btn-primary gradeupstate" id="accept" name="gradeupstate"
+                                        type="button" value="accept">등업수락
+                                </button>
+                                <button class="btn btn-danger gradeupstate" id="reset" name="gradeupstate" type="button"
+                                        value="reset">등업거절
+                                </button>
+                            </td>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <table class="table table-bordered" id="reqGradeForm">
+                            <thead>
+                            <tr>
+                                <th><input id="allChecked" type="checkbox"></th>
+                                <th>닉네임</th>
+                                <th>현재 등급</th>
+                                <th>신청시 등급</th>
+                                <th>신청 등급</th>
+                                <th>방문수</th>
+                                <th>총 게시글</th>
+                                <th>댓글 수</th>
+                                <th>가입일</th>
+                                <th>신청일</th>
+                                <th>상태</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${#lists.size(GradeUps) == 0}">
+                                <td class="text-center" colspan="5">등업 신청 기록이 없습니다.</td>
+                            </tr>
+
+                            <tr th:each="GradeUp : ${GradeUps}" th:if="${#lists.size(GradeUps) > 0}">
+                                <td><input class="chk" name="chk[]" th:if="${GradeUp.gradeupstate }== 1"
+                                           th:value="${GradeUp.gradeno}" type="checkbox">
+                                </td>
+                                <td th:text="${GradeUp.nick}"></td>
+                                <td class="now_grade" th:text="${GradeUp.grade}"></td>
+                                <td th:text="${GradeUp.beforegrade}"></td>
+                                <td th:text="${GradeUp.aftergrade}"></td>
+                                <td th:text="${GradeUp.visitCount}"></td>
+                                <td th:text="${GradeUp.boardCount}"></td>
+                                <td th:text="${GradeUp.commentCount}"></td>
+                                <td th:text="${GradeUp.joinDate}"></td>
+                                <td th:text="${GradeUp.datetime}"></td>
+                                <td><span th:text=${GradeUp.gradeupstateP}></span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+                                <th:block layout:fragment="paging" th:include="@{/fragment/pagination}"></th:block>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        $(document).ready(function () {
+                            jQuery.ajaxSettings.traditional = true;
+
+                            $("#allChecked").click(function () {
+                                if ($("#allChecked").prop("checked") == true) {
+                                    $(".chk").prop("checked", true)
+                                } else {
+                                    $(".chk").prop("checked", false)
+                                }
+                                ;
+                            });
+
+                            function fnsearch() {
+                                if ($('#memo').val() == '') {
+                                    alert("검색어를 입력하세요.");
+                                    return false;
+                                }
+                            }
+
+                            function countChk() {
+                                if ($("input:checked").length == 0) {
+                                    alert("회원을 선택하시오.");
+                                    return false;
+                                }
+                            };
+
+                            //******목록 정렬 AJAX 시작*******//
+                            function init() {
+                                const getAjax = function (url) {
+                                    return new Promise((resolve, reject) => {
+                                        $.ajax({
+                                            url    : url,
+                                            type   : 'POST',
+                                            success: function (data) {
+                                                resolve(data);
+                                            },
+                                            error  : function (e) {
+                                                reject(e);
+                                            }
+                                        });
+                                    });
+                                };
+
+                                async function requestProcess(url) {
+                                    try {
+                                        result = await getAjax(url);
+                                        let target = $('#reqGradeForm tbody');
+                                        target.html("");
+                                        let htmlStr = '';
+                                        for (let i = 0; i < result.length; i++) {
+                                            htmlStr += `<tr>`;
+                                            htmlStr += `<td>`;
+                                            if (result[i].gradeupstate == 1) {
+                                                htmlStr += `<input type="checkbox" class="chk" name="chk[]" value="">`;
+                                            }
+                                            htmlStr += `</td>`;
+                                            htmlStr += `<td>${result[i].nick}</td>`;
+                                            htmlStr += `<td class="now_grade">${result[i].grade}</td>`;
+                                            htmlStr += `<td>${result[i].beforegrade}</td>`;
+                                            htmlStr += `<td>${result[i].aftergrade}</td>`;
+                                            htmlStr += `<td>${result[i].visitCount}</td>`;
+                                            htmlStr += `<td>${result[i].boardCount}</td>`;
+                                            htmlStr += `<td>${result[i].commentCount}</td>`;
+                                            htmlStr += `<td>${result[i].joinDate}</td>`;
+                                            htmlStr += `<td>${result[i].datetime}</td>`;
+                                            htmlStr += `<td>${result[i].gradeupstateP}</td>`;
+                                            htmlStr += `</tr>`;
+                                        }
+                                        target.html(htmlStr);
+                                        $("#allChecked").prop("checked", false);
+                                    } catch (error) {
+                                        console.log("error : ", error);
+                                    }
+                                };
+                                requestProcess("/intranet/member/gradeup_list");
+                            }
+
+                            //******목록 정렬 AJAX 끝*******//
+
+                            //******업데이트 AJAX 시작*******//
+                            function update(gradenoList, gradeupstate) {
+                                const getAjax = function (url, gradenoList, gradeupstate) {
+                                    return new Promise((resolve, reject) => {
+                                        $.ajax({
+                                            url     : url,
+                                            type    : 'POST',
+                                            dataType: 'json',
+                                            data    : {
+                                                "gradenoList" : gradenoList,
+                                                "gradeupstate": gradeupstate
+                                            },
+                                            success : function (data) {
+                                                resolve(data);
+                                                init();
+                                            },
+                                            error   : function (e) {
+                                                reject(e);
+                                            }
+                                        });
+                                    });
+                                };
+
+                                async function requestProcess(url, gradenoList, gradeupstate) {
+                                    try {
+                                        rs = await getAjax(url, gradenoList, gradeupstate);
+                                        console.log(rs);
+                                        for (const r of rs) {
+                                            console.log(r);
+                                            if (r.result == "OK") {
+                                                //웹소켓 알림 발송
+                                                if (r.isSend == "true") {
+                                                    const str = JSON.stringify(r);
+                                                    websocket.send(str);
+                                                }
+                                            } else {
+                                                alert(`${r.memNo}번 회원의 등업 신청 건 상태 수정에 실패했습니다. 한번더 확인 해주세요.`);
+                                                return false;
+                                            }
+                                        }
+                                    } catch (error) {
+                                        console.log("error : ", error);
+                                    }
+                                };
+                                requestProcess("/intranet/member/gradeup_update", gradenoList, gradeupstate);
+                            };
+                            //******업데이트 AJAX 끝*******//
+
+                            $(".gradeupstate").on('click', function () {
+                                if ($(".chk:checked").length == 0) {
+                                    alert("한개 이상의 데이터를 선택해주세요.");
+                                    return false;
+                                }
+
+                                const gradenoList = [];
+                                const gradeupstate = $(this).val();
+
+                                $(".chk:checked").each(function () {
+                                    gradenoList.push($(this).val());
+                                })
+
+                                const q = confirm(
+                                    "선택된 신청건의 상태를 변경하시겠습니까?\n처리 후 취소는 불가능합니다."
+                                );
+
+                                if (q == true) {
+                                    update(gradenoList, gradeupstate);
+                                } else {
+                                    return false;
+                                }
+                                ;
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

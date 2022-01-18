@@ -1,0 +1,150 @@
+<html layout:decorate="~{layout/user_layout}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<div layout:fragment="content">
+    <div class="row" id="page-title">
+        <h1 class="text-center">비밀번호 변경</h1>
+    </div>
+
+    <form class="row justify-content-center align-self-center form-small  d-flex" method="post"
+          th:action="@{/alterPwd}">
+        <input id="id" name="id" th:value="${id}" type="hidden">
+        <div class="mb-3">
+            <label for="id">비밀번호 입력</label>
+            <div>
+                <input class="form-control" id="pwd" name="pwd" type="password">
+                <div class="pw-condition">
+                    <ul class="p-2">
+                        <li class="pw-condition-1"><i aria-hidden="true" class="fa fa-check-circle-o"></i>숫자,영문,특수문자만 입력
+                            가능
+                        </li>
+                        <li class="pw-condition-2"><i aria-hidden="true" class="fa fa-check-circle-o"></i>비밀번호에 6자리 ~
+                            20자리 이내
+                        </li>
+                        <li class="pw-condition-3"><i aria-hidden="true" class="fa fa-check-circle-o"></i>영문 대문자를 1자 이상
+                        </li>
+                        <li class="pw-condition-4"><i aria-hidden="true" class="fa fa-check-circle-o"></i>특수문자를 2자 이상
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="certifyNo">비밀번호 재입력</label>
+            <div class="input-group">
+                <input class="form-control" id="pwdCheck" name="pwdCheck" type="password">
+            </div>
+        </div>
+        <hr class="my-4">
+        <button class="w-100 btn btn-lg btn-primary" id="submitBtn" type="button">변경</button>
+    </form>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //새 비밀번호 양식 검사
+            var checkCount = 0;
+
+            function ValidatePassword() {
+                checkCount = 0;
+                var rules = [{
+                    Pattern: "[0-9a-zA-Z.;\-]",
+                    Target : "pw-condition-1"
+                }, {
+                    Pattern: "[A-Z]",
+                    Target : "pw-condition-3"
+                }, {
+                    Pattern: "[!@@#$%^&*]",
+                    Target : "pw-condition-4"
+                }];
+                var password = $(this).val();
+
+                if (password.length > 6 && password.length < 20) {
+                    $(".pw-condition-2").removeClass("off");
+                    $(".pw-condition-2").addClass("on");
+                    checkCount++;
+                } else {
+                    $(".pw-condition-2").removeClass("on");
+                    $(".pw-condition-2").addClass("off");
+                    checkCount--;
+                }
+
+                for (var i = 0; i < rules.length; i++) {
+                    if (new RegExp(rules[i].Pattern)
+                        .test(password)) {
+                        $("." + rules[i].Target).removeClass(
+                            "off");
+                        $("." + rules[i].Target).addClass("on");
+                        checkCount++;
+                    } else {
+                        $("." + rules[i].Target).removeClass(
+                            "on");
+                        $("." + rules[i].Target)
+                            .addClass("off");
+                        checkCount--;
+                    }
+                }
+                if (checkCount == 4) {
+                    $("#pwd").removeClass("off");
+                } else {
+                    $("#pwd").addClass("off");
+                }
+                return checkCount;
+            }
+
+            checkCount = $("#pwd").on('keyup',
+                ValidatePassword);
+
+            //새 비밀번호 확인 동일 검사
+            function SamePassword(el) {
+                if ($.trim($("#pwd").val()) == $.trim(el
+                    .val())) {
+                    $('#pwdCheck').removeClass("off");
+                    $('#pwdCheck').addClass("on");
+                } else {
+                    $('#pwdCheck').removeClass("on");
+                    $('#pwdCheck').addClass("off");
+                }
+            }
+
+            $('#pwdCheck').on('keyup', function (e) {
+                var el = $(e.currentTarget);
+                SamePassword(el);
+            });
+
+            function memberReg() {
+
+                if ($.trim($('#pwd').val()) == '') {
+
+                    alert("비밀번호를 입력하시오.");
+                    $('#pwd').focus();
+                    return false;
+                } else if ($.trim($('#pwdCheck').val()) == '') {
+                    alert("비밀번호 확인를 입력하시오.");
+                    $('#pwdCheck').focus();
+                    return false;
+                }
+
+
+                if (checkCount != 4) {
+                    alert("비밀번호 조건을 충족하시오.");
+                    $('#pwd').focus();
+                    return false;
+                }
+
+                if ($.trim($('#pwd').val()) != $.trim($(
+                    '#pwdCheck').val())) {
+                    alert("비밀번호 확인이 옳지 않습니다.");
+                    $('#pwd').focus();
+                    return false;
+                }
+
+
+                $('form').submit();
+                alert("비밀번호가 변경되었습니다.");
+            }
+
+            $('#submitBtn').on('click', function (e) {
+                memberReg();
+            })
+        });
+    </script>
+</div>

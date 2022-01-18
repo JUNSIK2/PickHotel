@@ -1,0 +1,441 @@
+@charset "UTF-8";
+/*
+작성자 : 김소진
+작성일 : 2022-01-05
+내용 : 사용자&관리자 공통 CSS
+*/
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 100;
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.woff2) format('woff2'), url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.woff) format('woff'), url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.otf) format('opentype');
+}
+
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 300;
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff2) format('woff2'), url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff) format('woff'), url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.otf) format('opentype');
+}
+
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 400;
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff2) format('woff2'), url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff) format('woff'), url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.otf) format('opentype');
+}
+
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 500;
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff2) format('woff2'), url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff) format('woff'), url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.otf) format('opentype');
+}
+
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 700;
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff2) format('woff2'), url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff) format('woff'), url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.otf) format('opentype');
+}
+
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 900;
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.woff2) format('woff2'), url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.woff) format('woff'), url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.otf) format('opentype');
+}
+
+* {
+    font-family: 'Noto Sans KR', sans-serif, '맑은고딕', 'Malgun Gothic', '돋움', Dotum, '굴림', Gulim, Tahoma, sans-serif, verdana, AppleGothic;
+    letter-spacing: 0;
+}
+
+.dropdown-item {
+    text-align: center;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+}
+
+a:hover, a:active {
+    text-decoration: underline;
+}
+
+header + .container {
+    min-height: 75%;
+}
+
+header .container {
+    position: relative;
+    padding: 20px 0;
+    height: 75px;
+}
+
+header #menu-box {
+    position: absolute;
+    left: 150px;
+}
+
+header #menu-box > li {
+    float: left;
+    line-height: 40px;
+}
+
+header #menu-box > li + li {
+    margin-left: 20px;
+}
+
+header .nav-link:hover, header .nav-link:active {
+    text-decoration: none;
+}
+
+header a.logo {
+    position: absolute;
+    left: 0;
+    top: 8px;
+}
+
+header #login-box {
+    position: absolute;
+    right: 0;
+}
+
+header #user-box {
+    position: absolute;
+    right: 0;
+}
+
+header ul.notice-box {
+    float: left;
+}
+
+header ul.notice-box li {
+    float: left;
+}
+
+header ul.notice-box > li + li {
+    margin-left: 20px;
+}
+
+header ul.notice-box .alarm-area {
+    position: relative;
+}
+
+
+header ul.notice-box #alarm-box li {
+    width: 100%;
+    position: relative;
+    padding: 10px 15px 10px;
+    margin-left: 5px;
+}
+
+header ul.notice-box #alarm-box li:before {
+    position: absolute;
+    top: 17px;
+    left: -2.7px;
+    background-color: #35abff;
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    vertical-align: top;
+    content: '';
+}
+
+header ul.notice-box #alarm-box li.read:before {
+    background-color: #c0c4c9;
+}
+
+header ul.notice-box #alarm-box li:after {
+    content: "";
+    display: table;
+    table-layout: fixed;
+    clear: both;
+}
+
+header ul.notice-box #alarm-box li:hover {
+    background: #f3f3f3;
+}
+
+
+header ul.notice-box #alarm-box li + li {
+    border-top: 1px solid #eaeaea;
+}
+
+.dropdown-menu-1 {
+    position: absolute;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    box-shadow: 0px 1px 2px 0px rgb(60 64 67 / 30%), 0px 2px 6px 2px rgb(60 64 67 / 15%);
+    width: 200px;
+    overflow: hidden;
+    max-height: 300px;
+    z-index: 1;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0;
+    font-size: 14px;
+}
+
+header ul.notice-box #alarm-box {
+    padding: 0px 0px 40px;
+    width: 299px;
+    /* height: 250px; */
+    /* overflow-y: auto; */
+    /* overflow-x: hidden; */
+}
+
+header ul.notice-box #alarm-box .box-top {
+    width: 100%;
+    height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-size: 14px;
+    padding: 0 10px;
+}
+
+header ul.notice-box #alarm-box .box-top ul {
+    position: relative;
+    /* height: 100%; */
+    overflow: hidden;
+    padding: 10px 0px;
+}
+
+header ul.notice-box #alarm-box .box-top ul:before {
+    position: absolute;
+    top: 15px;
+    bottom: 0;
+    left: 5px;
+    content: '';
+    width: 1px;
+    height: 100%;
+    background-color: #e4e8eb;
+}
+
+
+header ul.notice-box #alarm-box .alarm-top a {
+    color: black;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+header ul.notice-box #alarm-box li.read .alarm-top a {
+    color: gray;
+}
+
+header ul.notice-box #alarm-box .alarm-top a:hover, header ul.notice-box #alarm-box li:hover a {
+    text-decoration: underline;
+}
+
+header ul.notice-box #alarm-box .alarm-top span {
+    font-weight: 600;
+}
+
+header ul.notice-box #alarm-box .deleteAlarmBtn {
+    position: absolute;
+    right: 0;
+    font-size: 10px;
+    border: 0;
+    background: none;
+    color: #666666;
+}
+
+header ul.notice-box #alarm-box .alarm-bottom {
+    font-size: 13px;
+    line-height: 17px;
+    margin-top: 1px;
+    margin-bottom: 5px;
+    position: relative;
+}
+
+header ul.notice-box #alarm-box .alarm-bottom {
+    color: #8b8b8b;
+    text-decoration: none;
+    font-size: 11px;
+}
+
+header ul.notice-box #alarm-box .alarm-bottom .alarm-info_time:before {
+    content: "";
+    display: inline-block;
+    width: 2px;
+    height: 2px;
+    background-color: #5a667d;
+    position: absolute;
+    top: 50%;
+    left: 0px;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+header ul.notice-box #alarm-box .alarm-bottom .alarm-info_time {
+    position: relative;
+    padding-left: 8px;
+    margin-left: 6px;
+}
+
+header ul.notice-box #alarm-box .box-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 3px 17px 7px;
+    border-top: 1px solid #eaeaea;
+    text-align: left;
+    background: #f3f3f3;
+}
+
+header ul.notice-box #alarm-box #deleteAllAlarmBtn {
+    font-size: 11px;
+    margin: 0;
+}
+
+header .private-box {
+    float: left;
+    margin-left: 20px;
+    height: 40px;
+    line-height: 40px;
+}
+
+header .private-box img {
+    width: 30px;
+    height: auto;
+    margin-right: 5px;
+    margin-top: -3px;
+}
+
+header .user-alarm,
+header .user-note {
+    position: relative;
+}
+
+header .notion {
+    position: absolute;
+    right: -2px;
+    top: 3px;
+    line-height: 13px;
+}
+
+header .ico {
+    width: 16px;
+    height: 16px;
+    background: red;
+    color: #fff;
+    font-size: 10px;
+    display: inline-block;
+    text-align: center;
+    border-radius: 15px;
+    font-style: normal;
+}
+
+/* #### 실시간 알림 시작 #### {*/
+#msgArea {
+    right: 71px;
+    bottom: 40px;
+    position: fixed;
+    z-index: 1000;
+}
+
+#msgArea > li {
+    width: 400px;
+    /* right: -410px; */
+    background: #e1edff;
+    /* border: 1px solid rgba(0, 0, 0, 0.2); */
+    border-radius: 8px;
+    box-shadow: 0px 1px 2px 0px rgb(60 64 67 / 30%), 0px 2px 6px 2px rgb(60 64 67 / 15%);
+    list-style: none;
+    z-index: 1000;
+    padding: 20px;
+    line-height: 1.3;
+    max-width: 350px;
+    transform: translateY(0);
+    display: flex;
+    align-items: center;
+
+    animation: slide-in-bottom 4s cubic-bezier(0.18, 0.69, 0.58, 1) 2 alternate;
+    -webkit-animation: slide-in-bottom 4s cubic-bezier(0.18, 0.69, 0.58, 1) 2 alternate;
+    animation-fill-mode: forwards; /* 종료 후 위치 */
+    -webkit-animation-fill-mode: forwards; /* 종료 후 위치 */
+}
+
+#msgArea > li + li {
+    margin-top: 15px;
+}
+
+#msgArea > li i {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    margin-right: 20px;
+    line-height: 1.3;
+}
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes slide-in-bottom {
+
+    0% {
+        transform: translateY(100vh);
+    }
+    25% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(0);
+    }
+    75% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(0);
+    }
+
+}
+
+/* Standard syntax */
+@keyframes slide-in-bottom {
+
+    0% {
+        transform: translateY(100vh);
+    }
+    25% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(0);
+    }
+    75% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(0);
+    }
+
+}
+
+#msgArea > li i.fa.fa-bell {
+    color: #0d6efd;
+    font-size: 25px;
+}
+
+#msgArea > li a {
+    color: #2a2a2a;
+    text-decoration: none;
+}
+
+#msgArea > li:hover a, #msgArea > li a:hover {
+    text-decoration: underline;
+}
+
+/*} #### 실시간 알림 끝 #### */

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/user_layout}">
+<div layout:fragment="content">
+    <div id="page-title" class="row">
+		<h1 class="text-center">수신 쪽지 목록</h1>
+
+
+		<form id="noteState">
+			<span><a th:href="@{/member/note/Writenote}"><button class="btn btn-primary" type="button">쪽지 쓰기</button></a></span>&nbsp;
+			<button class="btn btn-danger" id="removeBtn" disabled="disabled" type="submit">삭제</button>&nbsp;
+<!--			<button class="btn btn-success" id="saveBtn" disabled="disabled" type="submit">보관</button>-->
+			<span><a th:href="@{/member/note/Receivelist}">받은 쪽지</a></span>&nbsp;
+			<span><a th:href="@{/member/note/Sendlist}">보낸 쪽지</a></span><br><br>
+<!--			<span><a th:href="@{/member/note/Savelist}">보관함</a></span>-->
+			<table class="table table-bordered table-striped table-condensed flip-content post-list-table">
+				<thead>
+				<tr>
+					<th></th>
+					<th>번호</th>
+					<th>보낸사람</th>
+					<th>내용</th>
+					<th>발송날짜</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:if="${noteList==null}">
+					<td class="text-left" colspan="5">수신함이 비었습니다.</td>
+				</tr>
+				<tr th:each="note : ${noteList}" th:if="${noteList!=null}">
+					<td><input type="checkbox" name="noteNo" th:value="${note.noteNo}" onclick="disableBtn();"></td>
+					<td th:text="${note.noteNo}"></td>
+					<td><span th:text="${note.noteSendMbNick}"></span></td>
+					<td><a th:href="@{/member/note/Detailnote/{noteNo}/{noteGetMbNick}/{noteSendMbNick}/{noteDateTime}/{noteType}
+					(noteNo=${note.noteNo}, noteGetMbNick=${note.noteGetMbNick}, noteSendMbNick=${note.noteSendMbNick}, noteDateTime=${note.noteDateTime}, noteType=1)}"><span th:text="${note.noteCon}"></span></a></td>
+					<td><span th:text="${note.noteDateTime}"></span></td>
+				</tr>
+				</tbody>
+			</table>
+			<input type="hidden" name="noteType" value="1">
+		</form>
+		<script>
+			function disableBtn(){
+
+				var chk_arr = [];
+				$("input[name=noteNo]:checked").each(function(){
+					var chk = $(this).val();
+					chk_arr.push(chk);
+				})
+				console.log(chk_arr);
+				if(chk_arr.length != 0){
+					$('#removeBtn').attr('disabled', false);
+					// $('#saveBtn').attr('disabled', false);
+				} else if (chk_arr.length == 0) {
+					$('#removeBtn').attr('disabled', true);
+					// $('#saveBtn').attr('disabled', true);
+				}
+
+			}
+
+			$(document).ready(function () {
+				$('#removeBtn').on('click', function () {
+					$('#noteState').attr('action', '/member/note/delete');
+					$('#noteState').attr('method', 'post');
+					$('#noteState').submit();
+				});
+
+				// $('#saveBtn').on('click', function () {
+				// 	$('#noteState').attr('action', '/member/note/save');
+				// 	$('#noteState').attr('method', 'post');
+				// 	$('#noteState').submit();
+				// });
+			});
+		</script>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+						<th:block layout:fragment="paging" th:include="@{/fragment/pagination}"></th:block>
+					</div>
+				</div>
+			</div>
+			<div class="justify-content-center mb-5 mt-4 row">
+				<div class="col-lg-6 col-md-6 col-12">
+					<form id="postSearch" method="GET" onsubmit="return false;"
+						  th:action="@{/member/note/Receivelist}">
+						<div class="input-group mb-3">
+							<div class="input-group-prepend">
+								<select class="form-control select2bs4" id="searchType" name="searchType">
+									<option th:selected="${params.searchType == ''}" value="">==필터==
+									<option th:selected="${params.searchType == 'content'}" value="content">내용
+									</option>
+								</select>
+							</div>
+							<input class="form-control" id="searchKeyword" name="searchKeyword"
+								   placeholder="검색어를 입력하세요." th:value="${params.searchKeyword}" type="text">
+							<button class="btn btn-primary" id="searchBtn" type="button">
+								<i class="fa fa-search fa-sm"></i>
+							</button>
+							<a class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm"
+							   th:href="@{/member/note/Receivelist}"
+							   th:if="${not #strings.isEmpty(params.searchKeyword)}">필터 해제</a>
+						</div>
+					</form>
+				</div>
+				<script>
+					var send = document.getElementById("searchBtn");
+					send.addEventListener("click", function () {
+						var form = document.getElementById("postSearch");
+						var searchType = document.getElementById("searchType");
+						var psearchKeywordw = document.getElementById("searchKeyword");
+
+						if (searchType.value.trim() == "") {
+							alert("필터를 선택해주세요.");
+							return false;
+						}
+						if (psearchKeywordw.value.trim() == "") {
+							alert("검색어를 작성해주세요.");
+							return false;
+						}
+						form.submit();
+					});
+				</script>
+			</div>
+
+
+	</div>
+</div>

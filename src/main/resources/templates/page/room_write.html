@@ -1,0 +1,87 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/user_layout}">
+
+<div layout:fragment="content">
+    <style>
+        .photos img {
+            width : 250px;
+            height : auto;
+        }
+
+        .mb-3 video {
+            width : 300px;
+            height : auto;
+        }
+    </style>
+
+    <form th:action="@{/roomUpload}" method="POST" enctype="multipart/form-data" accept-charset="UTF-8">
+        <div class="mb-3">
+            <label for="roomName">숙소명</label>
+            <input type="text" class="form-control" name="roomName" id="roomName" placeholder="제목을 입력하세요">
+        </div>
+        <div class="mb-3">
+            <label for="roomDeco">숙소 설명</label>
+            <input type="text" class="form-control" name="roomDeco" id="roomDeco" placeholder="제목을 입력하세요">
+        </div>
+        <div class="mb-3">
+            <label for="roomAddress">주소</label>
+            <input type="text" class="form-control" name="roomAddress" id="roomAddress" placeholder="제목을 입력하세요">
+        </div>
+        <div class="photos">
+            <label for="images">사진(3MB 이하)</label>
+            <input type="file" id="images" name="images" accept="image/*" />
+            <div class="photogallery"></div>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-sm btn-primary" id="saveBtn">방등록</button>
+        </div>
+    </form>
+
+    <script type="text/javascript">
+        // 이미지 유효성 검사
+        var sel_files = [];
+
+        $(document).ready(function() {
+            console.log("asdf")
+            $("#images").on("change", handleImgsFilesSelect);
+        });
+
+        function handleImgsFilesSelect(e) {
+
+            sel_files = [];
+            $(".photogallery").empty();
+
+            var files = e.target.files;
+            var filesArr = Array.prototype.slice.call(files);
+            var sizeCheck = true;
+
+            filesArr.forEach(function(file){
+                var fileSize = file.size;
+                var maxSize = 3 * 1024 * 1024;
+
+                if(fileSize > maxSize ){
+                    alert("이미지 사이즈는 3MB 이내로 등록 가능합니다.");
+                    sizeCheck = false;
+
+                    $("#images").val("");
+                    sel_files = [];
+                    $(".photogallery").empty();
+                    return;
+                }
+            });
+
+            if(sizeCheck == true){
+                filesArr.forEach(function (f) {
+
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        var img_html = "<img src=\"" + e.target.result + "\" />&nbsp;&nbsp;";
+                        $(".photogallery").append(img_html);
+                    }
+                    reader.readAsDataURL(f);
+                });
+            }
+
+        }
+    </script>
+</div>

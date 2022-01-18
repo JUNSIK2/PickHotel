@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+
+<div layout:fragment="page-title">회원 조회</div>
+<div layout:fragment="content">
+    <form th:action="@{/intranet/member/modify}" method="post" id="memberModifyForm">
+        <div th:object=${member}>
+            <div class="mb-3">
+                <label for="id">ID</label>
+                <div th:text="*{id}"></div>
+                <input type="hidden" name="memNo" th:value="*{memNo}">
+            </div>
+            <div class="input-group mb-3">
+                <label for="nick" class="w-100">닉네임</label>
+                <input type="text" class="form-control" name="nick" id="nick" placeholder="닉네임(4~12자)"
+                    th:value="*{nick}">
+                <button class="btn btn-outline-secondary" type="button" id="nick_check">중복확인</button>
+            </div>
+            <div class="mb-3">
+                <label for="name">이름</label> <input type="text" class="form-control" name="name" id="name"
+                    th:value="*{name}">
+            </div>
+
+            <div class="mb-3">
+                <label for="pwd">비밀번호</label> <input type="password" class="form-control" name="pwd" id="pwd">
+            </div>
+
+            <div class="mb-3">
+                <label for="newpwd">새 비밀번호</label> <input type="password" class="form-control" name="newpwd"
+                    id="newpwd">
+                <div class="pw-condition">
+                    <ul>
+                        <li class="pw-condition-1"><i class="fa fa-check-circle-o" aria-hidden="true"></i>숫자,영문,특수문자만 입력
+                            가능
+                        </li>
+                        <li class="pw-condition-2"><i class="fa fa-check-circle-o" aria-hidden="true"></i>비밀번호에 6자리 ~
+                            20자리
+                            이내</li>
+                        <li class="pw-condition-3"><i class="fa fa-check-circle-o" aria-hidden="true"></i>영문 대문자를 1자 이상
+                        </li>
+                        <li class="pw-condition-4"><i class="fa fa-check-circle-o" aria-hidden="true"></i>특수문자를 2자 이상
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="newpwdCheck">새 비밀번호 확인</label> <input type="password" class="form-control"
+                    name="newpwdCheck" id="newpwdCheck">
+            </div>
+            <div class="mb-3">
+                <label for="grade" class="w-100">등급</label>
+                <select class="form-select" aria-label="Default select" name="grade" id="grade">
+                    <option value="1" th:selected="*{grade} == 1">1단계</option>
+                    <option value="2" th:selected="*{grade} == 2">2단계</option>
+                    <option value="3" th:selected="*{grade} == 3">3단계</option>
+                    <option value="3" th:selected="*{grade} == 4">4단계</option>
+                    <option value="3" th:selected="*{grade} == 5">5단계</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <h4>성별</h4>
+                <div class="form-check">
+                    <input id="genderM" name="gender" type="radio" class="form-check-input" value="M"
+                        th:checked="*{gender == 'M'}"><label class="form-check-label" for="genderM">남성</label>
+                </div>
+                <div class="form-check">
+                    <input id="genderF" name="gender" type="radio" class="form-check-input" value="F"
+                        th:checked="*{gender == 'F'}"><label class="form-check-label" for="genderF">여성</label>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="hp">휴대 전화</label> <input type="text" class="form-control" name="hp" id="hp" th:value="*{hp}"
+                    placeholder="010-0000-0000">
+            </div>
+            <div class="mb-3">
+                <label for="birth">생년월일</label> <input type="date" class="form-control" name="birth" id="birth"
+                    th:value="*{birth}">
+            </div>
+            <div class="mb-3">
+                <label for="state">상태</label>
+                <select class="form-select" aria-label="Default select" name="state" id="state">
+                    <option value="1" th:selected="*{state} == 1">정상</option>
+                    <option value="2" th:selected="*{state} == 2">탈퇴</option>
+                    <option value="3" th:selected="*{state} == 3">강제탈퇴</option>
+                </select>
+            </div>
+            <input type="button" value="정보 수정" id="submitBtn" class="btn btn-primary" />
+
+        </div>
+    </form>
+    <script>
+        $(document).ready(function () {
+            //빈칸 검사
+            function noSpaceCheck(obj) {
+                var str_space = /\s/;
+                if (str_space.exec(obj.val())) {
+                    alert("해당 항목에는 공백을 사용할수 없습니다.\n\n공백은 자동적으로 제거 됩니다.");
+                    obj.focus();
+                    var val = obj.val().replace(' ', '');
+                    obj.val(val);
+                    return false;
+                }
+            }
+            $('input').on('keyup', function (e) {
+                var el = $(e.currentTarget);
+                noSpaceCheck(el);
+            });
+
+            //새 비밀번호 양식 검사
+            var checkCount = 0;
+
+            function ValidatePassword() {
+                checkCount = 0;
+                var rules = [{
+                        Pattern: "[0-9a-zA-Z.;\-]",
+                        Target: "pw-condition-1"
+                    },
+                    {
+                        Pattern: "[A-Z]",
+                        Target: "pw-condition-3"
+                    }, {
+                        Pattern: "[!@@#$%^&*]",
+                        Target: "pw-condition-4"
+                    }
+                ];
+                var password = $(this).val();
+
+                if (password.length > 6 && password.length < 20) {
+                    $(".pw-condition-2").removeClass("off");
+                    $(".pw-condition-2").addClass("on");
+                    checkCount++;
+                } else {
+                    $(".pw-condition-2").removeClass("on");
+                    $(".pw-condition-2").addClass("off");
+                    checkCount--;
+                }
+
+                for (var i = 0; i < rules.length; i++) {
+                    if (new RegExp(rules[i].Pattern).test(password)) {
+                        $("." + rules[i].Target).removeClass("off");
+                        $("." + rules[i].Target).addClass("on");
+                        checkCount++;
+                    } else {
+                        $("." + rules[i].Target).removeClass("on");
+                        $("." + rules[i].Target).addClass("off");
+                        checkCount--;
+                    }
+                }
+                if (checkCount == 4) {
+                    $("#newpwd").removeClass("off");
+                } else {
+                    $("#newpwd").addClass("off");
+                }
+                return checkCount;
+            }
+            checkCount = $("#newpwd").on('keyup', ValidatePassword);
+
+            //새 비밀번호 확인 동일 검사
+            function SamePassword(el) {
+                if ($.trim($("#newpwd").val()) == $.trim(el.val())) {
+                    $('#newpwdCheck').removeClass("off");
+                    $('#newpwdCheck').addClass("on");
+                } else {
+                    $('#newpwdCheck').removeClass("on");
+                    $('#newpwdCheck').addClass("off");
+                }
+            }
+            $('#newpwdCheck').on('keyup', function (e) {
+                var el = $(e.currentTarget);
+                SamePassword(el);
+            });
+
+            //폼 유효성 검사
+            function memberReg() {
+
+                if ($.trim($('#nick').val()) == '') {
+                    alert("닉네임을 입력하십시오.");
+                    $('#nick').focus();
+                    return false;
+                }
+                if ($.trim($('#name').val()) == '') {
+                    alert("이름을 입력하십시오.");
+                    $('#name').focus();
+                    return false;
+                }
+
+                if ($.trim($('#newpwd').val()) != '') {
+                    if ($.trim($('#newpwdCheck').val()) == '') {
+                        alert("새 비밀번호 확인를 입력하시오.");
+                        $('#newpwd').focus();
+                        return false;
+                    }
+                    if (checkCount != 4) {
+                        alert("새 비밀번호 조건을 충족하시오.");
+                        $('#newpwd').focus();
+                        return false;
+                    }
+
+                    if ($.trim($('#newpwd').val()) != $.trim($('#newpwdCheck').val())) {
+                        alert("새 비밀번호 확인이 옳지 않습니다.");
+                        $('#newpwd').focus();
+                        return false;
+                    }
+                }
+
+                if (!($('#genderM')[0].checked == true || $('#genderF')[0].checked == true)) {
+                    alert("성별을 선택하십시오.");
+                    return false;
+                }
+                if (($.trim($('#hp').val()) == '')) {
+                    alert("휴대전화번호를 입력하십시오.");
+                    $('#hp').focus();
+                    return false;
+                } else {
+                    var regPhone = /(01[0|1|6|9|7])[-](\d{3}|\d{4})[-](\d{4}$)/g;
+
+                    if (!regPhone.test($.trim($('#hp').val()))) {
+                        alert("010-0000-000형식으로 입력하십시오.");
+                        $('#phone').focus();
+                        return false;
+
+                    }
+                }
+                if (($.trim($('#birth').val()) == '')) {
+                    alert("생년월일을 입력하십시오.");
+                    $('#birth').focus();
+                    return false;
+                }
+
+                //비밀번호 변경을 하려는 경우
+                if (checkCount == 4) {
+                    if (confirm("비밀번호를 변경하시겠습니까?") == false) {
+                        return false;
+                    }
+                };
+
+                $('form').submit();
+            };
+            $('#submitBtn').on('click', function (e) {
+                memberReg();
+            });
+        });
+    </script>
+</div>
