@@ -40,7 +40,7 @@
                                 th:if="${siteGrade.memGradeType == 0}" th:text="자동등업"></span>
                             <span th:if="${siteGrade.memGradeType == 1}" th:text="수동등업"></span>)
                         </p>
-                        <p class="m-0" th:if="${siteGrade.memGrade == 5}">-</p>
+                        <p class="m-0" th:if="${siteGrade.memGrade == 5}">관리자 승인 후 등업가능합니다.</p>
                     </td>
                 </tr>
                 </tbody>

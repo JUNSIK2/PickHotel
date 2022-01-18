@@ -103,6 +103,7 @@ header .nav-link:hover, header .nav-link:active {
 header a.logo {
     position: absolute;
     left: 0;
+    top: 8px;
 }
 
 header #login-box {

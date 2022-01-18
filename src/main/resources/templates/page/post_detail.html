@@ -19,23 +19,74 @@
                 </div>
             </div>
             <div class="panel-body post-content">
-                <div class="mb-3 p-sm-4">
-                    <div class="map_wrap" th:if="${mapVoForApi != null}">
-                        <div id="map" style="width:50%;height:100%;position:relative;overflow:hidden;"></div>
+                <div class="p-sm-4">
+                    <div class="map_wrap mb-5 " th:if="${mapVoForApi != null}">
+                        <div id="map" style="height:100%;position:relative;overflow:hidden;"></div>
                         <div class="bg_white" id="menu_wrap">
                             <div class="option">
                                 <div></div>
                             </div>
-                            <hr>
                             <ul id="placesList"></ul>
                             <div id="pagination"></div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="visually-hidden" for="content">내용</label>
-                        <div id="content" th:utext="*{content}"></div>
+                    <div class="review" th:if="${review != null}">
+                        <div class="mb-5">
+                            <div class="fs-5 fw-bold mb-4 text-center">작성자가 남긴 숙소 평점
+                                <p class="fs-6 fw-light" style="color: #696969;">솔직하게 남겨주신 소중한 리뷰입니다</p>
+                            </div>
+                            <ul class="star-area">
+                                <li>
+                                    <label>위치</label>
+                                    <div class="star-box">
+                                        <i th:each="num : ${#numbers.sequence(1,review.rateLoc)}"><img
+                                                src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/star_2b50.png"></i>
+                                    </div>
+                                </li>
+                                <li>
+                                    <label>위생</label>
+                                    <div class="star-box">
+                                        <i th:each="num : ${#numbers.sequence(1,review.rateClean)}"><img
+                                                src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/star_2b50.png"></i>
+
+                                    </div>
+                                </li>
+                                <li>
+                                    <label>의사소통</label>
+                                    <div class="star-box">
+                                        <i th:each="num : ${#numbers.sequence(1,review.rateComu)}"><img
+                                                src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/star_2b50.png"></i>
+                                    </div>
+                                </li>
+                                <li>
+                                    <label>가성비</label>
+                                    <div class="star-box">
+                                        <i th:each="num : ${#numbers.sequence(1,review.rateChip)}"><img
+                                                src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/star_2b50.png"></i>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mb-4" th:if="${review.visitDate != null}">
+                            <p class="m-0">
+                                <label for="visitDate">방문 날짜</label>
+                            </p>
+                            <span id="visitDate" th:text="${review.visitDate}"></span>
+                        </div>
+                        <div class="mb-4" th:if="${review.recommendPlace != null}">
+                            <p class="m-0">
+                                <label for="recommendPlace">주변 맛집과 관광지를 추천해주세요👍</label>
+                            </p>
+                            <span id="recommendPlace" th:text="${review.recommendPlace}"></span>
+                        </div>
+                        <div class="mb-5" th:if="${review.notRecommendPerson != null}">
+                            <p class="m-0">
+                                <label for="notRecommendPerson">이런 분들께는 비추에요👎</label>
+                            </p>
+                            <span id="notRecommendPerson" th:text="${review.notRecommendPerson}"></span>
+                        </div>
                     </div>
-                    <div th:if="${attachList != null}">
+                    <div class="mb-3" th:if="${attachList != null}">
                         <div class="photos">
                             <div id="images">
                                 <img th:each="attach : ${attachList}" th:if="${attach.fileType == 1}"
@@ -56,32 +107,9 @@
                             </div>
                         </div>
                     </div>
-
-
-                    <div class="review" th:if="${review != null}">
-                        <div class="mb-3">
-                            <label for="rateLoc">위치</label>
-                            <span id="rateLoc" th:text="${review.rateLoc}"></span>
-                            <label for="rateClean">위생</label>
-                            <span id="rateClean" th:text="${review.rateClean}"></span>
-                            <label for="rateComu">의사소통</label>
-                            <span id="rateComu" th:text="${review.rateComu}"></span>
-                            <label for="rateChip">가성비</label>
-                            <span id="rateChip" th:text="${review.rateChip}"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="visitDate">방문 날짜</label>
-                            <span id="visitDate" th:text="${review.visitDate}"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label for="recommendPlace">주변 맛집과 관광지를 추천</label>
-                            <span id="recommendPlace" th:text="${review.recommendPlace}"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label for="notRecommendPerson">이런분들께는 비추에요</label>
-                            <span id="notRecommendPerson" th:text="${review.notRecommendPerson}"></span>
-                        </div>
+                    <div class="mb-5">
+                        <label class="visually-hidden" for="content">내용</label>
+                        <div id="content" th:utext="*{content}"></div>
                     </div>
 
                     <div class="mb-3 tag-box" th:if="${post.tag != null && post.tag != ''}">
@@ -90,14 +118,14 @@
                                     th:text="${'#'+tag}"></span></a>
                         </div>
                     </div>
-                    <div class="mb-3 panel-heading text-end">
+                    <div class="text-end">
                         <a class="btn btn-warning" onClick="editPost()" sec:authorize="isAuthenticated()"
                            th:if="${#authentication.principal.member.memNo} == ${post.writerNo} OR ${#authentication.principal.member.grade} == '5'">수정</a>
                         <a class="btn btn-danger"
                            onClick="removePost()" sec:authorize="isAuthenticated()"
                            th:if="${#authentication.principal.member.memNo} == ${post.writerNo} OR ${#authentication.principal.member.grade} == '5'">삭제</a>
                         <!--<a class="btn btn-warning" th:href="@{/post/block/{boardNo}(boardNo=*{boardNo})}">신고</a>-->
-                        <a class="btn btn-secondary" th:href="@{/boardList/{boardNo}(boardNo=*{boardNo})}">목록보기</a>
+                        <a class="btn btn-secondary" th:href="@{/boardList/{boardNo}(boardNo=*{boardNo})}">목록</a>
                     </div>
 
                     <input id="postNo" name="postNo" th:value="*{postNo}" type="hidden">

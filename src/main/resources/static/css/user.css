@@ -208,122 +208,157 @@ li[class^=pw-condition] i {
     height: auto;
 }
 
-/* 게시글 작성 */
-#postWrite {
-    width: 860px;
-    margin: 0 auto;
+
+#map {
+    border: 1px solid #e5e5e5;
 }
 
-#postWrite label {
-    font-size: 17px;
-    font-weight: 600;
-}
-
-#postWrite label .chose {
-    font-weight: 100;
-    font-size: 14px;
-    color: #696969;
-    margin-left: 3px;
-}
-
-#postWrite .map_wrap, .map_wrap * {
-    margin: 0;
-    padding: 0;
-    font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
-    font-size: 12px;
-}
-
-#postWrite .map_wrap a, .map_wrap a:hover, .map_wrap a:active {
+.map_wrap a, .map_wrap a:hover, .map_wrap a:active {
     color: #000;
     text-decoration: none;
 }
 
-#postWrite .map_wrap {
+.map_wrap {
     position: relative;
     width: 100%;
     height: 500px;
+    overflow: hidden;
 }
 
-#postWrite #menu_wrap {
+.map_wrap #menu_wrap {
     position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 250px;
-    margin: 10px 0 30px 10px;
-    padding: 5px;
+    top: 1px;
+    left: 1px;
+    bottom: 1px;
+    width: 275px;
+    padding: 10px 0;
     overflow-y: auto;
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 1);
     z-index: 1;
     font-size: 12px;
-    border-radius: 10px;
+    border-right: 1px solid #e5e5e5;
+    box-shadow: 0 0 5px 0 rgb(0 0 0 / 20%), 5px 0 15px 0 rgb(0 0 0 / 10%);
 }
 
-#postWrite .bg_white {
-    background: #fff;
-}
-
-#postWrite #menu_wrap hr {
+#menu_wrap hr {
     display: block;
     height: 1px;
     border: 0;
     border-top: 2px solid #5F5F5F;
-    margin: 3px 0;
+    margin: 7px 0 10px;
 }
 
-#postWrite #menu_wrap .option {
+#menu_wrap .option {
     text-align: center;
+    padding: 0 10px;
 }
 
-#postWrite #menu_wrap .option p {
-    margin: 10px 0;
+#menu_wrap .option .search-box {
+    position: relative;
+    z-index: 110;
+    height: 42px;
+    padding-left: 45px;
+    border: 2px solid #0d6efd;
+    border-radius: 9px;
+    padding: 0;
 }
 
-#postWrite #menu_wrap .option button {
-    margin-left: 5px;
+#menu_wrap .option #keyword {
+    display: block;
+    width: 138px;
+    font-size: 16px;
+    height: 37px;
+    letter-spacing: -.2px;
+    border: none;
+    background-color: #fff !important;
+    float: left;
 }
 
-#postWrite #placesList li {
+#menu_wrap .option i.fa.fa-search {
+    float: left;
+    width: 17%;
+    font-size: 17px;
+    line-height: 38px;
+    color: #0d6efd;
+}
+
+#menu_wrap .option button {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    border-radius: 0px 6px 6px 0px;
+    padding: 0 10px;
+}
+
+#placesList li {
     list-style: none;
 }
 
-#postWrite #placesList .item {
+#placesList {
+    padding: 0;
+    margin: 10px 0px;
+}
+
+#placesList .item {
     position: relative;
-    border-bottom: 1px solid #888;
     overflow: hidden;
     cursor: pointer;
     min-height: 65px;
+    padding: 14px 15px;
+    border-top: 1px solid #ebebeb;
 }
 
-#postWrite #placesList .item span {
+#placesList .item.active {
+    background: #ddeaff;
+}
+
+#placesList .item button {
+    width: 50%;
+    border: 1px solid #767676;
+    padding: 7px 0;
+    background: #fff;
+}
+
+#placesList .item button + button {
+    border: 1px solid #0d6efd;
+    border-left: 0;
+    background: #0d6efd;
+    color: #fff;
+}
+
+#placesList .item span {
     display: block;
-    margin-top: 4px;
+    margin-top: 2px;
+    font-size: 11px;
 }
 
-#postWrite #placesList .item h5, #placesList .item .info {
+#placesList .item h5, #placesList .item .info {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    font-size: 14px;
 }
 
-#postWrite #placesList .item .info {
-    padding: 10px 0 10px 55px;
+#placesList .item .info {
+    padding: 5px 0 10px 55px;
 }
 
-#postWrite #placesList .info .gray {
+#placesList .info .gray {
     color: #8a8a8a;
 }
 
-#postWrite #placesList .info .jibun {
+#placesList .info .jibun {
     padding-left: 26px;
     background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_jibun.png) no-repeat;
 }
 
-#postWrite #placesList .info .tel {
-    color: #009900;
+#placesList .info .tel {
+    color: #0d6efd;
+    font-size: 10px;
+    margin: 0;
 }
 
-#postWrite #placesList .item .markerbg {
+#placesList .item .markerbg {
     float: left;
     position: absolute;
     width: 36px;
@@ -332,67 +367,67 @@ li[class^=pw-condition] i {
     background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png) no-repeat;
 }
 
-#postWrite #placesList .item .marker_1 {
+#placesList .item .marker_1 {
     background-position: 0 -10px;
 }
 
-#postWrite #placesList .item .marker_2 {
+#placesList .item .marker_2 {
     background-position: 0 -56px;
 }
 
-#postWrite #placesList .item .marker_3 {
+#placesList .item .marker_3 {
     background-position: 0 -102px
 }
 
-#postWrite #placesList .item .marker_4 {
+#placesList .item .marker_4 {
     background-position: 0 -148px;
 }
 
-#postWrite #placesList .item .marker_5 {
+#placesList .item .marker_5 {
     background-position: 0 -194px;
 }
 
-#postWrite #placesList .item .marker_6 {
+#placesList .item .marker_6 {
     background-position: 0 -240px;
 }
 
-#postWrite #placesList .item .marker_7 {
+#placesList .item .marker_7 {
     background-position: 0 -286px;
 }
 
-#postWrite #placesList .item .marker_8 {
+#placesList .item .marker_8 {
     background-position: 0 -332px;
 }
 
-#postWrite #placesList .item .marker_9 {
+#placesList .item .marker_9 {
     background-position: 0 -378px;
 }
 
-#postWrite #placesList .item .marker_10 {
+#placesList .item .marker_10 {
     background-position: 0 -423px;
 }
 
-#postWrite #placesList .item .marker_11 {
+#placesList .item .marker_11 {
     background-position: 0 -470px;
 }
 
-#postWrite #placesList .item .marker_12 {
+#placesList .item .marker_12 {
     background-position: 0 -516px;
 }
 
-#postWrite #placesList .item .marker_13 {
+#placesList .item .marker_13 {
     background-position: 0 -562px;
 }
 
-#postWrite #placesList .item .marker_14 {
+#placesList .item .marker_14 {
     background-position: 0 -608px;
 }
 
-#postWrite #placesList .item .marker_15 {
+#placesList .item .marker_15 {
     background-position: 0 -654px;
 }
 
-#postWrite #pagination {
+/* #postWrite #pagination {
     margin: 10px auto;
     text-align: center;
 }
@@ -406,6 +441,45 @@ li[class^=pw-condition] i {
     font-weight: bold;
     cursor: default;
     color: #777;
+}
+ */
+
+/* 게시글 작성 */
+#postWrite {
+    width: 860px;
+    margin: 0 auto;
+}
+
+#postWrite label, #postDetail label {
+    font-size: 17px;
+    font-weight: 600;
+    margin-right: 3px;
+    line-height: 30px;
+}
+
+#postWrite label .chose {
+    font-weight: 100;
+    font-size: 14px;
+    color: #696969;
+    margin-left: 3px;
+}
+
+#postWrite .star-area, #postDetail .star-area {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#postWrite .star-area li, #postDetail .star-area li {
+    float: left;
+    width: 25%;
+    text-align: center;
+}
+
+#postWrite .star-box, #postDetail .star-box {
+    display: inline-block;
+    height: 32px;
+    vertical-align: middle;
 }
 
 #postWrite .star-container {
@@ -518,6 +592,10 @@ li[class^=pw-condition] i {
 }
 
 /* 게시글 목록 */
+.post-list-table .post-subject {
+    color: #000;
+}
+
 .post-list-table span.post-comment {
     font-size: 13px;
     margin-left: 3px;
@@ -525,189 +603,6 @@ li[class^=pw-condition] i {
 }
 
 /* 게시글 상세보기 */
-#postDetail .map_wrap, .map_wrap * {
-    margin: 0;
-    padding: 0;
-    font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
-    font-size: 12px;
-}
-
-#postDetail .map_wrap a, .map_wrap a:hover, .map_wrap a:active {
-    color: #000;
-    text-decoration: none;
-}
-
-#postDetail .map_wrap {
-    position: relative;
-    width: 100%;
-    height: 500px;
-}
-
-#postDetail #menu_wrap {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    height: 150px;
-    width: 300px;
-    margin: 10px 0 30px 10px;
-    padding: 5px;
-    overflow-y: auto;
-    background: rgba(255, 255, 255, 0.7);
-    z-index: 1;
-    font-size: 12px;
-    border-radius: 10px;
-}
-
-#postDetail .bg_white {
-    background: #fff;
-}
-
-#postDetail #menu_wrap hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 2px solid #5F5F5F;
-    margin: 3px 0;
-}
-
-#postDetail #menu_wrap .option {
-    text-align: center;
-}
-
-#postDetail #menu_wrap .option p {
-    margin: 10px 0;
-}
-
-#postDetail #menu_wrap .option button {
-    margin-left: 5px;
-}
-
-#postDetail #placesList li {
-    list-style: none;
-}
-
-#postDetail #placesList .item {
-    position: relative;
-    border-bottom: 1px solid #888;
-    overflow: hidden;
-    cursor: pointer;
-    min-height: 65px;
-}
-
-#postDetail #placesList .item span {
-    display: block;
-    margin-top: 4px;
-}
-
-#postDetail #placesList .item h5, #placesList .item .info {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-#postDetail #placesList .item .info {
-    padding: 10px 0 10px 55px;
-}
-
-#postDetail #placesList .info .gray {
-    color: #8a8a8a;
-}
-
-#postDetail #placesList .info .jibun {
-    padding-left: 26px;
-    background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_jibun.png) no-repeat;
-}
-
-#postDetail #placesList .info .tel {
-    color: #009900;
-}
-
-#postDetail #placesList .item .markerbg {
-    float: left;
-    position: absolute;
-    width: 36px;
-    height: 37px;
-    margin: 10px 0 0 10px;
-    background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png) no-repeat;
-}
-
-#postDetail #placesList .item .marker_1 {
-    background-position: 0 -10px;
-}
-
-#postDetail #placesList .item .marker_2 {
-    background-position: 0 -56px;
-}
-
-#postDetail #placesList .item .marker_3 {
-    background-position: 0 -102px
-}
-
-#postDetail #placesList .item .marker_4 {
-    background-position: 0 -148px;
-}
-
-#postDetail #placesList .item .marker_5 {
-    background-position: 0 -194px;
-}
-
-#postDetail #placesList .item .marker_6 {
-    background-position: 0 -240px;
-}
-
-#postDetail #placesList .item .marker_7 {
-    background-position: 0 -286px;
-}
-
-#postDetail #placesList .item .marker_8 {
-    background-position: 0 -332px;
-}
-
-#postDetail #placesList .item .marker_9 {
-    background-position: 0 -378px;
-}
-
-#postDetail #placesList .item .marker_10 {
-    background-position: 0 -423px;
-}
-
-#postDetail #placesList .item .marker_11 {
-    background-position: 0 -470px;
-}
-
-#postDetail #placesList .item .marker_12 {
-    background-position: 0 -516px;
-}
-
-#postDetail #placesList .item .marker_13 {
-    background-position: 0 -562px;
-}
-
-#postDetail #placesList .item .marker_14 {
-    background-position: 0 -608px;
-}
-
-#postDetail #placesList .item .marker_15 {
-    background-position: 0 -654px;
-}
-
-#postDetail #pagination {
-    margin: 10px auto;
-    text-align: center;
-}
-
-#postDetail #pagination a {
-    display: inline-block;
-    margin-right: 10px;
-}
-
-#postDetail #pagination .on {
-    font-weight: bold;
-    cursor: default;
-    color: #777;
-}
-
 #postDetail .videos video {
     height: 200px;
     width: auto;
@@ -736,6 +631,31 @@ li[class^=pw-condition] i {
     margin-left: 5px;
 }
 
+
+#postDetail .map_wrap #menu_wrap {
+    height: auto;
+    bottom: auto;
+}
+
+div#postDetail #placesList .item {
+    border: none;
+    padding: 0px 15px;
+}
+
+#postDetail #placesList .item button {
+    width: 100%;
+}
+
+
+#postDetail .star-box i {
+    display: inline-block;
+    width: 25px;
+}
+
+#postDetail .star-box i img {
+    width: 100%;
+}
+
 /* 게시글 상세보기 > 태그*/
 #postDetail #tag > a {
     display: inline-block;
@@ -756,8 +676,12 @@ li[class^=pw-condition] i {
     background: #7777773b;
 }
 
-/* 게시글 상세보기 > 댓글 목록*/
+.photos .notion, .videos .notion {
+    font-size: 13px;
+    color: #696969;
+}
 
+/* 게시글 상세보기 > 댓글 목록*/
 #ListComment .commont-noline {
     padding: 15px 0;
 }

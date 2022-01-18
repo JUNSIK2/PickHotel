@@ -35,8 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		memberstate as s Left JOIN member
 		as m on
 		m.mb_no = s.mb_no
-		WHERE
-		m.mb_state != 1
+
 		<if
 			test='searchKeyword !=null  and searchType.equalsIgnoreCase("name")'>
 			and m.mb_name = #{searchKeyword}

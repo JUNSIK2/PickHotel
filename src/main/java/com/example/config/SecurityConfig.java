@@ -59,7 +59,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        //중요
         auth.userDetailsService(accountService)
                 .passwordEncoder(passwordEncoder());
     }
@@ -72,6 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        log.info("call SecurityConfig configure");
 
         CharacterEncodingFilter filter = new CharacterEncodingFilter();
         filter.setEncoding("UTF-8");
@@ -80,9 +80,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         String message= URLEncoder.encode("새로운 사용자가 로그인 하였습니다", "UTF-8");
 
-        log.info("call SecurityConfig configure");
-
-        http.csrf().disable()
+        http
+                .csrf().disable()
                 .authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
@@ -115,6 +114,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .and()
                 .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class);
+
         http.sessionManagement()
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(false)

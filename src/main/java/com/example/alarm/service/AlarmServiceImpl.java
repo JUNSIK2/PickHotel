@@ -30,10 +30,6 @@ public class AlarmServiceImpl implements AlarmService {
         //회원이 알림 목록을 전체 조회한다.
         List<AlarmVo> alarms = this.alarmDao.selectAlarmList(memNo);
 
-        //조회와 동시에 알림 읽음 처리가 된다.
-        this.alarmDao.updateReadAlarmList(memNo);
-        //성공시 1, 실패시 0
-
         return alarms;
     }
 
@@ -43,6 +39,14 @@ public class AlarmServiceImpl implements AlarmService {
     public int retrieveNoReadAlarmCount(int memNo) {
         int result = this.alarmDao.selectNoReadAlarmCount(memNo);
         return result;
+    }
+
+    // 알림 읽음 처리
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {RuntimeException.class})
+    public void reviseReadAlarmList(int memNo) {
+        //조회와 동시에 알림 읽음 처리가 된다.
+        this.alarmDao.updateReadAlarmList(memNo);
     }
 
     // 조건에 해당하는 알림을 삭제한다.

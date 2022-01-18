@@ -25,24 +25,33 @@
             <input class="form-control" id="subject" name="subject" placeholder="제목을 입력하세요" required type="text">
         </div>
 
-        <div class="mb-4 map_wrap" th:if="${boardType == 'review'}">
+        <div class="mb-5 map_wrap" th:if="${boardType == 'review'}">
             <div id="map" style="height:100%;position:relative;overflow:hidden;"></div>
             <div class="bg_white" id="menu_wrap">
                 <div class="option">
-                    <div>
-                        키워드 : <input id="keyword" size="15" type="text">
-                        <button onclick="searchPlaces(); return false;" type="button">검색하기</button>
+                    <div class="search-box">
+                        <i aria-hidden="true" class="fa fa-search"></i>
+                        <input id="keyword" placeholder="숙소 검색" size="15" type="text">
+                        <button class="btn btn-primary btn-sm" onclick="searchPlaces(); return false;" type="button">
+                            검색
+                        </button>
                     </div>
                 </div>
-                <hr>
                 <ul id="placesList"></ul>
                 <div id="pagination"></div>
             </div>
         </div>
-
+        <script>
+            document.querySelector('#keyword').addEventListener('keyup', (e) => {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    searchPlaces()
+                }
+            });
+        </script>
         <div class="mb-4 mapInfo">
-            숙소 이름 : <input id="place_name" name="place_name" readonly type="text">
-            숙소 주소 : <input id="road_address_name" name="road_address_name" readonly type="text">
+            <input id="place_name" name="place_name" readonly type="hidden">
+            <input id="road_address_name" name="road_address_name" readonly type="hidden">
             <input id="address_name" name="address_name" type="hidden">
             <input id="category_group_code" name="category_group_code" type="hidden">
             <input id="category_group_name" name="category_group_name" type="hidden">
@@ -55,123 +64,165 @@
             <input id="y" name="y" type="hidden">
         </div>
         <div class="review">
-            <div class="mb-4">
-                <label>위치</label>
-                <div class="star-container">
-                    <input class="star-check" name="showRateLoc" onclick="getRateLoc()" title="5" type="radio"
-                           value="5"/>
-                    <input class="star-check" name="showRateLoc" onclick="getRateLoc()" title="4" type="radio"
-                           value="4"/>
-                    <input class="star-check" name="showRateLoc" onclick="getRateLoc()" title="3" type="radio"
-                           value="3"/>
-                    <input class="star-check" name="showRateLoc" onclick="getRateLoc()" title="2" type="radio"
-                           value="2"/>
-                    <input class="star-check" name="showRateLoc" onclick="getRateLoc()" title="1" type="radio"
-                           value="1"/>
+            <div class="mb-5">
+                <div class="fs-5 fw-bold mb-4 text-center">숙소가 어땠는지 알려주세요!
+                    <p class="fs-6 fw-light" style="color: #696969;">당신의 리뷰가 누군가에게는 큰 도움이 됩니다</p>
                 </div>
-                <input id="rateLoc" name="rateLoc" type="hidden">
-                <script>
-                    function getRateLoc() {
-                        var rateLocNodeList = document.getElementsByName("showRateLoc");
+                <ul class="star-area">
+                    <li>
+                        <label>위치</label>
+                        <div class="star-box">
+                            <div class="star-container">
+                                <input class="star-check" name="showRateLoc" onclick="getRateLoc()" title="5"
+                                       type="radio"
+                                       value="5"/>
+                                <input class="star-check" name="showRateLoc" onclick="getRateLoc()" title="4"
+                                       type="radio"
+                                       value="4"/>
+                                <input class="star-check" name="showRateLoc" onclick="getRateLoc()" title="3"
+                                       type="radio"
+                                       value="3"/>
+                                <input class="star-check" name="showRateLoc" onclick="getRateLoc()" title="2"
+                                       type="radio"
+                                       value="2"/>
+                                <input class="star-check" name="showRateLoc" onclick="getRateLoc()" title="1"
+                                       type="radio"
+                                       value="1"/>
+                            </div>
+                        </div>
+                        <input id="rateLoc" name="rateLoc" type="hidden">
+                        <script>
+                            function getRateLoc() {
+                                var rateLocNodeList = document.getElementsByName("showRateLoc");
 
-                        rateLocNodeList.forEach((node) => {
-                            if (node.checked) {
-                                document.getElementById("rateLoc").value = node.value;
+                                rateLocNodeList.forEach((node) => {
+                                    if (node.checked) {
+                                        document.getElementById("rateLoc").value = node.value;
+                                    }
+                                })
                             }
-                        })
-                    }
-                </script>
+                        </script>
+                    </li>
+                    <li>
+                        <label>위생</label>
+                        <div class="star-box">
+                            <input id="rateClean" name="rateClean" type="hidden">
+                            <div class="star-container">
+                                <input class="star-check" name="showRateClean" onclick="getRateClean()" title="5"
+                                       type="radio"
+                                       value="5"/>
+                                <input class="star-check" name="showRateClean" onclick="getRateClean()" title="4"
+                                       type="radio"
+                                       value="4"/>
+                                <input class="star-check" name="showRateClean" onclick="getRateClean()" title="3"
+                                       type="radio"
+                                       value="3"/>
+                                <input class="star-check" name="showRateClean" onclick="getRateClean()" title="2"
+                                       type="radio"
+                                       value="2"/>
+                                <input class="star-check" name="showRateClean" onclick="getRateClean()" title="1"
+                                       type="radio"
+                                       value="1"/>
+                            </div>
+                        </div>
+                        <script>
+                            function getRateClean() {
+                                var rateLocNodeList = document.getElementsByName("showRateClean");
 
-                <label>위생</label>
-                <div class="star-container">
-                    <input class="star-check" name="showRateClean" onclick="getRateClean()" title="5" type="radio"
-                           value="5"/>
-                    <input class="star-check" name="showRateClean" onclick="getRateClean()" title="4" type="radio"
-                           value="4"/>
-                    <input class="star-check" name="showRateClean" onclick="getRateClean()" title="3" type="radio"
-                           value="3"/>
-                    <input class="star-check" name="showRateClean" onclick="getRateClean()" title="2" type="radio"
-                           value="2"/>
-                    <input class="star-check" name="showRateClean" onclick="getRateClean()" title="1" type="radio"
-                           value="1"/>
-                </div>
-                <input id="rateClean" name="rateClean" type="hidden">
-                <script>
-                    function getRateClean() {
-                        var rateLocNodeList = document.getElementsByName("showRateClean");
-
-                        rateLocNodeList.forEach((node) => {
-                            if (node.checked) {
-                                document.getElementById("rateClean").value = node.value;
+                                rateLocNodeList.forEach((node) => {
+                                    if (node.checked) {
+                                        document.getElementById("rateClean").value = node.value;
+                                    }
+                                })
                             }
-                        })
-                    }
-                </script>
+                        </script>
+                    </li>
+                    <li>
+                        <label>의사소통</label>
+                        <div class="star-box">
+                            <div class="star-container">
+                                <input class="star-check" name="showRateComu" onclick="getRateComu()" title="5"
+                                       type="radio"
+                                       value="5"/>
+                                <input class="star-check" name="showRateComu" onclick="getRateComu()" title="4"
+                                       type="radio"
+                                       value="4"/>
+                                <input class="star-check" name="showRateComu" onclick="getRateComu()" title="3"
+                                       type="radio"
+                                       value="3"/>
+                                <input class="star-check" name="showRateComu" onclick="getRateComu()" title="2"
+                                       type="radio"
+                                       value="2"/>
+                                <input class="star-check" name="showRateComu" onclick="getRateComu()" title="1"
+                                       type="radio"
+                                       value="1"/>
+                            </div>
+                        </div>
+                        <input id="rateComu" name="rateComu" type="hidden">
+                        <script>
+                            function getRateComu() {
+                                var rateLocNodeList = document.getElementsByName("showRateComu");
 
-                <label>의사소통</label>
-                <div class="star-container">
-                    <input class="star-check" name="showRateComu" onclick="getRateComu()" title="5" type="radio"
-                           value="5"/>
-                    <input class="star-check" name="showRateComu" onclick="getRateComu()" title="4" type="radio"
-                           value="4"/>
-                    <input class="star-check" name="showRateComu" onclick="getRateComu()" title="3" type="radio"
-                           value="3"/>
-                    <input class="star-check" name="showRateComu" onclick="getRateComu()" title="2" type="radio"
-                           value="2"/>
-                    <input class="star-check" name="showRateComu" onclick="getRateComu()" title="1" type="radio"
-                           value="1"/>
-                </div>
-                <input id="rateComu" name="rateComu" type="hidden">
-                <script>
-                    function getRateComu() {
-                        var rateLocNodeList = document.getElementsByName("showRateComu");
-
-                        rateLocNodeList.forEach((node) => {
-                            if (node.checked) {
-                                document.getElementById("rateComu").value = node.value;
+                                rateLocNodeList.forEach((node) => {
+                                    if (node.checked) {
+                                        document.getElementById("rateComu").value = node.value;
+                                    }
+                                })
                             }
-                        })
-                    }
-                </script>
+                        </script>
+                    </li>
+                    <li>
+                        <label>가성비</label>
+                        <div class="star-box">
+                            <div class="star-container">
+                                <input class="star-check" name="showRateChip" onclick="getRateChip()" title="5"
+                                       type="radio"
+                                       value="5"/>
+                                <input class="star-check" name="showRateChip" onclick="getRateChip()" title="4"
+                                       type="radio"
+                                       value="4"/>
+                                <input class="star-check" name="showRateChip" onclick="getRateChip()" title="3"
+                                       type="radio"
+                                       value="3"/>
+                                <input class="star-check" name="showRateChip" onclick="getRateChip()" title="2"
+                                       type="radio"
+                                       value="2"/>
+                                <input class="star-check" name="showRateChip" onclick="getRateChip()" title="1"
+                                       type="radio"
+                                       value="1"/>
+                            </div>
+                        </div>
+                        <input id="rateChip" name="rateChip" type="hidden">
+                        <script>
+                            function getRateChip() {
+                                var rateLocNodeList = document.getElementsByName("showRateChip");
 
-                <label>가성비</label>
-                <div class="star-container">
-                    <input class="star-check" name="showRateChip" onclick="getRateChip()" title="5" type="radio"
-                           value="5"/>
-                    <input class="star-check" name="showRateChip" onclick="getRateChip()" title="4" type="radio"
-                           value="4"/>
-                    <input class="star-check" name="showRateChip" onclick="getRateChip()" title="3" type="radio"
-                           value="3"/>
-                    <input class="star-check" name="showRateChip" onclick="getRateChip()" title="2" type="radio"
-                           value="2"/>
-                    <input class="star-check" name="showRateChip" onclick="getRateChip()" title="1" type="radio"
-                           value="1"/>
-                </div>
-                <input id="rateChip" name="rateChip" type="hidden">
-                <script>
-                    function getRateChip() {
-                        var rateLocNodeList = document.getElementsByName("showRateChip");
-
-                        rateLocNodeList.forEach((node) => {
-                            if (node.checked) {
-                                document.getElementById("rateChip").value = node.value;
+                                rateLocNodeList.forEach((node) => {
+                                    if (node.checked) {
+                                        document.getElementById("rateChip").value = node.value;
+                                    }
+                                })
                             }
-                        })
-                    }
-                </script>
-
+                        </script>
+                    </li>
+                </ul>
             </div>
+
             <div class="mb-4">
                 <p class="m-0"><label for="visitDate">방문 날짜<span class="chose">(선택)</span></label></p>
                 <input id="visitDate" name="visitDate" type="date"/>
             </div>
             <div class="mb-4">
                 <label for="recommendPlace">주변 맛집과 관광지를 추천해주세요<span class="chose">(선택)</span></label>
-                <input class="form-control" id="recommendPlace" name="recommendPlace" type="text">
+                <input class="form-control" id="recommendPlace" name="recommendPlace"
+                       placeholder="예) 유명한 곱창 골목이 있어요, 가까운 곳에 절이 있어요"
+                       type="text">
             </div>
             <div class="mb-4">
-                <label for="notRecommendPerson">이런분들께는 비추에요<span class="chose">(선택)</span></label>
-                <input class="form-control" id="notRecommendPerson" name="notRecommendPerson" type="text">
+                <label for="notRecommendPerson">이런 분들께는 비추에요<span class="chose">(선택)</span></label>
+                <input class="form-control" id="notRecommendPerson" name="notRecommendPerson"
+                       placeholder="예) 위생에 예민하신 분들은 피해주세요"
+                       type="text">
             </div>
         </div>
         <div>
@@ -190,15 +241,15 @@
 
         <div class="mb-4 photos">
             <p class="m-0"><label for="images">사진<span class="chose">(선택)</span></label></p>
-            <p class="notion">3MB 이하</p>
+            <p class="m-0 notion">3MB 이하</p>
             <input accept="image/*" id="images" multiple name="images" type="file"/>
             <div class="photogallery"></div>
         </div>
 
         <div class="mb-4 videos">
             <p class="m-0"><label for="videos">동영상<span class="chose">(선택)</span></label></p>
-            <p class="notion">.mp4, .webm, .ogg, .mov만 사용가능, 30MB 이하</p>
-            <input id="videos" multiple name="videos" type="file"/>
+            <p class="m-0 notion">.mp4, .webm, .ogg, .mov만 사용가능, 30MB 이하</p>
+            <input accept="video/*" id="videos" multiple name="videos" type="file"/>
             <div class="videogallery"></div>
         </div>
         <div class="text-center">
@@ -424,7 +475,7 @@
                     var result = data;
                     if (result.board.type == "review") {
                         if (!place_name.replace(/^\s+|\s+$/g, '')) {
-                            alert('장소를 입력해주세요!');
+                            alert('리뷰를 남기실 숙소를 지도에서 선택해주세요!');
                             return false;
                         }
 
@@ -581,7 +632,6 @@
         }
 
         //카카오 스크립트
-
         // 마커를 담을 배열
         var markers = [];
 
@@ -744,6 +794,9 @@
             return el;
         }
 
+        $(document).on('click', '.item', function () {
+            $(this).children("button").eq(1).trigger('onclick');
+        });
 
         // 숙소를 선택했을 때 정보를 가져옴
         function GetMapInfo(target) {
@@ -766,9 +819,17 @@
             var info = document.getElementsByClassName('info');
             var realInfo = info[infoNum];
 
+            var item = document.getElementsByClassName('item');
+            var realItem = item[infoNum];
+            for (var i = 0; i < item.length; i++) {
+                if (item[i].classList.contains("active")) {
+                    item[i].classList.remove("active");
+                }
+            }
+            realItem.classList.add("active");
+
             var mapInfo = [];
             mapInfo = $(realInfo).children();
-            console.log(mapInfo);
             var address_name = mapInfo[4].value;
             var category_group_code = mapInfo[5].value;
             var category_group_name = mapInfo[6].value;
@@ -842,8 +903,6 @@
                 el.removeChild(el.lastChild);
             }
         }
-
-
     </script>
 </div>
 

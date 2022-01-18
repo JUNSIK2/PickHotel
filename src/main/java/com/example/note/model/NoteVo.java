@@ -1,24 +1,25 @@
 package com.example.note.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import com.example.common.paging.CommonVo;
+import lombok.*;
 
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
-public class NoteVo {
-    int noteIdentifySendGetCode;
+@NoArgsConstructor
+public class NoteVo extends CommonVo {
     private int noteNo;
     private String noteCon;
-    private int noteGetmbNo;
-    private int noteSendmbNo;
-    private int noteGetmbDelState;
-    private int noteGetmbSaveState;
-    private int noteGetmbReadState;
-    private int noteSendmbDelState;
-    private int noteSendmbSaveState;
+    private int noteGetMbNo;
+    private int noteSendMbNo;
+    private int noteGetMbDelState;
+    private int noteGetMbSaveState;
+    private int noteGetMbReadState;
+    private int noteSendMbDelState;
+    private int noteSendMbSaveState;
     private String noteDateTime;
+    private int noteIdentifySendGetCode;
+    private String noteGetMbNick;
+    private String noteSendMbNick;
 }

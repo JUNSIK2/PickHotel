@@ -14,6 +14,9 @@ public interface AlarmService {
     // 회원의 미열람 상태인 알림의 개수를 조회한다.
     int retrieveNoReadAlarmCount(int memNo);
 
+    // 알림 읽음 처리
+    void reviseReadAlarmList(int memNo);
+
     // 조건에 해당하는 알림을 삭제한다.
     void removeAlarm(int alarmNo);
 

@@ -40,6 +40,9 @@
 		<typeAlias type="com.example.board.model.ReviewVo" alias="ReviewVo" />
 		<typeAlias type="com.example.board.model.RoomVo" alias="RoomVo" />
 
+		<!--쪽지	-->
+		<typeAlias type="com.example.note.model.NoteVo" alias="NoteVo" />
+
 		<!-- 사이트 등급 -->
 		<typeAlias type="com.example.grade.model.SiteGradeVo" alias="SiteGradeVo" />
 

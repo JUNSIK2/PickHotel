@@ -4,7 +4,6 @@ import com.example.common.paging.CommonVo;
 import lombok.*;
 
 import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -36,7 +35,6 @@ public class BoardVo extends CommonVo {
     private String creatDatetime; // 게시판 생성 일시
     private int postCount; //게시판 내 게시글 개수
 
-    @Min(value = 1, message = "게시판 접근 등급을 1등급이상 선택하세요.")
     @Max(value = 5, message = "게시판 접근 등급을 5등급이하 선택하세요.")
     //@Size(min = 1, max = 5, )
     private int boGrade; //게시판 접근 등급

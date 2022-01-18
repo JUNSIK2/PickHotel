@@ -49,6 +49,7 @@ public class AccountService implements UserDetailsService {
             }
 
             List<MemberRoleVo> memberRoles = roleResourceDao.getRolesById(id);
+
             List<String> roles = new ArrayList<>();
             List<String> roleHierarchy = new ArrayList<>();
 

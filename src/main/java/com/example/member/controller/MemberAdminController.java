@@ -112,11 +112,11 @@ public class MemberAdminController {
         int memNo = 0;
         for (int stateNo : stateNoList) {
 
-            // 강제 탈퇴 건PK값으로 회원PK 조회
+            // 강제 탈퇴 건 PK값으로 회원PK 조회
             memNo = memberStateService.retrieveMemberBlock(stateNo).getMemNo();
 
             // 회원 상태 "탈퇴" 변경
-            memberService.reviseMemberState(memNo, "2");
+            memberService.reviseMemberState(memNo, "1");
         }
 
         List<MemberAndMemberStateVo> list = memberStateService.retrieveMemberBlockList(params);

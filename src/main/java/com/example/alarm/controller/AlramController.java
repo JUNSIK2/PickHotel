@@ -51,6 +51,8 @@ public class AlramController {
                 alarm.setUrl("");
             }
         }
+        //알림 읽음 처리
+        this.alarmService.reviseReadAlarmList(memNo);
         return alarms;
     }
 

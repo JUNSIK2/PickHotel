@@ -12,25 +12,34 @@
                    type="text">
         </div>
 
-        <div class="mb-4 map_wrap" th:if="${mapVoForApi != null}">
+        <div class="mb-5 map_wrap" th:if="${mapVoForApi != null}">
             <div id="map" style="height:100%;position:relative;overflow:hidden;"></div>
 
             <div class="bg_white" id="menu_wrap">
                 <div class="option">
-                    <div>
-                        키워드 : <input id="keyword" size="15" type="text">
-                        <button onclick="searchPlaces(); return false;" type="button">검색하기</button>
+                    <div class="search-box">
+                        <i aria-hidden="true" class="fa fa-search"></i>
+                        <input id="keyword" placeholder="숙소 검색" size="15" type="text">
+                        <button class="btn btn-primary btn-sm" onclick="searchPlaces(); return false;" type="button">
+                            검색
+                        </button>
                     </div>
                 </div>
-                <hr>
                 <ul id="placesList"></ul>
                 <div id="pagination"></div>
             </div>
         </div>
-
+        <script>
+            document.querySelector('#keyword').addEventListener('keyup', (e) => {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    searchPlaces()
+                }
+            });
+        </script>
         <div class="mb-4 mapInfo" th:if="${mapVoForApi != null}">
-            숙소 이름 : <input id="place_name" name="place_name" readonly type="text">
-            숙소 주소 : <input id="road_address_name" name="road_address_name" readonly type="text">
+            <input id="place_name" name="place_name" readonly type="hidden">
+            <input id="road_address_name" name="road_address_name" readonly type="hidden">
             <input id="address_name" name="address_name" type="hidden">
             <input id="category_group_code" name="category_group_code" type="hidden">
             <input id="category_group_name" name="category_group_name" type="hidden">
@@ -44,77 +53,171 @@
         </div>
         <span th:if="${mapNo != null}"><input id="map_no" name="map_no" th:value="${mapNo}" type="hidden"></span>
 
-
         <div class="review" th:if="${review != null}">
-            <div class="mb-4">
-                <label>위치</label>
-                <div class="star-container">
-                    <input class="star-check" name="rateLoc" th:checked="${review.rateLoc == 5}" title="5" type="radio"
-                           value="5">
-                    <input class="star-check" name="rateLoc" th:checked="${review.rateLoc == 4}" title="4" type="radio"
-                           value="4">
-                    <input class="star-check" name="rateLoc" th:checked="${review.rateLoc == 3}" title="3" type="radio"
-                           value="3">
-                    <input class="star-check" name="rateLoc" th:checked="${review.rateLoc == 2}" title="2" type="radio"
-                           value="2">
-                    <input class="star-check" name="rateLoc" th:checked="${review.rateLoc == 1}" title="1" type="radio"
-                           value="1">
+            <div class="mb-5">
+                <div class="fs-5 fw-bold mb-4 text-center">숙소가 어땠는지 알려주세요!
+                    <p class="fs-6 fw-light" style="color: #696969;">당신의 리뷰가 누군가에게는 큰 도움이 됩니다</p>
                 </div>
-                <label>위생</label>
-                <div class="star-container">
-                    <input class="star-check" name="rateClean" th:checked="${review.rateClean == 5}" title="5"
-                           type="radio"
-                           value="5">
-                    <input class="star-check" name="rateClean" th:checked="${review.rateClean == 4}" title="4"
-                           type="radio"
-                           value="4">
-                    <input class="star-check" name="rateClean" th:checked="${review.rateClean == 3}" title="3"
-                           type="radio"
-                           value="3">
-                    <input class="star-check" name="rateClean" th:checked="${review.rateClean == 2}" title="2"
-                           type="radio"
-                           value="2">
-                    <input class="star-check" name="rateClean" th:checked="${review.rateClean == 1}" title="1"
-                           type="radio"
-                           value="1">
-                </div>
-                <label>의사소통</label>
-                <div class="star-container">
-                    <input class="star-check" name="rateComu" th:checked="${review.rateComu == 5}" title="5"
-                           type="radio"
-                           value="5">
-                    <input class="star-check" name="rateComu" th:checked="${review.rateComu == 4}" title="4"
-                           type="radio"
-                           value="4">
-                    <input class="star-check" name="rateComu" th:checked="${review.rateComu == 3}" title="3"
-                           type="radio"
-                           value="3">
-                    <input class="star-check" name="rateComu" th:checked="${review.rateComu == 2}" title="2"
-                           type="radio"
-                           value="2">
-                    <input class="star-check" name="rateComu" th:checked="${review.rateComu == 1}" title="1"
-                           type="radio"
-                           value="1">
-                </div>
-                <label>가성비</label>
-                <div class="star-container">
-                    <input class="star-check" name="rateChip" th:checked="${review.rateChip == 5}" title="5"
-                           type="radio"
-                           value="5">
-                    <input class="star-check" name="rateChip" th:checked="${review.rateChip == 4}" title="4"
-                           type="radio"
-                           value="4">
-                    <input class="star-check" name="rateChip" th:checked="${review.rateChip == 3}" title="3"
-                           type="radio"
-                           value="3">
-                    <input class="star-check" name="rateChip" th:checked="${review.rateChip == 2}" title="2"
-                           type="radio"
-                           value="2">
-                    <input class="star-check" name="rateChip" th:checked="${review.rateChip == 1}" title="1"
-                           type="radio"
-                           value="1">
-                </div>
+                <ul class="star-area">
+                    <li>
+                        <label>위치</label>
+                        <div class="star-box">
+                            <div class="star-container">
+                                <input class="star-check" name="showRateLoc" onclick="getRateLoc()"
+                                       th:checked="${review.rateLoc == 5}"
+                                       title="5"
+                                       type="radio" value="5"/>
+                                <input class="star-check" name="showRateLoc" onclick="getRateLoc()"
+                                       th:checked="${review.rateLoc == 4}"
+                                       title="4"
+                                       type="radio" value="4"/>
+                                <input class="star-check" name="showRateLoc" onclick="getRateLoc()"
+                                       th:checked="${review.rateLoc == 3}"
+                                       title="3"
+                                       type="radio" value="3"/>
+                                <input class="star-check" name="showRateLoc" onclick="getRateLoc()"
+                                       th:checked="${review.rateLoc == 2}"
+                                       title="2"
+                                       type="radio" value="2"/>
+                                <input class="star-check" name="showRateLoc" onclick="getRateLoc()"
+                                       th:checked="${review.rateLoc == 1}"
+                                       title="1"
+                                       type="radio" value="1"/>
+                            </div>
+                        </div>
+                        <input id="rateLoc" name="rateLoc" type="hidden" th:value="${review.rateLoc}">
+                        <script>
+                            function getRateLoc() {
+                                var rateLocNodeList = document.getElementsByName("showRateLoc");
+
+                                rateLocNodeList.forEach((node) => {
+                                    if (node.checked) {
+                                        document.getElementById("rateLoc").value = node.value;
+                                    }
+                                })
+                            }
+                        </script>
+                    </li>
+                    <li>
+                        <label>위생</label>
+                        <div class="star-box">
+                            <div class="star-container">
+                                <input class="star-check" name="showRateClean" onclick="getRateClean()"
+                                       th:checked="${review.rateClean == 5}"
+                                       title="5"
+                                       type="radio" value="5"/>
+                                <input class="star-check" name="showRateClean" onclick="getRateClean()"
+                                       th:checked="${review.rateClean == 4}"
+                                       title="4"
+                                       type="radio" value="4"/>
+                                <input class="star-check" name="showRateClean" onclick="getRateClean()"
+                                       th:checked="${review.rateClean == 3}"
+                                       title="3"
+                                       type="radio" value="3"/>
+                                <input class="star-check" name="showRateClean" onclick="getRateClean()"
+                                       th:checked="${review.rateClean == 2}"
+                                       title="2"
+                                       type="radio" value="2"/>
+                                <input class="star-check" name="showRateClean" onclick="getRateClean()"
+                                       th:checked="${review.rateClean == 1}"
+                                       title="1"
+                                       type="radio" value="1"/>
+                            </div>
+                        </div>
+                        <input id="rateClean" name="rateClean" type="hidden" th:value="${review.rateClean}">
+                        <script>
+                            function getRateClean() {
+                                var rateLocNodeList = document.getElementsByName("showRateClean");
+
+                                rateLocNodeList.forEach((node) => {
+                                    if (node.checked) {
+                                        document.getElementById("rateClean").value = node.value;
+                                    }
+                                })
+                            }
+                        </script>
+                    </li>
+                    <li>
+                        <label>의사소통</label>
+                        <div class="star-box">
+                            <div class="star-container">
+                                <input class="star-check" name="showRateComu" onclick="getRateComu()"
+                                       th:checked="${review.rateComu == 5}"
+                                       title="5"
+                                       type="radio" value="5"/>
+                                <input class="star-check" name="showRateComu" onclick="getRateComu()"
+                                       th:checked="${review.rateComu == 4}"
+                                       title="4"
+                                       type="radio" value="4"/>
+                                <input class="star-check" name="showRateComu" onclick="getRateComu()"
+                                       th:checked="${review.rateComu == 3}"
+                                       title="3"
+                                       type="radio" value="3"/>
+                                <input class="star-check" name="showRateComu" onclick="getRateComu()"
+                                       th:checked="${review.rateComu == 2}"
+                                       title="2"
+                                       type="radio" value="2"/>
+                                <input class="star-check" name="showRateComu" onclick="getRateComu()"
+                                       th:checked="${review.rateComu == 1}"
+                                       title="1"
+                                       type="radio" value="1"/>
+                            </div>
+                        </div>
+                        <input id="rateComu" name="rateComu" type="hidden" th:value="${review.rateComu}">
+                        <script>
+                            function getRateComu() {
+                                var rateLocNodeList = document.getElementsByName("showRateComu");
+
+                                rateLocNodeList.forEach((node) => {
+                                    if (node.checked) {
+                                        document.getElementById("rateComu").value = node.value;
+                                    }
+                                })
+                            }
+                        </script>
+                    </li>
+                    <li>
+                        <label>가성비</label>
+                        <div class="star-box">
+                            <div class="star-container">
+                                <input class="star-check" name="showRateChip" onclick="getRateChip()"
+                                       th:checked="${review.rateChip == 5}"
+                                       title="5"
+                                       type="radio" value="5"/>
+                                <input class="star-check" name="showRateChip" onclick="getRateChip()"
+                                       th:checked="${review.rateChip == 4}"
+                                       title="4"
+                                       type="radio" value="4"/>
+                                <input class="star-check" name="showRateChip" onclick="getRateChip()"
+                                       th:checked="${review.rateChip == 3}"
+                                       title="3"
+                                       type="radio" value="3"/>
+                                <input class="star-check" name="showRateChip" onclick="getRateChip()"
+                                       th:checked="${review.rateChip == 2}"
+                                       title="2"
+                                       type="radio" value="2"/>
+                                <input class="star-check" name="showRateChip" onclick="getRateChip()"
+                                       th:checked="${review.rateChip == 1}"
+                                       title="1"
+                                       type="radio" value="1"/>
+                            </div>
+                        </div>
+                        <input id="rateChip" name="rateChip" type="hidden" th:value="${review.rateChip}">
+                        <script>
+                            function getRateChip() {
+                                var rateLocNodeList = document.getElementsByName("showRateChip");
+
+                                rateLocNodeList.forEach((node) => {
+                                    if (node.checked) {
+                                        document.getElementById("rateChip").value = node.value;
+                                    }
+                                })
+                            }
+                        </script>
+                    </li>
+                </ul>
             </div>
+
             <div class="mb-4">
                 <p class="m-0"><label for="visitDate">방문 날짜<span class="chose">(선택)</span></label></p>
                 <input id="visitDate" name="visitDate" th:value="${review.visitDate}" type="date"/>
@@ -122,14 +225,14 @@
             <div class="mb-4">
                 <label for="recommendPlace">주변 맛집과 관광지를 추천해주세요<span class="chose">(선택)</span></label>
                 <input class="form-control" id="recommendPlace" name="recommendPlace"
-                       th:value="${review.recommendPlace}"
-                       type="text">
+                       placeholder="예) 유명한 곱창 골목이 있어요, 가까운 곳에 절이 있어요"
+                       th:value="${review.recommendPlace}" type="text">
             </div>
             <div class="mb-4">
-                <label for="notRecommendPerson">이런분들께는 비추에요<span class="chose">(선택)</span></label>
+                <label for="notRecommendPerson">이런 분들께는 비추에요<span class="chose">(선택)</span></label>
                 <input class="form-control" id="notRecommendPerson" name="notRecommendPerson"
-                       th:value="${review.notRecommendPerson}"
-                       type="text">
+                       placeholder="예) 위생에 예민하신 분들은 피해주세요"
+                       th:value="${review.notRecommendPerson}" type="text">
             </div>
         </div>
         <div>
@@ -150,15 +253,15 @@
         </div>
         <div class="mb-4 photos">
             <p class="m-0"><label for="images">사진<span class="chose">(선택)</span></label></p>
-            <p class="info">3MB 이하</p>
+            <p class="m-0 notion">3MB 이하</p>
             <input accept="image/*" id="images" multiple name="images" type="file"/>
             <div class="photogallery"></div>
         </div>
 
         <div class="mb-4 videos">
             <p class="m-0"><label for="videos">동영상<span class="chose">(선택)</span></label></p>
-            <p class="info">.mp4, .webm, .ogg, .mov만 사용가능, 30MB 이하</p>
-            <input id="videos" multiple name="videos" type="file"/>
+            <p class="m-0 notion">.mp4, .webm, .ogg, .mov만 사용가능, 30MB 이하</p>
+            <input accept="video/*" id="videos" multiple name="videos" type="file"/>
             <div class="videogallery"></div>
         </div>
 
@@ -169,7 +272,8 @@
                     <div id="showImages" th:each="attach : ${attachList}">
                         <span th:class="${attach.no}" th:if="${attach.fileType == 1}">
                             <img th:src="'/upload/' + ${attach.systemFileName}"/>
-                            <button onclick="removeFile(this)" th:id="${attach.no}" type="button">삭제</button>
+                            <button class="btn btn-danger btn-sm" onclick="removeFile(this)" th:id="${attach.no}"
+                                    type="button">삭제</button>
                         </span>
                     </div>
                 </div>
@@ -196,7 +300,6 @@
             <button class="btn btn-primary btn-lg" id="saveBtn" onclick="submitCheck();" type="button">수정</button>
         </div>
     </form>
-
     <script th:src="@{/js/ckeditor/ckeditor.js}"></script>
     <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8a9a9c523810d54958387638605f8fcf&libraries=services"
             type="text/javascript"></script>
@@ -785,6 +888,9 @@
             return el;
         }
 
+        $(document).on('click', '.item', function () {
+            $(this).children("button").eq(1).trigger('onclick');
+        });
 
         // 숙소를 선택했을 때 정보를 가져옴
         function GetMapInfo(target) {
@@ -801,11 +907,21 @@
             $('#x').val('');
             $('#y').val('');
 
+
             var infoNum = document.getElementById(target.getAttribute('id')).getAttribute('id');
             var infoNumberId = 'infoNumber' + infoNum;
 
             var info = document.getElementsByClassName('info');
             var realInfo = info[infoNum];
+
+            var item = document.getElementsByClassName('item');
+            var realItem = item[infoNum];
+            for (var i = 0; i < item.length; i++) {
+                if (item[i].classList.contains("active")) {
+                    item[i].classList.remove("active");
+                }
+            }
+            realItem.classList.add("active");
 
             var mapInfo = [];
             mapInfo = $(realInfo).children();

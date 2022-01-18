@@ -6,9 +6,9 @@
 <mapper namespace="RoleResourceDao">
 
     <select id="findRolesById" parameterType="string" resultType="MemberRoleVo">
-        select mr.member_role_id as memberRoleId, r.role_desc as roleDesc, r.role_name as roleName, res.resource_name as resourceName
-        from member m inner join member_role mr inner join role r inner join role_resources rr inner join resources res
-            ON m.mb_id = mr.mb_id AND mr.role_name = r.role_name and r.role_name = rr.role_name and rr.resource_name = res.resource_name
+        select mr.member_role_id as memberRoleId, r.role_desc as roleDesc, r.role_name as roleName
+        from member m inner join member_role mr inner join role r
+            ON m.mb_id = mr.mb_id AND mr.role_name = r.role_name
         WHERE m.mb_id = #{id}
     </select>
 
